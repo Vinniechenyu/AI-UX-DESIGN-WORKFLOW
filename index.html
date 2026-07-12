@@ -187,7 +187,7 @@
 
   <header class="hero">
     <h1>AI-UX Design <span class="ux" id="uxword">WORKFLOW</span></h1>
-    <p class="lead">AI 时代设计工作流的方法沉淀——<b>方法框架、行业洞察、实践案例与工具模板</b>,从「生成一张不错的图」走向「可交付的设计」,一处托管,持续更新。</p>
+    <p class="lead">AI 时代设计工作流的方法沉淀——<b>方法框架、行业洞察与工具模板</b>,从「生成一张不错的图」走向「可交付的设计」,一处托管,持续更新。</p>
   </header>
 
   <div class="layout">
@@ -229,7 +229,6 @@ const CATEGORIES = [
   { id:"all",  label:"全部",       ac:"#9A9DA3" },
   { id:"方法", label:"方法框架",   ac:"#0E8F5B" },
   { id:"洞察", label:"行业洞察",   ac:"#E0872E" },
-  { id:"实践", label:"实践案例",   ac:"#7C5CFC" },
   { id:"工具", label:"工具·模板",  ac:"#3B6FE0" }
 ];
 const catOf = id => CATEGORIES.find(c => c.id === id) || {};
@@ -250,30 +249,6 @@ const ITEMS = [
     preview: "assets/preview-ai-design-workflow-2026-06.png",
     tags: ["三次升级", "工具接力", "资产沉淀"],
     href: "ai-design-workflow-2026-06/"
-  },
-  {
-    title: "CodeArts IDE · AI-UX 设计材料库",
-    cat: "实践", status: "live", ext: true,
-    desc: "代码智能体的体验设计全流程实践:生成响应体验专项、ADE 拆解与工作台原型、AgentSpace 业界洞察、对话流组件规范——七份材料一处托管,全部以 Vibe Design 方式产出。",
-    preview: "assets/preview-case-codearts.png",
-    tags: ["专项分析", "交互原型", "组件规范"],
-    href: "https://vinniechenyu.github.io/codearts-ide-design/"
-  },
-  {
-    title: "CANN · PTO 项目启动台",
-    cat: "实践", status: "live", ext: true,
-    desc: "昇腾 CANN 生态的项目工作台实践:硬件与迁移、模型训练推理、算子开发、执行与性能分析等数十个可视化工作台原型,按分类与合集组织,持续生长。",
-    preview: "assets/preview-case-pto.png",
-    tags: ["启动台", "可视化工作台", "昇腾 CANN"],
-    href: "https://yinyucheng0601.github.io/compute-graph-viewer/launch-v2.html"
-  },
-  {
-    title: "AgentSpace · 团队协作 Agent 平台",
-    cat: "实践", status: "live", ext: true,
-    desc: "多 Agent 团队协作平台的高保真原型:需求 → 架构 → 代码 → 测试的 Agent 接力工作流、任务记录与审批、能力中心与知识库,完整可点的产品级 Demo。",
-    preview: "assets/preview-case-agentspace.png",
-    tags: ["Agent 编排", "审批流", "高保真"],
-    href: "https://vinniechenyu.github.io/AgentSpace/"
   }
 ];
 
