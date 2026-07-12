@@ -242,6 +242,38 @@ const ITEMS = [
     preview: "assets/preview-ai-design-workflow.png",
     tags: ["Spec Drives Gen-UI", "意图收敛", "五层泳道"],
     href: "ai-design-workflow-report/"
+  },
+  {
+    title: "AI 时代的设计工作流 · 2026-06 阶段",
+    cat: "方法", status: "doc",
+    desc: "阶段性工作流复盘:设计工作流的三次升级、从模糊输入到可交互页面的完整链路、两类高频场景,以及工具接力协作(而非并列使用)与可复用设计资产的沉淀方法。",
+    preview: "assets/preview-ai-design-workflow-2026-06.png",
+    tags: ["三次升级", "工具接力", "资产沉淀"],
+    href: "ai-design-workflow-2026-06/"
+  },
+  {
+    title: "CodeArts IDE · AI-UX 设计材料库",
+    cat: "实践", status: "live", ext: true,
+    desc: "代码智能体的体验设计全流程实践:生成响应体验专项、ADE 拆解与工作台原型、AgentSpace 业界洞察、对话流组件规范——七份材料一处托管,全部以 Vibe Design 方式产出。",
+    preview: "assets/preview-case-codearts.png",
+    tags: ["专项分析", "交互原型", "组件规范"],
+    href: "https://vinniechenyu.github.io/codearts-ide-design/"
+  },
+  {
+    title: "CANN · PTO 项目启动台",
+    cat: "实践", status: "live", ext: true,
+    desc: "昇腾 CANN 生态的项目工作台实践:硬件与迁移、模型训练推理、算子开发、执行与性能分析等数十个可视化工作台原型,按分类与合集组织,持续生长。",
+    preview: "assets/preview-case-pto.png",
+    tags: ["启动台", "可视化工作台", "昇腾 CANN"],
+    href: "https://yinyucheng0601.github.io/compute-graph-viewer/launch-v2.html"
+  },
+  {
+    title: "AgentSpace · 团队协作 Agent 平台",
+    cat: "实践", status: "live", ext: true,
+    desc: "多 Agent 团队协作平台的高保真原型:需求 → 架构 → 代码 → 测试的 Agent 接力工作流、任务记录与审批、能力中心与知识库,完整可点的产品级 Demo。",
+    preview: "assets/preview-case-agentspace.png",
+    tags: ["Agent 编排", "审批流", "高保真"],
+    href: "https://vinniechenyu.github.io/AgentSpace/"
   }
 ];
 
@@ -316,7 +348,7 @@ function render(){
     const s = STATUS[it.status] || { label: it.status, dot:"#9A9DA3" };
     const tags = (it.tags||[]).map(t => `<span class="tag">${t}</span>`).join('');
     const thumb = it.preview ? `<img src="${it.preview}" alt="${it.title}" loading="lazy">` : '';
-    return `<a class="card" href="${it.href}" style="--ac:${c.ac};--sd:${s.dot};animation-delay:${i*55}ms">
+    return `<a class="card" href="${it.href}"${it.ext?' target="_blank" rel="noopener"':''} style="--ac:${c.ac};--sd:${s.dot};animation-delay:${i*55}ms">
       <div class="shot">${thumb}<span class="pill"><span class="d"></span>${s.label}</span></div>
       <div class="body">
         <div class="clab"><span class="cd"></span>${c.label}</div>
