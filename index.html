@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-UX Design Workflow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script>
+  (function(){try{var t=localStorage.getItem('wf-theme');if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();
+</script>
+<style>
+  :root{
+    --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+    --sans:"Inter","PingFang SC","HarmonyOS Sans SC","Microsoft YaHei",-apple-system,sans-serif;
+    --ease:cubic-bezier(.22,.8,.28,1);
+  }
+  /* light — near-white cool gray, monochrome */
+  :root[data-theme="light"]{
+    --bg:#EFEFF1;--card:#FFFFFF;--panel:#F2F2F4;
+    --ink:#111214;--ink2:#5E6167;--ink3:#9A9DA3;
+    --line:#E4E4E7;--hair:rgba(17,18,20,.07);
+    --shadow:0 18px 40px -22px rgba(17,18,20,.22);
+    --glass-bg:rgba(255,255,255,.55);--glass-brd:rgba(255,255,255,.7);
+    --glass-hi:rgba(255,255,255,.9);--glass-sh:0 8px 24px -10px rgba(17,18,20,.2);
+    --shine:#0E8F5B;
+  }
+  /* dark — near-black */
+  :root[data-theme="dark"]{
+    --bg:#050506;--card:#111214;--panel:#17181B;
+    --ink:#F4F5F6;--ink2:#9EA2A9;--ink3:#63666D;
+    --line:#212328;--hair:rgba(255,255,255,.08);
+    --shadow:0 22px 48px -22px rgba(0,0,0,.8);
+    --glass-bg:rgba(38,40,46,.5);--glass-brd:rgba(255,255,255,.14);
+    --glass-hi:rgba(255,255,255,.22);--glass-sh:0 8px 26px -12px rgba(0,0,0,.7);
+    --shine:#5BE49B;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    transition:background .4s var(--ease),color .4s var(--ease)}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;cursor:pointer;color:inherit}
+  .wrap{max-width:1360px;margin:0 auto;padding:44px 40px 96px}
+  @media(max-width:640px){.wrap{padding:28px 20px 72px}}
+
+  /* ---- liquid-glass helper ---- */
+  .glass{background:var(--glass-bg);border:1px solid var(--glass-brd);
+    backdrop-filter:blur(16px) saturate(1.5);-webkit-backdrop-filter:blur(16px) saturate(1.5);
+    box-shadow:var(--glass-sh),inset 0 1px 0 var(--glass-hi),inset 0 -8px 20px -14px rgba(0,0,0,.25)}
+
+  /* ---- liquid-glass cursor ---- */
+  .cursor{position:fixed;top:0;left:0;width:26px;height:26px;border-radius:50%;pointer-events:none;
+    z-index:9999;transform:translate(-50%,-50%);opacity:0;
+    background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.5),rgba(255,255,255,.06) 60%);
+    border:1px solid var(--glass-brd);backdrop-filter:blur(3px) saturate(1.6);-webkit-backdrop-filter:blur(3px) saturate(1.6);
+    box-shadow:inset 0 1px 4px rgba(255,255,255,.5),0 6px 18px -6px rgba(0,0,0,.25);
+    transition:width .22s var(--ease),height .22s var(--ease),opacity .3s,background .3s}
+  .cursor.on{opacity:1}
+  .cursor.hot{width:52px;height:52px;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.42),rgba(14,143,91,.14) 62%)}
+  @media(hover:none),(pointer:coarse){.cursor{display:none}}
+  @media(prefers-reduced-motion:reduce){.cursor{display:none}}
+
+  /* ---- topbar ---- */
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px}
+  .brand{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;font-weight:600;
+    letter-spacing:.14em;color:var(--ink2);text-transform:uppercase}
+  .brand .mk{width:10px;height:10px;border-radius:50%;background:var(--shine);display:block}
+
+  /* sliding sun/moon toggle */
+  .toggle{position:relative;width:60px;height:30px;border-radius:999px;padding:0;
+    transition:background .3s var(--ease),border-color .3s var(--ease)}
+  .toggle .knob{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:var(--ink);
+    display:grid;place-items:center;transition:transform .34s cubic-bezier(.34,1.4,.5,1)}
+  :root[data-theme="dark"] .toggle .knob{transform:translateX(30px)}
+  .toggle .knob svg{width:13px;height:13px;stroke:var(--card);fill:none;stroke-width:2;stroke-linecap:round}
+  .toggle .knob .k-sun{display:block}.toggle .knob .k-moon{display:none}
+  :root[data-theme="dark"] .toggle .knob .k-sun{display:none}
+  :root[data-theme="dark"] .toggle .knob .k-moon{display:block}
+  .toggle .ico{position:absolute;top:50%;transform:translateY(-50%);width:13px;height:13px;
+    stroke:var(--ink3);fill:none;stroke-width:2;stroke-linecap:round;pointer-events:none}
+  .toggle .ico.s{left:9px}.toggle .ico.m{right:9px}
+
+  /* ---- hero ---- */
+  .hero{margin-bottom:4px}
+  .hero h1{margin:0;font-size:clamp(32px,5.4vw,52px);font-weight:800;letter-spacing:-.035em;line-height:1.02}
+  .hero .lead{margin:16px 0 0;color:var(--ink2);font-size:15px;line-height:1.66;max-width:880px}
+  .hero .lead b{color:var(--ink);font-weight:700;
+    background:linear-gradient(180deg,transparent 62%,color-mix(in srgb,var(--shine) 26%,transparent) 62%)}
+  /* WORKFLOW wordmark — flowing green gradient */
+  .ux{display:inline-block;
+    background:linear-gradient(96deg,var(--ink) 0%,#0A5E3D 26%,#0E8F5B 44%,#5BE49B 56%,#0E8F5B 70%,#0A5E3D 84%,var(--ink) 100%);
+    background-size:230% 100%;background-position:0% 0;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:uxflow 7s linear infinite}
+  @keyframes uxflow{to{background-position:-130% 0}}
+  .ux .uxl{display:inline-block;white-space:pre}
+  @media(prefers-reduced-motion:reduce){.ux{animation:none}}
+
+  /* ---- two-column ---- */
+  .layout{display:grid;grid-template-columns:212px 1fr;gap:36px;align-items:start;margin-top:34px}
+  @media(max-width:820px){.layout{grid-template-columns:1fr;gap:22px}}
+
+  .side{position:sticky;top:26px}
+  @media(max-width:820px){.side{position:static}}
+  .side .cap{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink3);padding:0 4px 12px;border-bottom:1px solid var(--line);margin-bottom:10px}
+  .navlist{display:flex;flex-direction:column;gap:2px}
+  .navitem.zero{opacity:.5}
+  .navitem.zero .lab::after{content:" · 待更新";font-family:var(--mono);font-size:10px;color:var(--ink3)}
+  .navitem{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;
+    padding:9px 12px;border:0;border-radius:10px;background:transparent;text-align:left;
+    font-size:13.5px;font-weight:600;color:var(--ink2);transition:background .18s var(--ease),color .18s var(--ease)}
+  .navitem:hover{background:var(--panel);color:var(--ink)}
+  .navitem.on{background:var(--ink);color:var(--bg)}
+  .navitem .lab{display:inline-flex;align-items:center;gap:8px}
+  .navitem .dot{width:7px;height:7px;border-radius:50%;background:var(--ac);flex:none}
+  .navitem .n{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--ink3);flex:none}
+  .navitem.on .n{color:color-mix(in srgb,var(--bg) 65%,transparent)}
+  .side .hint{font-family:var(--mono);font-size:10.5px;line-height:1.7;color:var(--ink3);padding:16px 4px 0}
+
+  /* ---- main ---- */
+  .search{position:relative;margin-bottom:24px;max-width:340px}
+  .search input{width:100%;padding:10px 14px 10px 38px;border-radius:999px;border:1px solid var(--line);
+    background:var(--card);color:var(--ink);font-family:var(--sans);font-size:13.5px;outline:none;transition:.18s var(--ease)}
+  .search input:focus{border-color:var(--ink3)}
+  .search input::placeholder{color:var(--ink3)}
+  .search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:15px;height:15px;
+    stroke:var(--ink3);fill:none;stroke-width:2}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px}
+
+  .card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--hair);
+    border-radius:18px;overflow:hidden;transition:transform .34s var(--ease),box-shadow .34s var(--ease),border-color .34s var(--ease);
+    opacity:0;transform:translateY(12px);animation:cardin .55s var(--ease) forwards}
+  @keyframes cardin{to{opacity:1;transform:none}}
+  @media(prefers-reduced-motion:reduce){.card{animation:none;opacity:1;transform:none}}
+  .card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:var(--line)}
+  .shot{position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--panel)}
+  .shot img{width:100%;height:100%;object-fit:cover;object-position:center top;transition:transform .5s var(--ease)}
+  .card:hover .shot img{transform:scale(1.04)}
+  .pill{position:absolute;top:12px;right:12px;display:inline-flex;align-items:center;gap:6px;
+    font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.02em;color:#fff;
+    background:rgba(10,11,13,.4);border:1px solid rgba(255,255,255,.24);border-radius:999px;
+    padding:4px 10px 4px 8px;backdrop-filter:blur(10px) saturate(1.5);-webkit-backdrop-filter:blur(10px) saturate(1.5);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 6px 16px -8px rgba(0,0,0,.4)}
+  .pill .d{width:6px;height:6px;border-radius:50%;background:var(--sd);box-shadow:0 0 8px var(--sd)}
+
+  .body{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1}
+  .clab{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10.5px;font-weight:600;
+    letter-spacing:.05em;color:var(--ink3);text-transform:uppercase;margin-bottom:9px}
+  .clab .cd{width:7px;height:7px;border-radius:50%;background:var(--ac)}
+  .card h2{margin:0;font-size:16.5px;font-weight:800;letter-spacing:-.02em;line-height:1.36}
+  .card .desc{margin:9px 0 0;color:var(--ink2);font-size:12.5px;line-height:1.62;
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+  .tag{font-family:var(--mono);font-size:10.5px;font-weight:500;color:var(--ink2);
+    background:var(--panel);border:1px solid var(--hair);border-radius:6px;padding:3px 8px}
+
+  .empty{display:none;text-align:center;padding:72px 20px;color:var(--ink3);grid-column:1/-1;
+    border:1px dashed var(--line);border-radius:18px}
+  .empty.show{display:block}
+  .empty h3{margin:0 0 6px;color:var(--ink2);font-size:15px;font-family:var(--mono);letter-spacing:.04em}
+  .clear{margin-top:16px;padding:9px 18px;border-radius:999px;font-size:12.5px;font-weight:600;color:var(--ink)}
+
+  footer{margin-top:60px;padding-top:22px;border-top:1px solid var(--line);color:var(--ink3);
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.02em;display:flex;justify-content:space-between;
+    flex-wrap:wrap;gap:8px}
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand"><span class="mk"></span>AI-UX Design Workflow · Library</div>
+    <button class="toggle glass" id="themeBtn" aria-label="切换深浅模式">
+      <svg class="ico s" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 3v1.6M12 19.4V21M4.6 4.6l1.1 1.1M18.3 18.3l1.1 1.1M3 12h1.6M19.4 12H21M4.6 19.4l1.1-1.1M18.3 5.7l1.1-1.1"/></svg>
+      <svg class="ico m" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      <span class="knob">
+        <svg class="k-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 3v1.6M12 19.4V21M4.6 4.6l1.1 1.1M18.3 18.3l1.1 1.1M3 12h1.6M19.4 12H21M4.6 19.4l1.1-1.1M18.3 5.7l1.1-1.1"/></svg>
+        <svg class="k-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      </span>
+    </button>
+  </div>
+
+  <header class="hero">
+    <h1>AI-UX Design <span class="ux" id="uxword">WORKFLOW</span></h1>
+    <p class="lead">AI 时代设计工作流的方法沉淀——<b>方法框架、行业洞察、实践案例与工具模板</b>,从「生成一张不错的图」走向「可交付的设计」,一处托管,持续更新。</p>
+  </header>
+
+  <div class="layout">
+    <aside class="side">
+      <div class="cap">目录 · Catalog</div>
+      <div class="navlist" id="nav"></div>
+      <div class="hint">□ 点击分类可筛选<br>□ 材料持续补充中</div>
+    </aside>
+
+    <main>
+      <div class="search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="q" type="search" placeholder="搜索材料 / 关键词…" autocomplete="off">
+      </div>
+      <div class="grid" id="grid"></div>
+      <div class="empty" id="empty">
+        <h3 id="emptyTitle">NO MATCH</h3>
+        <div id="emptyDesc">换个关键词,或查看全部材料。</div>
+        <button class="clear glass" id="clear">查看全部</button>
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <span>© 2026 AI-UX Design Workflow · 内容仅用于设计交流</span>
+    <span id="count"></span>
+  </footer>
+</div>
+
+<script>
+const STATUS = {
+  live:    { label:"可体验",   dot:"#3FB950" },
+  proto:   { label:"可交互",   dot:"#4C8DFF" },
+  concept: { label:"概念探索", dot:"#E0872E" },
+  doc:     { label:"可阅读",   dot:"#9A8CFF" }
+};
+
+const CATEGORIES = [
+  { id:"all",  label:"全部",       ac:"#9A9DA3" },
+  { id:"方法", label:"方法框架",   ac:"#0E8F5B" },
+  { id:"洞察", label:"行业洞察",   ac:"#E0872E" },
+  { id:"实践", label:"实践案例",   ac:"#7C5CFC" },
+  { id:"工具", label:"工具·模板",  ac:"#3B6FE0" }
+];
+const catOf = id => CATEGORIES.find(c => c.id === id) || {};
+
+const ITEMS = [
+  {
+    title: "通用 AI Design Workflow 框架",
+    cat: "方法", status: "doc",
+    desc: "从「生成一张不错的图」到「可交付的设计」:交付鸿沟、范式三迁移、Human-in-the-AI-Loop 双环、五层泳道×四阶段架构、Spec Drives Gen-UI 知识底座、9 维意图收敛与四个交付级 Skill——业务无关,可直接套用。",
+    preview: "assets/preview-ai-design-workflow.png",
+    tags: ["Spec Drives Gen-UI", "意图收敛", "五层泳道"],
+    href: "ai-design-workflow-report/"
+  }
+];
+
+const navEl = document.getElementById('nav');
+const grid = document.getElementById('grid');
+const qEl = document.getElementById('q');
+const emptyEl = document.getElementById('empty');
+const emptyTitle = document.getElementById('emptyTitle');
+const emptyDesc = document.getElementById('emptyDesc');
+const countEl = document.getElementById('count');
+const state = { sel:'all', q:'' };
+
+// split WORKFLOW into per-letter spans
+(function(){
+  const w = document.getElementById('uxword');
+  const txt = w.textContent; w.textContent = '';
+  [...txt].forEach((ch, i) => {
+    const s = document.createElement('span');
+    s.className = 'uxl'; s.textContent = ch;
+    s.style.setProperty('--d', (i * 0.09) + 's');
+    w.appendChild(s);
+  });
+})();
+
+document.getElementById('themeBtn').onclick = () => {
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try{ localStorage.setItem('wf-theme', next); }catch(e){}
+};
+
+// liquid-glass cursor follower
+(function(){
+  const cur = document.getElementById('cursor');
+  let x = innerWidth/2, y = innerHeight/2, tx = x, ty = y, shown = false;
+  addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY;
+    if(!shown){ shown = true; cur.classList.add('on'); } });
+  addEventListener('mouseleave', () => { cur.classList.remove('on'); shown = false; });
+  addEventListener('mouseover', e => {
+    cur.classList.toggle('hot', !!e.target.closest('a,button,input'));
+  });
+  (function loop(){ x += (tx-x)*.22; y += (ty-y)*.22;
+    cur.style.transform = `translate(${x}px,${y}px) translate(-50%,-50%)`;
+    requestAnimationFrame(loop); })();
+})();
+
+function buildNav(){
+  navEl.innerHTML = '';
+  CATEGORIES.forEach(c => {
+    const n = c.id === 'all' ? ITEMS.length : ITEMS.filter(i => i.cat === c.id).length;
+    const b = document.createElement('button');
+    b.className = 'navitem' + (c.id === state.sel ? ' on' : '') + (c.id !== 'all' && n === 0 ? ' zero' : '');
+    b.style.setProperty('--ac', c.ac);
+    b.innerHTML = `<span class="lab">${c.id==='all'?'':'<span class="dot"></span>'}${c.label}</span><span class="n">${String(n).padStart(2,'0')}</span>`;
+    b.onclick = () => { state.sel = c.id; [...navEl.children].forEach(x => x.classList.toggle('on', x === b)); render(); };
+    navEl.appendChild(b);
+  });
+}
+
+function match(it){
+  if (state.sel !== 'all' && it.cat !== state.sel) return false;
+  const q = state.q.trim().toLowerCase();
+  if (!q) return true;
+  return (it.title+' '+it.desc+' '+(it.tags||[]).join(' ')+' '+(catOf(it.cat).label||'')).toLowerCase().includes(q);
+}
+
+const selLabel = () => (CATEGORIES.find(c => c.id === state.sel) || {}).label || state.sel;
+
+function render(){
+  const list = ITEMS.filter(match);
+  grid.innerHTML = list.map((it, i) => {
+    const c = catOf(it.cat);
+    const s = STATUS[it.status] || { label: it.status, dot:"#9A9DA3" };
+    const tags = (it.tags||[]).map(t => `<span class="tag">${t}</span>`).join('');
+    const thumb = it.preview ? `<img src="${it.preview}" alt="${it.title}" loading="lazy">` : '';
+    return `<a class="card" href="${it.href}" style="--ac:${c.ac};--sd:${s.dot};animation-delay:${i*55}ms">
+      <div class="shot">${thumb}<span class="pill"><span class="d"></span>${s.label}</span></div>
+      <div class="body">
+        <div class="clab"><span class="cd"></span>${c.label}</div>
+        <h2>${it.title}</h2>
+        <p class="desc">${it.desc}</p>
+        <div class="tags">${tags}</div>
+      </div>
+    </a>`;
+  }).join('');
+  const zeroCat = state.sel !== 'all' && ITEMS.filter(i => i.cat === state.sel).length === 0;
+  if (zeroCat){ emptyTitle.textContent = 'COMING SOON'; emptyDesc.textContent = '「' + selLabel() + '」的材料即将上线。'; }
+  else { emptyTitle.textContent = 'NO MATCH'; emptyDesc.textContent = '换个关键词,或查看全部材料。'; }
+  emptyEl.classList.toggle('show', list.length === 0);
+  grid.appendChild(emptyEl);
+  countEl.textContent = list.length + ' / ' + ITEMS.length + ' 份材料';
+}
+
+qEl.oninput = () => { state.q = qEl.value; render(); };
+document.getElementById('clear').onclick = () => { state.sel='all'; state.q=''; qEl.value=''; buildNav(); render(); };
+buildNav();
+render();
+</script>
+</body>
+</html>
