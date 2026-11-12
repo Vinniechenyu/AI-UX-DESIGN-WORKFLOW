@@ -400,25 +400,7 @@ p{margin:0}
 .gt svg .gev.now circle{fill:var(--salmon-d);stroke:var(--salmon-d);r:10}
 .gt svg .gev.now text{fill:#fff}
 .gt svg .gband{mix-blend-mode:multiply;pointer-events:none;transition:opacity .3s}
-.gt svg .gev.hov circle{stroke:var(--salmon-d);stroke-width:3}
-.gt-body2{display:grid;grid-template-columns:272px minmax(0,1fr);min-height:420px}
-.gt-side{position:relative;border-right:1px solid var(--line);background:var(--paper)}
-.gt-side-in{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain}
-.gsp{position:sticky;top:0;z-index:1;display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:9px 16px 7px;background:var(--sunk);border-bottom:1px solid var(--line);transition:background .25s,color .25s}
-.gsp b{font-family:var(--f-serif);font-size:14px}
-.gsp small{font-family:var(--f-mono);font-size:10.5px;color:var(--muted)}
-.gsp.now{background:var(--ink);color:var(--paper)}
-.gsp.now small{color:var(--paper);opacity:.7}
-.gt-side ol{list-style:none;margin:0;padding:6px 8px 10px;display:grid;gap:2px}
-.gt-side li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;padding:6px 8px;border-radius:5px;font-size:12.5px;line-height:1.5;cursor:pointer;transition:opacity .25s,background .25s}
-.gt-side li:hover,.gt-side li:focus-visible{background:color-mix(in srgb,var(--ink) 6%,transparent);outline:none}
-.gt-side li i{font-style:normal;font-size:10px;font-weight:700;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;border:1.2px solid var(--ink);margin-top:1px}
-.gt-side li em{display:block;font-style:normal;font-size:10.5px;color:var(--muted)}
-.gt-side li.done i{background:var(--ink);color:var(--paper)}
-.gt-side li.todo{opacity:.4}
-.gt-side li.now{background:var(--card);box-shadow:0 0 0 1.5px var(--salmon-d)}
-.gt-side li.now i{background:var(--salmon-d);border-color:var(--salmon-d);color:#fff}
-@media (max-width:860px){.gt-body2{grid-template-columns:1fr;min-height:0}.gt-side{border-right:0;border-bottom:1px solid var(--line)}.gt-side-in{position:static;max-height:240px}}
+.gt svg .gcall{pointer-events:none;transition:opacity .2s;filter:drop-shadow(0 2px 4px rgba(29,28,26,.18))}
 .gt svg .gev:hover circle,.gt svg .gev:focus-visible circle{stroke:var(--salmon-d);stroke-width:2.4}
 .gt svg .gph rect,.gt svg .gph text{transition:fill .25s}
 .gt-now .gn-s{font-size:12px;font-weight:600;color:var(--salmon-d)}
@@ -789,7 +771,7 @@ p{margin:0}
       <span class="clock" id="gtClock">60.0 / 60 min</span>
     </div>
     <div class="gt-now" id="gtNow" aria-live="polite"></div>
-    <div class="gt-body2"><aside class="gt-side" aria-label="阶段与步骤"><div class="gt-side-in" id="gtSide"></div></aside><div class="gt-scroll"><svg id="gtSvg" role="img" aria-label="甘特图"></svg></div></div>
+    <div class="gt-scroll"><svg id="gtSvg" role="img" aria-label="甘特图"></svg></div>
     <div class="gt-notes" id="gtNotes"></div>
   </div>
   <div class="legend" style="margin-top:12px">
@@ -1454,15 +1436,9 @@ function draw(m){const d=D[m];svg.replaceChildren();svg.classList.toggle('dim',d
   const pa=el('path',{class:'garr'+(c?' crit':''),d:pd,fill:'none',stroke:col,'stroke-width':k==='x'?2.2:1.3,'stroke-dasharray':k==='w'?'3 3':k==='x'?'6 4':'none','marker-end':`url(#gtA${k})`});svg.append(pa);R.ars.push({t:k==='w'?t1:t2,pa})});
  d.ann.forEach(([ax,id,txt,at])=>{const a=el('text',{x:x(ax),y:Y[id]+4,'font-size':11.5,'font-weight':600,fill:'#d9714a','text-anchor':'middle',class:'gann'},txt);svg.append(a);R.anns.push({t:at,a})});
  d.ev.forEach(([tt,id],i)=>{const cx=x(tt),cy=Y[id]-LH/2+9;const c=el('g',{class:'gev',tabindex:0,role:'button','aria-label':`步骤 ${i+1}：${tt} min`});c.append(el('circle',{cx,cy,r:8}));c.append(el('text',{x:cx,y:cy+3.5,'font-size':9.5,'font-weight':700,'text-anchor':'middle'},i+1));c.append(el('title',{},`步骤 ${i+1} · ${tt} min · ${d.ev[i][2]}`));c.addEventListener('click',()=>{stop();setT(tt+.01)});c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();stop();setT(tt+.01)}});svg.append(c);R.dots.push({t:tt,c,cx,cy})});
+ const call=el('g',{class:'gcall'});const cr=el('rect',{rx:6,height:26,fill:'#1d1c1a'});const ct=el('text',{'font-size':12,'font-weight':600,fill:'#f3efe7'});call.append(cr,ct);svg.append(call);R.call={g:call,r:cr,t:ct};
  R.Y=Y;R.NM=NM;R.ev=d.ev;
  const nl=el('g',{class:'gnow'});nl.append(el('line',{x1:0,x2:0,y1:22,y2:H-8,stroke:'#d9714a','stroke-width':1.6}));nl.append(el('path',{d:'M-5 18L5 18L0 24Z',fill:'#d9714a'}));svg.insertBefore(nl,R.dots[0].c);R.nl=nl;
- const sd=$('gtSide');sd.innerHTML='';R.lis=[];R.phh=[];
- d.ph.forEach(([a,b,n],pi)=>{const h=document.createElement('div');h.className='gsp';h.innerHTML=`<b>${n}</b><small>${a}–${b} min</small>`;sd.append(h);R.phh.push(h);const ol=document.createElement('ol');
-  d.ev.forEach((e,i)=>{if(e[0]<a||e[0]>=b)return;const li=document.createElement('li');li.tabIndex=0;li.innerHTML=`<i>${i+1}</i><span>${e[2]}<em>${NM[e[1]]} · ${e[0]} min</em></span>`;
-   const go=()=>{stop();setT(e[0]+.01)};li.addEventListener('click',go);li.addEventListener('keydown',k=>{if(k.key==='Enter'||k.key===' '){k.preventDefault();go()}});
-   li.addEventListener('mouseenter',()=>R.dots[i].c.classList.add('hov'));li.addEventListener('mouseleave',()=>R.dots[i].c.classList.remove('hov'));
-   ol.append(li);R.lis[i]=li});
-  sd.append(ol)});R.ci=-2;
  $('gtQ').textContent=d.q;$('gtU').textContent=d.u;$('gtCrit').hidden=!d.crit;
  $('gtNotes').innerHTML=d.notes.map((n,i)=>`<div><b>${i+1}</b><h3>${n[0]}</h3><p>${n[1]}</p></div>`).join('');
  svg.setAttribute('aria-label',`甘特图：${d.u}`);setT(t)}
@@ -1487,12 +1463,12 @@ function setT(v){t=Math.max(0,Math.min(T,v));const full=t>=T;
  R.nl.setAttribute('transform',`translate(${x(t)},0)`);R.nl.style.opacity=full?0:1;
  let ci=-1;R.ev.forEach((e,i)=>{if(t>=e[0])ci=i});
  const e=R.ev[ci],nx=R.ev[ci+1];
- R.lis.forEach((li,i)=>{li.classList.toggle('done',!full&&i<ci);li.classList.toggle('now',!full&&i===ci);li.classList.toggle('todo',!full&&i>ci)});
- R.phh.forEach((h,i)=>h.classList.toggle('now',i===pi&&!full));
- if(ci!==R.ci){R.ci=ci;const sd=$('gtSide'),li=full?null:R.lis[ci];if(li&&sd.scrollHeight>sd.clientHeight)sd.scrollTo({top:Math.max(0,li.offsetTop-sd.clientHeight/3),behavior:reduce?'auto':'smooth'});else if(!li)sd.scrollTo({top:0})}
  R.dots.forEach((d,i)=>{d.c.classList.toggle('past',full||i<ci);d.c.classList.toggle('now',!full&&i===ci);d.c.classList.toggle('todo',!full&&i>ci)});
-
- if(full){now.innerHTML=`<span class="gn-t">全程</span><span class="gn-x">${R.phs.length} 个阶段、${R.ev.length} 个步骤。点「回放」看任务一步步执行，或点左侧任一步骤、泳道上的编号跳到那一刻。</span>`;R.hl.setAttribute('opacity',0)}
+ if(!full&&e){const d=R.dots[ci],txt=`${String(ci+1).padStart(2,'0')} · ${e[2]}`,w=[...txt].reduce((a,ch)=>a+(/[\u2E80-\uFFFF]/.test(ch)?12:6.8),0)+20;
+  let bx=Math.max(d.cx,x(t))+12;if(bx+w>996)bx=d.cx-12-w;bx=Math.max(4,bx);const by=d.cy-13;
+  R.call.r.setAttribute('x',bx);R.call.r.setAttribute('y',by);R.call.r.setAttribute('width',w);R.call.t.setAttribute('x',bx+10);R.call.t.setAttribute('y',by+17);R.call.t.textContent=txt;R.call.g.style.opacity=1}
+ else R.call.g.style.opacity=0;
+ if(full){now.innerHTML=`<span class="gn-t">全程</span><span class="gn-x">${R.phs.length} 个阶段、${R.ev.length} 个步骤。点「回放」看任务一步步执行，或点泳道上的步骤编号跳到那一刻。</span>`;R.hl.setAttribute('opacity',0)}
  else if(e){now.innerHTML=`<span class="gn-t">${e[0]} min</span><span class="gn-s">步骤 ${String(ci+1).padStart(2,'0')}/${R.ev.length} · ${pi>=0?R.phs[pi].n:''}</span><span class="gn-w">${R.NM[e[1]]}</span><span class="gn-x">${e[2]}</span>${nx?`<span class="gn-n">下一步 · ${nx[0]} min ${nx[2]}</span>`:''}`;R.hl.setAttribute('y',R.Y[e[1]]-LH/2);R.hl.setAttribute('opacity',.35)}
  else{now.innerHTML='<span class="gn-t">0 min</span><span class="gn-x">准备开始</span>';R.hl.setAttribute('opacity',0)}
  scrub.value=t;clock.textContent=`${t.toFixed(1)} / ${T} min`}
