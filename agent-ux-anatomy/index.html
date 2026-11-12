@@ -366,6 +366,41 @@ p{margin:0}
 .afh{font-size:11px;letter-spacing:.2em;font-weight:600;color:var(--muted);align-items:center}
 .cps .lyr{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
 @media (max-width:760px){.afr{grid-template-columns:1fr;gap:6px}.afh{display:none}}
+
+.gt{background:var(--card);border-radius:6px;overflow:hidden;box-shadow:0 1px 0 var(--line)}
+.gt-top{display:flex;flex-wrap:wrap;gap:10px 16px;justify-content:space-between;align-items:center;padding:14px 22px;background:var(--lav)}
+.gt-tabs{display:flex;flex-wrap:wrap;gap:6px}
+.gt-tabs button{all:unset;cursor:pointer;font-size:13px;font-weight:600;padding:6px 15px;border-radius:999px;border:1.2px solid var(--ink);color:var(--ink)}
+.gt-tabs button[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+.gt-tabs button:focus-visible,.gt-crit:focus-visible{outline:2px solid var(--sky-d);outline-offset:2px}
+.gt-q{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline;padding:12px 22px;border-bottom:1px solid var(--line);background:var(--paper)}
+.gt-q b{font-family:var(--f-serif);font-size:18px}
+.gt-q small{font-size:12.5px;color:var(--muted)}
+.gt-q .gt-crit{margin-left:auto}
+.gt-crit[hidden]{display:none}
+.gt-scroll{overflow-x:auto}
+.gt-scroll svg{display:block;width:100%;min-width:780px;height:auto}
+.gt svg text{font-family:var(--f-sans)}
+.gt svg .gbar{transform-box:fill-box;transform-origin:left center;animation:gtgrow .5s ease both}
+@keyframes gtgrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){.gt svg .gbar{animation:none}}
+.gt svg.dim .gbar:not(.crit){opacity:.18}
+.gt svg.dim .garr:not(.crit){opacity:.15}
+.gt-notes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line)}
+.gt-notes>div{padding:16px 20px;display:grid;gap:5px;align-content:start;border-right:1px solid var(--line)}
+.gt-notes>div:last-child{border-right:0}
+.gt-notes b{width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;font-size:11.5px}
+.gt-notes h3{font-size:15.5px}
+.gt-notes p{font-size:12.5px;color:var(--muted);line-height:1.65}
+@media (max-width:860px){.gt-notes{grid-template-columns:repeat(2,minmax(0,1fr))}.gt-notes>div{border-bottom:1px solid var(--line)}}
+@media (max-width:520px){.gt-notes{grid-template-columns:1fr}}
+.gtm{display:grid;margin-top:22px}
+.gtr{display:grid;grid-template-columns:130px repeat(3,minmax(0,1fr));gap:16px;padding:12px 0;border-top:1.5px solid var(--ink);font-size:13.5px;align-items:start}
+.gtr:last-child{border-bottom:1.5px solid var(--ink)}
+.gtr>span:first-child{font-family:var(--f-serif);font-weight:600;font-size:15px}
+.gth{font-size:11px;letter-spacing:.2em;font-weight:600;color:var(--muted)}
+.gth>span:first-child{font-family:var(--f-sans);font-size:11px;font-weight:600}
+@media (max-width:760px){.gtr{grid-template-columns:1fr;gap:4px}.gth{display:none}}
 .cpt{display:grid}
 .cpr{display:grid;grid-template-columns:120px minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr);gap:16px;padding:13px 0;border-top:1.5px solid var(--ink);font-size:13.5px;align-items:center}
 .cpr:last-child{border-bottom:1.5px solid var(--ink)}
@@ -640,7 +675,7 @@ p{margin:0}
 <section class="sec" id="trace">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>06</b>/ &nbsp;Run Trace</span><h2>时间花在哪，<br>信心在哪里起伏</h2></div>
-    <div class="r"><span class="rule"></span><p class="side">一次 RMSNorm 性能诊断（示例数据）。上半部分是运行瀑布流，每个模型调用、工具调用、人工关卡都是时间线上的一条；下半部分是同一时间轴上的用户信心曲线。点击任意一行或编号，下方同时给出技术信息和体验解读。</p><span class="hand">where time goes, where trust moves</span></div>
+    <div class="r"><span class="rule"></span><p class="side">一次 RMSNorm 性能诊断（示例数据）。上半部分是运行瀑布流，每个模型调用、工具调用、人工关卡都是时间线上的一条；下半部分是同一时间轴上的用户信心曲线。点击任意一行或编号，下方同时给出技术信息和体验解读。最后一部分是参与者变多以后的甘特图。</p><span class="hand">where time goes, where trust moves</span></div>
   </div>
   <div class="wf" id="wf">
     <div class="wf-top">
@@ -694,6 +729,41 @@ p{margin:0}
     <span><i style="background:var(--red)"></i>失败</span>
   </div>
   <div class="insights" id="insights"></div>
+  <div class="sec-head" style="margin-top:40px">
+    <div class="l"><h3 style="font-size:28px">参与者变多以后：<br>从瀑布流到甘特图</h3></div>
+    <div class="r"><p class="side">瀑布流回答「它这一步在干什么」，适合一个 Agent 的一次运行。参与者一多，用户关心的就变成「谁在等谁、哪条线拖慢了整体、这件事现在归谁」。这时要换成甘特图：泳道是参与者，横轴是时间，重点画出依赖、等待和争用。下面三种协作规模，泳道怎么划、什么最该突出，各不相同（示例数据）。</p><span class="hand">who waits for whom</span></div>
+  </div>
+  <div class="gt" id="gt">
+    <div class="gt-top">
+      <div class="gt-tabs" role="tablist" aria-label="协作规模">
+        <button type="button" role="tab" aria-selected="true" data-m="single">单人 · 单 Agent</button>
+        <button type="button" role="tab" aria-selected="false" data-m="fleet">单人 · 多 Agent</button>
+        <button type="button" role="tab" aria-selected="false" data-m="team">多人 · 多 Agent</button>
+      </div>
+      <span class="caps" style="color:var(--ink)">RMSNorm 诊断 · 0–60 min</span>
+    </div>
+    <div class="gt-q"><small>用户最想知道</small><b id="gtQ"></b><small id="gtU"></small><button class="btn ghost gt-crit" id="gtCrit" type="button" aria-pressed="false">只看关键路径</button></div>
+    <div class="gt-scroll"><svg id="gtSvg" role="img" aria-label="甘特图"></svg></div>
+    <div class="gt-notes" id="gtNotes"></div>
+  </div>
+  <div class="legend" style="margin-top:12px">
+    <span><i style="background:var(--ink)"></i>人的动作</span>
+    <span><i style="background:var(--lav)"></i>模型推理</span>
+    <span><i style="background:var(--sage)"></i>工具执行</span>
+    <span><i style="background:var(--sky)"></i>自报 / 交回</span>
+    <span><i style="background:repeating-linear-gradient(135deg,var(--salmon) 0 3px,var(--card) 3px 6px)"></i>等人（审批、选择）</span>
+    <span><i style="background:repeating-linear-gradient(135deg,#bdb6a8 0 3px,var(--card) 3px 6px)"></i>等资源</span>
+    <span><i style="background:var(--red)"></i>失败</span>
+    <span>— — 空等 · → 依赖 · ⇢ 交接</span>
+  </div>
+  <div class="gtm">
+    <div class="gtr gth"><span>维度</span><span>单人 · 单 Agent</span><span>单人 · 多 Agent</span><span>多人 · 多 Agent</span></div>
+    <div class="gtr"><span>泳道单位</span><span>Agent 自报的任务，人单独一条</span><span>主 Agent + 缩进的子 Agent</span><span>人 → 他的 Agent，加上共享资源</span></div>
+    <div class="gtr"><span>默认视图</span><span>全部展开</span><span>子 Agent 折叠成汇总条，关键路径上的自动展开</span><span>只展开自己的组，别人的折叠成状态条</span></div>
+    <div class="gtr"><span>最该突出</span><span>等你的时间；失败与重试</span><span>关键路径；审批队列</span><span>跨人等待；资源争用；归属转移</span></div>
+    <div class="gtr"><span>典型交互</span><span>回放、点任意一段看证据</span><span>只看关键路径、批量审批、下钻子 Agent 轨迹</span><span>按人筛选、点交接看交接包、认领或转交</span></div>
+  </div>
+
 </section>
 
 <!-- 07 -->
@@ -1254,4 +1324,80 @@ foldBtn.addEventListener('click',()=>{const all=['g1','g2','g3'].every(i=>collap
 renderTicks();update();renderDetail();syncBtn();
 if('IntersectionObserver' in window&&!reduce){const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){io.disconnect();setTimeout(play,350)}},{threshold:.35});io.observe(wf)}
 })();
+
+(()=>{const svg=document.getElementById('gtSvg');if(!svg)return;
+const D={
+single:{q:'它卡在哪？是在等我吗？',u:'泳道 = Agent 自报的任务',crit:false,
+ rows:[
+  {id:'h',n:'你',sub:'委托人',hu:1,s:[[0,2,'h','委托'],[26,28,'h','批准'],[52,56,'h','验收']]},
+  {id:'t1',n:'T1 理解意图',sub:'自报任务',s:[[2,5,'llm','复述目标']]},
+  {id:'t2',n:'T2 编译前推导',sub:'自报任务',s:[[5,8,'llm','推理'],[8,13,'tool','UB 估算']]},
+  {id:'t3',n:'T3 编译后分析',sub:'自报任务',s:[[13,19,'tool','读 IR'],[19,21,'rep','H1']]},
+  {id:'t4',n:'T4 上板实测',sub:'自报任务',s:[[21,28,'gate','等你批准上板'],[28,32,'tool','上板 #1'],[32,34,'err','超时'],[34,40,'tool','上板 #2']]},
+  {id:'t5',n:'T5 修复与验证',sub:'自报任务',s:[[40,44,'llm','改 tiling'],[44,51,'tool','数值校验'],[51,52,'rep','']]}],
+ ar:[[21,'t4',26,'h','w'],[28,'h',28,'t4','d'],[52,'t5',52,'h','d']],
+ ann:[[33.5,'t3','等你 7 min'],[45,'t2','失败就地重试，不另起一行']],mk:[[36,'t4','压缩']],
+ notes:[['泳道来自自报计划','一条泳道是一个任务，不是一次工具调用。没有 L4 的计划工具，这张图就画不出来。'],['人单独一条','只放跟他有关的三个时刻：委托、批准、验收。其余时间他可以离开。'],['斜纹最显眼','只有一个 Agent 时，人往往就是唯一的瓶颈。「等你 7 min」比任何进度条都重要。'],['失败就地标注','失败和重试画在原任务里，压缩等事件用竖线标记，点开看证据。']]},
+fleet:{q:'哪条线拖慢了整体？我先处理哪个请求？',u:'泳道 = 主 Agent + 子 Agent',crit:true,
+ rows:[
+  {id:'h',n:'你',sub:'审批队列',hu:1,s:[[0,2,'h','委托'],[18,20,'h','批 B',1],[21,23,'h','批 C'],[38,40,'h','选方案',1],[55,58,'h','验收',1]]},
+  {id:'m',n:'主 Agent',sub:'编排 · 汇总',s:[[0,4,'llm','拆分',1],[4,30,'idle','等子 Agent'],[30,34,'llm','汇总',1],[34,38,'gate','等你选',1],[40,47,'tool','修复',1],[47,55,'tool','验证',1]]},
+  {id:'a',n:'子 Agent A',sub:'源码推导',ind:1,s:[[4,10,'llm','读源码'],[10,14,'tool','UB 估算'],[14,15,'rep','']]},
+  {id:'b',n:'子 Agent B',sub:'Profiling',ind:1,s:[[4,10,'tool','编译',1],[10,18,'gate','等审批',1],[20,28,'tool','上板',1],[28,30,'rep','',1]]},
+  {id:'c',n:'子 Agent C',sub:'对照实验',ind:1,s:[[4,9,'tool','基线'],[9,11,'err','失败'],[11,12,'tool',''],[12,21,'gate','排队等审批'],[23,28,'tool','上板'],[28,29,'rep','']]}],
+ ar:[[4,'m',4,'a','d'],[4,'m',4,'b','d',1],[4,'m',4,'c','d'],[15,'a',30,'m','d'],[30,'b',30,'m','d',1],[29,'c',30,'m','d'],[10,'b',18,'h','w',1],[12,'c',21,'h','w'],[20,'h',20,'b','d',1],[23,'h',23,'c','d'],[34,'m',38,'h','w',1],[40,'h',40,'m','d',1]],
+ ann:[[9.5,'h','2 个请求在排队'],[43,'a','15 min 前已交回，在空等']],mk:[],
+ notes:[['子 Agent 缩进一级','主 Agent 一条，子 Agent 缩在下面，可以整体折叠成一条汇总条，只露出状态和交回时间。'],['画出分叉和汇合','从主 Agent 分出去、再汇回来的依赖线，决定了总耗时。最慢的那条就是关键路径，要高亮。'],['审批会排队','多个 Agent 同时请求，人那条泳道上会叠起来。要显示队列和每个请求等了多久，并支持批量批准。'],['只交回报告','子 Agent 只交回一段报告，末端放「交回」标记，点开下钻它自己的完整轨迹。']]},
+team:{q:'谁在等谁？这件事现在归谁？',u:'泳道 = 人 → 他的 Agent，加共享资源',crit:true,
+ rows:[
+  {g:'你 · 算子开发'},
+  {id:'h1',n:'你',sub:'审批人',hu:1,s:[[0,2,'h','委托'],[24,26,'h','批准',1],[44,47,'h','交接',1]]},
+  {id:'a1',n:'你的 Agent',sub:'可改本地 · 上板需批',ind:1,s:[[2,8,'llm','推导'],[8,12,'tool','编译'],[12,20,'tool','上板',1],[20,24,'gate','等你',1],[26,34,'tool','修复',1],[34,36,'res','等板卡',1],[36,42,'tool','复测',1],[42,44,'rep','交接包',1]]},
+  {g:'同事 · 性能调优'},
+  {id:'h2',n:'同事',sub:'接手人',hu:1,s:[[0,3,'h','委托'],[47,50,'h','接收',1],[56,59,'h','合并',1]]},
+  {id:'a2',n:'同事的 Agent',sub:'只读 · 可上板',ind:1,s:[[3,14,'tool','模型级 profiling'],[14,22,'res','等板卡 #3'],[22,36,'tool','上板 ×2'],[36,44,'llm','分析'],[50,56,'tool','回归验证',1]]},
+  {g:'共享资源'},
+  {id:'r1',n:'板卡 #3',sub:'Ascend NPU',s:[[12,20,'o1','你的 Agent',1],[22,36,'o2','同事的 Agent'],[36,42,'o1','你的 Agent',1]]},
+  {id:'r2',n:'代码仓',sub:'main',s:[[44,45,'o1',''],[58,59,'o2','']]}],
+ ar:[[14,'a2',20,'r1','w'],[34,'a1',36,'r1','w',1],[20,'a1',24,'h1','w',1],[26,'h1',26,'a1','d',1],[44,'a1',47,'h2','x',1],[50,'h2',50,'a2','d',1],[56,'a2',56,'h2','d',1]],
+ ann:[[17,'h2','同事的 Agent 在等你的 Agent 释放板卡'],[40.5,'h2','交接包']],mk:[],
+ notes:[['按人分组','每个人和他的 Agent 是一组。默认只展开自己这组，别人的折叠成一条状态条。'],['资源单独成泳道','板卡、代码仓、配额各占一条，按占用者着色。争用时双方都标出「在等谁」。'],['交接要画出来','跨人的交接用一条连线表示，点开就是交接包：对象、证据、前提、要求。'],['归属写在泳道头','谁的 Agent、能改什么、谁来审批，写在泳道头。交接之后，归属随之转移。']]}};
+const NS='http://www.w3.org/2000/svg',X0=200,W=780,T=60,LH=40,GH=28,TOP=34;const x=t=>X0+t*W/T;
+const ST={h:['#1d1c1a','#1d1c1a','#f3efe7'],llm:['#cbbdee','#7d63c9'],tool:['#cfe59c','#6b9a2f'],rep:['#afcfe8','#4f86b8'],gate:['url(#gtH1)','#d9714a'],res:['url(#gtH2)','#8c877c'],err:['#f2b3b3','#d64545'],o1:['#afcfe8','#4f86b8'],o2:['#f2e8a0','#b8981b']};
+const el=(n,a,t)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(t!=null)e.textContent=t;return e};
+let cur='single',dim=false;
+function draw(m){const d=D[m];svg.replaceChildren();svg.classList.toggle('dim',dim&&d.crit);
+ let y=TOP;const Y={};d.rows.forEach(r=>{if(r.g){r._y=y;y+=GH}else{r._y=y;Y[r.id]=y+LH/2;y+=LH}});const H=y+12;
+ svg.setAttribute('viewBox',`0 0 1000 ${H}`);
+ const df=el('defs',{});svg.append(df);df.innerHTML='<pattern id="gtH1" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="#fbf9f4"/><rect width="3" height="7" fill="#f4b69c"/></pattern><pattern id="gtH2" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="#fbf9f4"/><rect width="3" height="7" fill="#d4cdbf"/></pattern><marker id="gtAd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#1d1c1a"/></marker><marker id="gtAw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#8c877c"/></marker><marker id="gtAx" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#d9714a"/></marker>';
+ for(let t=0;t<=T;t+=10){svg.append(el('line',{x1:x(t),x2:x(t),y1:TOP-6,y2:H-8,stroke:'#d9d2c4','stroke-width':1}));svg.append(el('text',{x:x(t),y:18,'font-size':11,fill:'#6e6a62','text-anchor':t?'middle':'start'},t?t+' min':'0'))}
+ d.rows.forEach((r,i)=>{if(r.g){svg.append(el('rect',{x:0,y:r._y+2,width:1000,height:GH-4,fill:'#ebe5d9'}));svg.append(el('text',{x:14,y:r._y+GH/2+4,'font-size':11.5,'font-weight':700,fill:'#1d1c1a','letter-spacing':'.12em'},r.g));return}
+  if(r.hu)svg.append(el('rect',{x:0,y:r._y,width:1000,height:LH,fill:'#f3efe7',opacity:.7}));
+  svg.append(el('line',{x1:0,x2:1000,y1:r._y+LH,y2:r._y+LH,stroke:'#e6e0d4'}));
+  const lx=r.ind?34:14;if(r.ind)svg.append(el('path',{d:`M20 ${r._y+4}V${r._y+LH/2}H28`,fill:'none',stroke:'#bdb6a8'}));
+  if(r.hu)svg.append(el('circle',{cx:lx+4,cy:r._y+LH/2-5,r:4,fill:'#1d1c1a'}));
+  svg.append(el('text',{x:lx+(r.hu?13:0),y:r._y+LH/2-1,'font-size':13,'font-weight':700,fill:'#1d1c1a'},r.n));
+  svg.append(el('text',{x:lx+(r.hu?13:0),y:r._y+LH/2+13,'font-size':10.5,fill:'#6e6a62'},r.sub));
+  r.s.forEach(([a,b,k,lb,c])=>{const x1=x(a),w=x(b)-x1,yy=r._y+11,delay=(a/T*0.9).toFixed(2)+'s';
+   if(k==='idle'){const g=el('g',{class:'gbar'+(c?' crit':''),style:`animation-delay:${delay}`});g.append(el('line',{x1:x1+2,x2:x1+w-2,y1:yy+9,y2:yy+9,stroke:'#8c877c','stroke-dasharray':'4 4'}));g.append(el('text',{x:x1+w/2,y:yy+5,'font-size':11,fill:'#6e6a62','text-anchor':'middle'},lb));svg.append(g);return}
+   const [f,st,tc]=ST[k];const g=el('g',{class:'gbar'+(c?' crit':''),style:`animation-delay:${delay}`});const hy=k==='h'?r._y+6:yy;
+   g.append(el('rect',{x:x1,y:hy,width:Math.max(w,3),height:k==='h'?16:18,rx:4,fill:f,stroke:c&&d.crit?'#1d1c1a':st,'stroke-width':c&&d.crit?2:1.2}));
+   g.append(el('title',{},`${r.n} · ${lb||k} · ${a}–${b} min`));
+   const tw=lb?[...lb].reduce((a,ch)=>a+(/[\u2E80-\uFFFF]/.test(ch)?11:6.3),0):0;
+   if(lb&&k==='h')g.append(el('text',{x:x1+w/2,y:r._y+35,'font-size':10.5,'font-weight':600,fill:'#1d1c1a','text-anchor':'middle'},lb));
+   else if(lb&&tw+10<=w)g.append(el('text',{x:x1+6,y:yy+13,'font-size':11,'font-weight':600,fill:tc||'#1d1c1a'},lb));
+   svg.append(g)})});
+ d.mk.forEach(([t,id,lb])=>{const yc=Y[id];svg.append(el('line',{x1:x(t),x2:x(t),y1:yc-16,y2:yc+16,stroke:'#b8981b','stroke-width':2.5}));svg.append(el('text',{x:x(t)+5,y:yc-10,'font-size':10.5,fill:'#8a7212','font-weight':600},lb))});
+ d.ar.forEach(([t1,i1,t2,i2,k,c])=>{let y1=Y[i1],y2=Y[i2];const dn=y2>y1;y1+=dn?9:-9;y2+=dn?-9:9;const x1=x(t1),x2=x(t2);
+  const p=x1===x2?`M${x1} ${y1}V${y2}`:`M${x1} ${y1}C${x1} ${(y1+y2)/2} ${x2} ${(y1+y2)/2} ${x2} ${y2}`;
+  const col=k==='x'?'#d9714a':k==='w'?'#8c877c':'#1d1c1a';
+  svg.append(el('path',{class:'garr'+(c?' crit':''),d:p,fill:'none',stroke:col,'stroke-width':k==='x'?2.2:1.3,'stroke-dasharray':k==='w'?'3 3':k==='x'?'6 4':'none','marker-end':`url(#gtA${k})`}))});
+ d.ann.forEach(([t,id,txt])=>{svg.append(el('text',{x:x(t),y:Y[id]+6,'font-size':17,fill:'#d9714a','font-family':'Caveat,cursive','text-anchor':'middle'},txt))});
+ document.getElementById('gtQ').textContent=d.q;document.getElementById('gtU').textContent=d.u;
+ const cb=document.getElementById('gtCrit');cb.hidden=!d.crit;
+ document.getElementById('gtNotes').innerHTML=d.notes.map((n,i)=>`<div><b>${i+1}</b><h3>${n[0]}</h3><p>${n[1]}</p></div>`).join('');
+ svg.setAttribute('aria-label',`甘特图：${d.u}`)}
+document.querySelectorAll('#gt [role=tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#gt [role=tab]').forEach(o=>o.setAttribute('aria-selected',o===b));cur=b.dataset.m;draw(cur)}));
+document.getElementById('gtCrit').addEventListener('click',e=>{dim=!dim;e.currentTarget.setAttribute('aria-pressed',dim);e.currentTarget.textContent=dim?'显示全部':'只看关键路径';svg.classList.toggle('dim',dim)});
+draw(cur)})();
 </script>
