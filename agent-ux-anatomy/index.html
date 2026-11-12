@@ -326,6 +326,54 @@ p{margin:0}
 .cps h3{font-size:17px}
 .cps p{font-size:13px;color:var(--muted)}
 
+/* control points */
+.packs{display:grid;grid-template-columns:minmax(0,1fr) 120px minmax(0,1fr);gap:16px;align-items:stretch}
+@media (max-width:900px){.packs{grid-template-columns:1fr}.spine{flex-direction:row!important;flex-wrap:wrap;justify-content:center}}
+.pack{border-radius:4px;padding:22px;display:grid;gap:14px;align-content:start}
+.pack .ph{display:grid;gap:2px;border-bottom:1.5px solid var(--ink);padding-bottom:10px}
+.pack .ph h3{font-size:26px}
+.pack dl{margin:0;display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px 14px;font-size:13.5px}
+.pack dt{font-size:12px;font-weight:600;letter-spacing:.1em;padding-top:2px}
+.pack dd{margin:0;display:flex;flex-wrap:wrap;gap:5px;align-items:center;overflow-wrap:anywhere}
+.pack dd.mono{font-family:var(--f-mono);font-size:12px}
+.pill.sm{font-size:11.5px;padding:1px 9px}
+.spine{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.spine .sarr{font-size:30px;line-height:1}
+.evg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:820px){.evg{grid-template-columns:1fr}}
+.evc{background:var(--card);border-radius:4px;padding:18px;display:grid;gap:10px;align-content:start;border-top:3px solid var(--sage-d)}
+.evc:nth-child(2){border-top-color:var(--salmon-d)}
+.evc.miss{border-top-color:var(--muted);background:transparent;border-left:1.5px dashed var(--line);border-right:1.5px dashed var(--line);border-bottom:1.5px dashed var(--line)}
+.ev{display:grid;gap:5px;padding-bottom:10px;border-bottom:1px solid var(--line);font-size:13.5px}
+.ev:last-child{border-bottom:0;padding-bottom:0}
+.ev .tags{display:flex;flex-wrap:wrap;gap:5px}
+.ev small{font-size:12px;color:var(--muted)}
+.tagkey{display:flex;flex-wrap:wrap;gap:8px 28px;font-size:13px}
+.tagkey b{font-family:var(--f-serif);margin-right:8px}
+.verbs{display:flex;flex-wrap:wrap;gap:8px}
+.cpt{display:grid}
+.cpr{display:grid;grid-template-columns:120px minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr);gap:16px;padding:13px 0;border-top:1.5px solid var(--ink);font-size:13.5px;align-items:center}
+.cpr:last-child{border-bottom:1.5px solid var(--ink)}
+.cpr b{font-family:var(--f-serif);font-size:16px}
+.cph{font-size:11px;letter-spacing:.2em;font-weight:600;color:var(--muted)}
+.vb{display:flex;flex-wrap:wrap;gap:5px}
+.vb i{font-style:normal;font-size:12px;padding:1px 10px;border-radius:999px;background:var(--ink);color:var(--paper)}
+@media (max-width:760px){.cpr{grid-template-columns:1fr;gap:6px}.cph{display:none}}
+.io{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:16px}
+@media (max-width:820px){.io{grid-template-columns:1fr}}
+.ioc{border-radius:4px;padding:22px;display:grid;gap:12px;align-content:start}
+.ioc ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--muted)}
+.ioc dl{margin:0;display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px 14px;font-size:13.5px}
+.ioc dt{font-size:12px;font-weight:600;letter-spacing:.1em;padding-top:2px}
+.ioc dd{margin:0;overflow-wrap:anywhere}
+.ioc dd.mono{font-family:var(--f-mono);font-size:12px}
+.composer{background:var(--card);border-radius:14px;border:1.5px solid var(--ink);display:grid;overflow:hidden}
+.cbar2{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 18px;border-bottom:1px solid var(--line)}
+.ctext{padding:16px 18px;font-size:15px;line-height:1.9}
+.at{background:var(--sky);border-radius:6px;padding:1px 7px;font-family:var(--f-mono);font-size:12.5px;white-space:nowrap}
+.crow{display:flex;flex-wrap:wrap;gap:6px;padding:0 18px 14px}
+.cfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 18px;background:var(--paper);font-size:12.5px}
+
 .foot{margin-top:80px;padding-top:18px;border-top:1.5px solid var(--ink);font-size:12.5px;color:var(--muted);display:grid;gap:4px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -705,12 +753,130 @@ p{margin:0}
   </div>
 </section>
 
+<!-- 10 -->
+<section class="sec" id="control">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>10</b>/ &nbsp;Control Points</span><h2>控制点上，<br>人和 Agent 交换什么</h2></div>
+    <div class="r"><span class="rule"></span><p class="side">每个控制点都是一个需要人做决定的时刻。Agent 递上来的应该是做这个决定所需的最少信息，叫「决策包」；人做完决定交回去的，叫「交接包」。两个方向用同一套骨架：对象、证据、前提、动作。少一次「翻译成自然语言再解析回来」，就少一次信息损失。</p><span class="hand">decision pack ⇄ handoff pack</span></div>
+  </div>
+
+  <div class="packs">
+    <div class="pack" style="background:var(--sky)">
+      <div class="ph"><span class="caps" style="color:var(--ink)">Agent → 人</span><h3>决策包</h3></div>
+      <dl>
+        <dt>位置</dt><dd>修复阶段 · 第 3 / 4 步</dd>
+        <dt>主张</dt><dd><b>改 tile 切分，恢复单遍规约</b></dd>
+        <dt>依据</dt><dd><span class="pill solid sm">慢 2.8×</span><span class="pill solid sm">two_pass</span><span class="pill solid sm">MTE2 2.01×</span></dd>
+        <dt>前提</dt><dd>精度影响未验证；只在 8192 下测过</dd>
+        <dt>影响</dt><dd>改本地 1 个文件 · +18 −6 · <b>可回退</b></dd>
+        <dt>选项</dt><dd><span class="pill ink sm">批准</span><span class="pill sm">拒绝</span><span class="pill sm">改参数</span><span class="pill sm">本会话允许</span></dd>
+        <dt>回执</dt><dd>批准 → 跑对照验证；拒绝 → 改用方案 B</dd>
+      </dl>
+    </div>
+    <div class="spine" aria-label="共享骨架">
+      <span class="hand" style="font-size:22px">shared</span>
+      <span class="pill ink">对象</span><span class="pill ink">证据</span><span class="pill ink">前提</span><span class="pill ink">动作</span>
+      <span class="sarr">⇄</span>
+    </div>
+    <div class="pack" style="background:var(--sage)">
+      <div class="ph"><span class="caps" style="color:var(--ink)">人 → Agent</span><h3>交接包</h3></div>
+      <dl>
+        <dt>对象</dt><dd>H1 · 证据 e10（msprof 重试）</dd>
+        <dt>参数</dt><dd class="mono">FP32 [2048,16384] · commit 04c0c97</dd>
+        <dt>问题</dt><dd><b>182 KB 是峰值还是常驻？</b></dd>
+        <dt>证据</dt><dd><span class="pill solid sm">ub_peak 182/192 KB</span></dd>
+        <dt>前提</dt><dd>我怀疑与 cache 行为有关，没有验证过</dd>
+        <dt>要求</dt><dd>先区分峰值与常驻，再决定是否改 tiling；不改标定常量</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="sec-head" style="margin-top:28px">
+    <div class="l"><h3 style="font-size:28px">证据怎样组织：<br>按论证关系，不按调用顺序</h3></div>
+    <div class="r"><p class="side">工具调用的先后顺序是 Agent 的视角。人做判断需要的是论证结构：哪些支持、哪些反对、还缺什么。每条证据都带三个标签。</p></div>
+  </div>
+  <div class="evg">
+    <div class="evc"><h3>支持</h3>
+      <div class="ev"><b>8192 慢 2.8 倍</b><span class="tags"><span class="pill sm sk">上板</span><span class="pill sm sg">实测</span><span class="pill sm">观测</span></span></div>
+      <div class="ev"><b>编译器改成两遍规约</b><span class="tags"><span class="pill sm sk">编译后</span><span class="pill sm sg">实测</span><span class="pill sm">观测</span></span></div>
+      <div class="ev"><b>整行 live 320 KiB &gt; UB 248 KiB</b><span class="tags"><span class="pill sm sk">编译前</span><span class="pill sm bt">推导</span><span class="pill sm">推断</span></span></div>
+    </div>
+    <div class="evc"><h3>反对</h3>
+      <div class="ev"><b>4096 下两种实现耗时接近</b><span class="tags"><span class="pill sm sk">上板</span><span class="pill sm sg">实测</span><span class="pill sm">观测</span></span><small>说明差异只在超出 UB 后出现，与假设一致，但不能排除其他因素</small></div>
+    </div>
+    <div class="evc miss"><h3>缺失</h3>
+      <div class="ev"><b>修复后的精度结果</b><span class="tags"><span class="pill sm">待验证</span></span></div>
+      <div class="ev"><b>其他 shape 下的表现</b><span class="tags"><span class="pill sm">待验证</span></span></div>
+    </div>
+  </div>
+  <div class="tagkey">
+    <span><b>证据阶段</b>编译前 · 编译后 · 上板 · 数值校验</span>
+    <span><b>来源类型</b>实测 · 公开表 · 推导 · Mock</span>
+    <span><b>结论状态</b>假设 · 推断 · 观测 · 已验证</span>
+    <span style="color:var(--muted)">示例沿用第 06 节诊断案例的示例数据</span>
+  </div>
+  <div class="cps" style="grid-template-columns:repeat(5,minmax(0,1fr))">
+    <div><b>1</b><h3>结论先行</h3><p>默认只展示主张和依据摘要，原始记录放在下一层</p></div>
+    <div><b>2</b><h3>按论证分组</h3><p>支持、反对、缺失三组，而不是按工具调用的时间排</p></div>
+    <div><b>3</b><h3>证据带三个标签</h3><p>阶段、来源类型、结论状态，缺一不可</p></div>
+    <div><b>4</b><h3>断言与证据分开</h3><p>「我认为是 UB 约束」是主张，「ub_peak 182 KB」才是证据</p></div>
+    <div><b>5</b><h3>只给相关证据</h3><p>审批补丁要的是影响和能否回退，不是整个定位过程</p></div>
+  </div>
+
+  <div class="sec-head" style="margin-top:28px">
+    <div class="l"><h3 style="font-size:28px">七个控制点，<br>九个人的动作</h3></div>
+    <div class="r"><p class="side">人的每个动作都要落在某个对象上。「我觉得不对」Agent 无法利用；「对证据 e10 有疑问」它就能直接处理。拒绝时一定要收集理由，否则 Agent 只收到一个「否」，只能盲猜下一步。</p></div>
+  </div>
+  <div class="verbs"><span class="pill ink">确认</span><span class="pill ink">修正</span><span class="pill ink">选择</span><span class="pill ink">限定</span><span class="pill ink">质疑</span><span class="pill ink">补充</span><span class="pill ink">授权</span><span class="pill ink">接管</span><span class="pill ink">回退</span></div>
+  <div class="cpt">
+    <div class="cpr cph"><span>控制点</span><span>决策包的重点</span><span>人的行为</span><span>交还给 Agent</span></div>
+    <div class="cpr"><span><b>意图确认</b></span><span>目标、约束（分清用户说的和 Agent 推断的）、完成标准</span><span class="vb"><i>确认</i><i>修正</i></span><span>确认后的约束集</span></div>
+    <div class="cpr"><span><b>计划审阅</b></span><span>步骤、每步需要的证据和工具、预计成本</span><span class="vb"><i>限定</i><i>修正</i></span><span>修订后的计划</span></div>
+    <div class="cpr"><span><b>执行审批</b></span><span>具体动作、diff、可逆性 × 影响范围、为什么需要</span><span class="vb"><i>授权</i><i>选择</i></span><span>决定 + 拒绝理由</span></div>
+    <div class="cpr"><span><b>假设审阅</b></span><span>主张 + 证据链 + 状态 + 验证计划</span><span class="vb"><i>质疑</i><i>补充</i></span><span>挂在证据编号上的批注</span></div>
+    <div class="cpr"><span><b>异常阻塞</b></span><span>失败点、已尝试过什么、候选路径</span><span class="vb"><i>选择</i><i>补充</i><i>接管</i></span><span>选定的路径</span></div>
+    <div class="cpr"><span><b>验收</b></span><span>结论状态汇总、前后对比、未覆盖的部分</span><span class="vb"><i>确认</i><i>质疑</i></span><span>验收决定 + 打回原因</span></div>
+    <div class="cpr"><span><b>回溯</b></span><span>时间线和各节点状态</span><span class="vb"><i>回退</i><i>补充</i></span><span>交接包</span></div>
+  </div>
+
+  <div class="sec-head" style="margin-top:28px">
+    <div class="l"><h3 style="font-size:28px">对 Agent 友好的输入：<br>能直接变成可检验的约束</h3></div>
+    <div class="r"><p class="side">用户的输入会变成 Agent 上下文里的 token，后续每一步推理都从这里出发。友好的输入不需要 Agent 去猜。但不能指望用户每次都写全，所以要靠界面把输入「结构化」。</p></div>
+  </div>
+  <div class="io">
+    <div class="ioc" style="background:var(--card)"><span class="caps">不友好</span><p class="quote">「那个 norm 算子好像变慢了，优化一下，别乱改。」</p><ul><li>对象没有锚点：哪个算子、哪个版本？</li><li>目标不可检验：快多少算完成？</li><li>「别乱改」无法执行：哪些能改？</li></ul></div>
+    <div class="ioc" style="background:var(--sage)"><span class="caps" style="color:var(--ink)">友好</span>
+      <dl>
+        <dt>目标</dt><dd>8192 下耗时降到 4096 的 1.5 倍以内</dd>
+        <dt>对象</dt><dd class="mono">rms_norm_split · 04c0c97 · FP32 [2048,16384]</dd>
+        <dt>已知</dt><dd>8192 慢 2.8×　<b>怀疑：</b>和 UB 有关，未验证</dd>
+        <dt>约束</dt><dd>必须 max_err &lt; 1e-3 · 禁止改标定常量 · 偏好只改 tiling</dd>
+        <dt>权限</dt><dd>可改本地文件 · 上板和推送 PR 先问我</dd>
+        <dt>产物</dt><dd>根因 + 证据链 + 最小上板验证方案，先不改代码</dd>
+      </dl>
+    </div>
+  </div>
+  <div class="composer" aria-label="结构化输入框示意">
+    <div class="cbar2"><span class="caps" style="color:var(--ink)">输入框示意</span><span class="pill lv sm">作用于：H1 · 证据 e10</span></div>
+    <div class="ctext">对 <span class="at">@ub_peak 182/192 KB</span> 有疑问：这是峰值还是常驻？我怀疑和 cache 行为有关。先在 <span class="at">@rms_norm_split · 04c0c97</span> 上区分清楚，再决定要不要改 tiling。</div>
+    <div class="crow"><span class="pill sg sm">必须 · max_err &lt; 1e-3</span><span class="pill sa sm">禁止 · 改标定常量</span><span class="pill bt sm">偏好 · 只改 tiling</span><span class="pill sm">完成标准：耗时(8192) ≤ 1.5 × 耗时(4096)</span></div>
+    <div class="cfoot"><span>Agent 补全了 2 项推断：dtype = FP32、设备 = Ascend 950 · <u>待你确认</u></span><span class="pill ink sm">发送</span></div>
+  </div>
+  <div class="cps" style="grid-template-columns:repeat(5,minmax(0,1fr))">
+    <div><b>1</b><h3>引用，不描述</h3><p>@ 文件、算子、证据，或从调查视图选中后带入，自带编号、参数和版本</p></div>
+    <div><b>2</b><h3>约束做成标签</h3><p>必须、禁止、偏好三类，从对话里自动提取，用户确认即可</p></div>
+    <div><b>3</b><h3>完成标准用模板</h3><p>指标 + 阈值 + 对照组的填空，而不是自由书写</p></div>
+    <div><b>4</b><h3>推断由 Agent 补全</h3><p>缺的信息先补上并标出来，在意图确认时交给人确认</p></div>
+    <div><b>5</b><h3>插话指定对象</h3><p>先选中任务、证据或假设再输入，变成有作用范围的批注</p></div>
+  </div>
+</section>
+
 <div class="part"><span class="pn">III</span><div><span class="caps">Part III · AI Infra · Operators</span><h2>落到算子开发</h2></div><span class="hand">from estimate to evidence</span></div>
 
-<!-- 10 -->
+<!-- 11 -->
 <section class="sec" id="stages">
   <div class="sec-head">
-    <div class="l"><span class="eyebrow"><b>10</b>/ &nbsp;Operator Development · Evidence Stages</span><h2>算子开发里，<br>证据分四个阶段</h2></div>
+    <div class="l"><span class="eyebrow"><b>11</b>/ &nbsp;Operator Development · Evidence Stages</span><h2>算子开发里，<br>证据分四个阶段</h2></div>
     <div class="r"><span class="rule"></span><p class="side">算子从写完源码到真正上板，能拿到的证据逐级变强。每个调查视图都要先说清自己站在哪个阶段、能回答什么、还不能回答什么。用编译前的估算去回答上板的问题，是这个领域最常见的误导。</p><span class="hand">estimate ≠ measurement</span></div>
   </div>
   <div class="att">
@@ -760,10 +926,10 @@ p{margin:0}
   </div>
 </section>
 
-<!-- 11 -->
+<!-- 12 -->
 <section class="sec" id="loop">
   <div class="sec-head">
-    <div class="l"><span class="eyebrow"><b>11</b>/ &nbsp;Investigation Loop</span><h2>人和 Agent<br>围绕同一份证据</h2></div>
+    <div class="l"><span class="eyebrow"><b>12</b>/ &nbsp;Investigation Loop</span><h2>人和 Agent<br>围绕同一份证据</h2></div>
     <div class="r"><span class="rule"></span><p class="side">算子问题很难只靠文字说清，比如多维索引怎么落到线性地址、尾块和 padding 有没有越界。让 Agent 生成调查视图，用户在图上点选对象，再把「问题 + 证据」一起交回给 Agent 继续核查。交接包是这个闭环里最关键的界面对象。</p><span class="hand">human ⇄ agent, one evidence</span></div>
   </div>
   <div class="loop">
@@ -806,10 +972,10 @@ p{margin:0}
   </div>
 </section>
 
-<!-- 12 -->
+<!-- 13 -->
 <section class="sec" id="patterns">
   <div class="sec-head">
-    <div class="l"><span class="eyebrow"><b>12</b>/ &nbsp;Operator Pattern Map</span><h2>每个可视化 Pattern<br>回答一类问题</h2></div>
+    <div class="l"><span class="eyebrow"><b>13</b>/ &nbsp;Operator Pattern Map</span><h2>每个可视化 Pattern<br>回答一类问题</h2></div>
     <div class="r"><span class="rule"></span><p class="side">把 Pattern 库里和算子相关的案例按两个维度摆开：关注的是正确性还是性能，依据是源码推导还是编译与运行证据。左下最密、右上最稀，说明下一步最该补的是运行证据的接入。</p><span class="hand">where data goes, where time goes</span></div>
   </div>
   <div class="quad">
@@ -833,7 +999,7 @@ p{margin:0}
 </section>
 
 <div class="foot">
-  <span>来源：ChatGPT 分享对话的两轮回答；第 10–12 节的算子开发内容参考 <a href="https://yinyucheng0601.github.io/AI_Infra/ai-infra-research/patterns.html" style="color:inherit">AI Infra Pattern 库</a> 中 RMSNorm、LogSumExp、RSFA 等 Pattern 的页面说明，RMSNorm 数值是其中记录的性能模型估算，不是上板实测。第 06 节的耗时、tokens 和信心曲线是示例数据，用来说明结构。</span>
+  <span>来源：ChatGPT 分享对话的两轮回答；第 11–13 节的算子开发内容参考 <a href="https://yinyucheng0601.github.io/AI_Infra/ai-infra-research/patterns.html" style="color:inherit">AI Infra Pattern 库</a> 中 RMSNorm、LogSumExp、RSFA 等 Pattern 的页面说明，RMSNorm 数值是其中记录的性能模型估算，不是上板实测。第 06 节的耗时、tokens 和信心曲线是示例数据，用来说明结构。</span>
   <span>第 06 节瀑布流的交互思路参考了 affectUI 的 Trace Waterfall 组件（行内树、实时增长的条、当前时间线、折叠后在父条上显示刻度），代码为本页独立实现。</span>
 </div>
 </div>
