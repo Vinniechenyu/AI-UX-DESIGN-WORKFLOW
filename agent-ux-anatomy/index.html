@@ -308,7 +308,7 @@ p{margin:0}
 .band .nm b{font-family:var(--f-serif);font-size:18px}
 .band .nm code{font-family:var(--f-mono);font-size:11px;opacity:.7}
 .band .mc{font-size:13.5px}
-.band .det{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;padding:4px 20px 18px 92px;font-size:13.5px}
+.band .det{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;padding:4px 20px 18px 92px;font-size:13.5px}
 .band .det[hidden]{display:none}
 .band .det .caps{display:block;margin-bottom:4px}
 .band.open{box-shadow:0 0 0 1.5px var(--ink)}
@@ -351,6 +351,21 @@ p{margin:0}
 .tagkey{display:flex;flex-wrap:wrap;gap:8px 28px;font-size:13px}
 .tagkey b{font-family:var(--f-serif);margin-right:8px}
 .verbs{display:flex;flex-wrap:wrap;gap:8px}
+.band .det .aff{border-left:1.5px dashed currentColor;padding-left:16px}
+.aft{display:grid}
+.afr{display:grid;grid-template-columns:150px minmax(0,1.5fr) minmax(0,1fr) minmax(0,1.1fr);gap:16px;padding:14px 0;border-top:1.5px solid var(--ink);font-size:13.5px;align-items:start}
+.afr:last-child{border-bottom:1.5px solid var(--ink)}
+.afr .ly{display:flex;gap:8px;align-items:baseline}
+.afr .ly i{font-style:normal;font-family:var(--f-serif);font-size:22px;line-height:1;padding:3px 8px;border-radius:4px}
+.afr .ly b{font-family:var(--f-serif);font-size:15px}
+.afr ul{margin:0;padding-left:16px;display:grid;gap:3px}
+.afr .no{color:var(--muted)}.afr .no::before{content:"✕ ";color:var(--salmon-d);font-weight:700}.afr .yes::before{content:"✓ ";color:var(--sage-d);font-weight:700}
+.afr .no,.afr .yes{font-size:13px}
+.afr .yes{background:var(--card);border-radius:4px;padding:6px 10px}
+.afr code{font-family:var(--f-mono);font-size:11.5px}
+.afh{font-size:11px;letter-spacing:.2em;font-weight:600;color:var(--muted);align-items:center}
+.cps .lyr{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+@media (max-width:760px){.afr{grid-template-columns:1fr;gap:6px}.afh{display:none}}
 .cpt{display:grid}
 .cpr{display:grid;grid-template-columns:120px minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr);gap:16px;padding:13px 0;border-top:1.5px solid var(--ink);font-size:13.5px;align-items:center}
 .cpr:last-child{border-bottom:1.5px solid var(--ink)}
@@ -428,23 +443,23 @@ p{margin:0}
 <section class="sec" id="runtime">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>01</b>/ &nbsp;Agent Runtime Stack</span><h2>Agent 底层机制：<br>七层，自下而上</h2></div>
-    <div class="r"><span class="rule"></span><p class="side">后面所有的体验判断，都建立在这七层之上。下层约束上层：界面上的每个对象，运行时到底由谁、在什么时候产生，决定了它能不能被可靠地展示。点击任意一层，展开它对体验的约束和应该沉淀的设计资产。</p><span class="hand">token → protocol → loop → context → schema → experience</span></div>
+    <div class="r"><span class="rule"></span><p class="side">后面所有的体验判断，都建立在这七层之上。下层约束上层：界面上的每个对象，运行时到底由谁、在什么时候产生，决定了它能不能被可靠地展示。点击任意一层，展开它对体验的约束、应该沉淀的设计资产，以及让这一层对 Agent 亲和的条件。</p><span class="hand">token → protocol → loop → context → schema → experience</span></div>
   </div>
   <div class="stack" id="stack">
     <div class="band" style="--i:6;--bc:var(--lav)"><button type="button" aria-expanded="false"><span class="lv">L6</span><span class="nm"><b>体验模板</b><code>Workspaces</code></span><span class="mc">Operator / Training / Inference 工作空间。视图是「对象 + 关系 + 当前选择」的投影</span><span class="fd pill">可理解</span></button>
-      <div class="det" hidden><div><span class="caps" style="color:var(--ink)">体验约束</span><p>流程用什么图形，由实际执行拓扑决定；界面围绕问题定位路径组织，而不是堆指标。</p></div><div><span class="caps" style="color:var(--ink)">设计资产</span><p>三个领域工作空间模板；Pattern 按数据来源排期落地。</p></div></div></div>
+      <div class="det" hidden><div><span class="caps" style="color:var(--ink)">体验约束</span><p>流程用什么图形，由实际执行拓扑决定；界面围绕问题定位路径组织，而不是堆指标。</p></div><div><span class="caps" style="color:var(--ink)">设计资产</span><p>三个领域工作空间模板；Pattern 按数据来源排期落地。</p></div><div class="aff"><span class="caps" style="color:var(--ink)">Agent 亲和条件</span><p>全部操作可走命令行；环境可锁定、可复现；有可执行的完成标准和沙箱边界。</p></div></div></div>
     <div class="band" style="--i:5;--bc:var(--sky)"><button type="button" aria-expanded="false"><span class="lv">L5</span><span class="nm"><b>领域本体</b><code>Domain Schema</code></span><span class="mc">AI Infra 计算对象 + 关系。Agent 工具输出和 UI 共用同一套 Schema</span><span class="fd pill">可理解</span></button>
-      <div class="det" hidden><div><span class="caps" style="color:var(--ink)">体验约束</span><p>工具每返回一次，UI 就拿到能联动的对象，选中一个算子，所有视图一起高亮；不一致的数据（比如并行维度乘积对不上 Rank 数）在上屏前就被拦下。</p></div><div><span class="caps" style="color:var(--ink)">设计资产</span><p>Object Registry；工具输出契约；Schema 校验门禁。</p></div></div></div>
+      <div class="det" hidden><div><span class="caps" style="color:var(--ink)">体验约束</span><p>工具每返回一次，UI 就拿到能联动的对象，选中一个算子，所有视图一起高亮；不一致的数据（比如并行维度乘积对不上 Rank 数）在上屏前就被拦下。</p></div><div><span class="caps" style="color:var(--ink)">设计资产</span><p>Object Registry；工具输出契约；Schema 校验门禁。</p></div><div class="aff"><span class="caps" style="color:var(--ink)">Agent 亲和条件</span><p>共享实体词表 + 稳定 ID + 单位；关系是一等公民；同一对象可被工具、界面、人引用。</p></div></div></div>
     <div class="band" style="--i:4;--bc:var(--sage)"><button type="button" aria-expanded="false"><span class="lv">L4</span><span class="nm"><b>语义埋点</b><code>Self-report</code></span><span class="mc">plan / evidence / finding / artifact 等「自我汇报」工具，把执行过程翻译成对象</span><span class="fd pill">可信任</span></button>
-      <div class="det" hidden><div><span class="caps" style="color:var(--ink)">体验约束</span><p>任务、发现、产物都是 Agent 自报的，阶段叙事也是模型自己写的，可能出错，所以每一条都要能链回原始记录。</p></div><div><span class="caps" style="color:var(--ink)">设计资产</span><p>自报协议：结论状态和证据编号为必填；自报内容与原始事件的一致性检查。</p></div></div></div>
+      <div class="det" hidden><div><span class="caps" style="color:var(--ink)">体验约束</span><p>任务、发现、产物都是 Agent 自报的，阶段叙事也是模型自己写的，可能出错，所以每一条都要能链回原始记录。</p></div><div><span class="caps" style="color:var(--ink)">设计资产</span><p>自报协议：结论状态和证据编号为必填；自报内容与原始事件的一致性检查。</p></div><div class="aff"><span class="caps" style="color:var(--ink)">Agent 亲和条件</span><p>schema 小、必填少、调用便宜；字段一对一对应界面；能校验一致性。</p></div></div></div>
     <div class="band" style="--i:3;--bc:var(--butter)"><button type="button" aria-expanded="false"><span class="lv">L3</span><span class="nm"><b>上下文工程</b><code>Context</code></span><span class="mc">system prompt、工具描述、记忆、压缩、子 Agent。上下文窗口就是全部状态</span><span class="fd pill">可控制</span></button>
-      <div class="det" hidden><div><span class="caps" style="color:var(--ink)">体验约束</span><p>Agent 知道什么，取决于窗口里还剩什么。压缩会让证据原文消失；子 Agent 用全新的窗口运行，只交回一段报告；工具返回的内容是不可信数据。</p></div><div><span class="caps" style="color:var(--ink)">设计资产</span><p>上下文检查器；压缩标记；子 Agent 轨迹下钻；token 与时长预算条；证据可信度标记。</p></div></div></div>
+      <div class="det" hidden><div><span class="caps" style="color:var(--ink)">体验约束</span><p>Agent 知道什么，取决于窗口里还剩什么。压缩会让证据原文消失；子 Agent 用全新的窗口运行，只交回一段报告；工具返回的内容是不可信数据。</p></div><div><span class="caps" style="color:var(--ink)">设计资产</span><p>上下文检查器；压缩标记；子 Agent 轨迹下钻；token 与时长预算条；证据可信度标记。</p></div><div class="aff"><span class="caps" style="color:var(--ink)">Agent 亲和条件</span><p>存指针不存副本；关键状态写成结构化文件，压缩不丢；子 Agent 交回浓缩结论。</p></div></div></div>
     <div class="band open" style="--i:2;--bc:var(--salmon)"><button type="button" aria-expanded="true"><span class="lv">L2</span><span class="nm"><b>Harness 循环</b><code>Agent Loop</code></span><span class="mc">while (stop_reason == tool_use)：执行 → 回填 → 再推理。权限、hooks、重试、中断都在这一层</span><span class="fd pill">可控制</span></button>
-      <div class="det"><div><span class="caps" style="color:var(--ink)">体验约束</span><p>用户只能在循环的 5 个挂点上插手（见下图）。「暂停」在实现上通常是中止；外部副作用撤不回；重试要分基础设施重试和模型换方法再试。</p></div><div><span class="caps" style="color:var(--ink)">设计资产</span><p>干预点清单；工具风险分级（可回退 / 幂等 / 外部副作用）；审批卡片规范。</p></div></div></div>
+      <div class="det"><div><span class="caps" style="color:var(--ink)">体验约束</span><p>用户只能在循环的 5 个挂点上插手（见下图）。「暂停」在实现上通常是中止；外部副作用撤不回；重试要分基础设施重试和模型换方法再试。</p></div><div><span class="caps" style="color:var(--ink)">设计资产</span><p>干预点清单；工具风险分级（可回退 / 幂等 / 外部副作用）；审批卡片规范。</p></div><div class="aff"><span class="caps" style="color:var(--ink)">Agent 亲和条件</span><p>工具自声明可逆性 / 范围 / 成本；幂等可 dry-run；步步有检查点；拒绝带理由。</p></div></div></div>
     <div class="band" style="--i:1;--bc:var(--card)"><button type="button" aria-expanded="false"><span class="lv">L1</span><span class="nm"><b>消息协议</b><code>Content Blocks</code></span><span class="mc">thinking / text / tool_use / tool_result，stop_reason 决定下一步，一轮可并行多个工具调用</span><span class="fd pill">可理解</span></button>
-      <div class="det" hidden><div><span class="caps" style="color:var(--ink)">体验约束</span><p>只有 tool_use（动作）和 tool_result（证据）是天生结构化的；thinking 可能被摘要或加密，不能当作决策依据展示。</p></div><div><span class="caps" style="color:var(--ink)">设计资产</span><p>内容块到组件的映射表；Tool Call 卡片；thinking 展示策略。</p></div></div></div>
+      <div class="det" hidden><div><span class="caps" style="color:var(--ink)">体验约束</span><p>只有 tool_use（动作）和 tool_result（证据）是天生结构化的；thinking 可能被摘要或加密，不能当作决策依据展示。</p></div><div><span class="caps" style="color:var(--ink)">设计资产</span><p>内容块到组件的映射表；Tool Call 卡片；thinking 展示策略。</p></div><div class="aff"><span class="caps" style="color:var(--ink)">Agent 亲和条件</span><p>入参受约束；结果有边界、带截断标记；报错可操作；每份产出有稳定 ID。</p></div></div></div>
     <div class="band dark" style="--i:0;--bc:var(--ink)"><button type="button" aria-expanded="false"><span class="lv">L0</span><span class="nm"><b>模型</b><code>Token Stream</code></span><span class="mc">自回归逐 token 生成，两次调用之间不保留状态。规划、反思都只是它写出来的文字</span><span class="fd pill">可感知</span></button>
-      <div class="det" hidden><div><span class="caps">体验约束</span><p>最小渲染单位是流式片段；首个 token 出来多快，决定用户觉得它「有没有在干活」；思考中、输出中、等工具是三种不同的等待。</p></div><div><span class="caps">设计资产</span><p>三种等待态规范；流式渲染规则；长任务通知策略。</p></div></div></div>
+      <div class="det" hidden><div><span class="caps">体验约束</span><p>最小渲染单位是流式片段；首个 token 出来多快，决定用户觉得它「有没有在干活」；思考中、输出中、等工具是三种不同的等待。</p></div><div><span class="caps">设计资产</span><p>三种等待态规范；流式渲染规则；长任务通知策略。</p></div><div class="aff"><span class="caps">Agent 亲和条件</span><p>信息密、单位和标识写全；不变内容放前缀命中缓存；文本结构优先于截图。</p></div></div></div>
   </div>
 
   <div class="sec-head" style="margin-top:36px">
@@ -500,6 +515,28 @@ p{margin:0}
   <div class="calends" style="grid-template-columns:minmax(0,1fr) minmax(0,2fr)">
     <div><h3>原生 · 协议自带</h3><div class="ladder"><span class="pill sg">Action · tool_use</span><span class="pill sg">Evidence · tool_result</span></div><p>结构化、可信度高。要补的是风险等级、来源可信度和压缩后的原文入口。</p></div>
     <div><h3>自报 · 需要埋点</h3><div class="ladder"><span class="pill bt">Goal · 用户原话 + 复述</span><span class="pill bt">Task · 计划工具</span><span class="pill bt">Decision · 文字说明 + 证据</span><span class="pill bt">Artifact · 写文件 / 发布</span></div><p>需要和原始事件对账：标为完成的任务有没有对应的动作；决策必须带证据编号，否则只能标为「假设」；thinking 不能代替决策说明。</p></div>
+  </div>
+
+  <div class="sec-head" style="margin-top:36px">
+    <div class="l"><h3 style="font-size:28px">每一层怎样才算<br>「对 Agent 亲和」</h3></div>
+    <div class="r"><p class="side">亲和的意思是：这一层流过的内容，Agent 拿到不用猜就能直接用，产出的东西下一层和界面上的人也能直接接住。条件因层而异，但最后都会落到界面上：决策包能「结论先行、证据带标签」，靠的就是这些底层条件。</p><span class="hand">agent-friendly = human-friendly</span></div>
+  </div>
+  <div class="aft">
+    <div class="afr afh"><span>层</span><span>亲和条件</span><span>反例</span><span>正例 · 算子场景</span></div>
+    <div class="afr"><span class="ly"><i style="background:var(--ink);color:var(--paper)">L0</i><b>Token 流</b></span><ul><li>每个 token 都有信息量：给摘要和关键行，不灌整份日志</li><li>单位、shape、版本写全</li><li>不变内容放前面，命中 prompt cache</li><li>表格、JSON lines 优先于截图</li></ul><span class="no">「大概 180 µs，那个 shape 慢了」</span><span class="yes"><code>179.024 µs · FP32 [2048,16384] · 04c0c97</code></span></div>
+    <div class="afr"><span class="ly"><i style="background:var(--card)">L1</i><b>内容块</b></span><ul><li>工具入参用枚举和清晰描述约束</li><li>结果有大小上限，超长带 <code>truncated</code> 和取全文方式</li><li>报错说清哪一步、为什么、怎么改</li><li>每份产出返回稳定 ID</li></ul><span class="no"><code>exit 1</code></span><span class="yes">UB 溢出：live 320 KiB &gt; 248 KiB，可减小 tile · 记为 <code>e10</code></span></div>
+    <div class="afr"><span class="ly"><i style="background:var(--salmon)">L2</i><b>Harness 循环</b></span><ul><li>工具自声明可逆性、影响范围、成本，审批才能自动分级</li><li>幂等可重试；高风险先 dry-run</li><li>每步对齐一个检查点</li><li>长任务返回句柄，循环不阻塞</li><li>拒绝也带理由回填</li></ul><span class="no">每个动作都弹审批；上板跑十分钟期间无法插话</span><span class="yes">读文件、编译自动放行；上板异步执行、只问一次；拒绝附原因</span></div>
+    <div class="afr"><span class="ly"><i style="background:var(--butter)">L3</i><b>上下文工程</b></span><ul><li>上下文里放摘要和引用，原文随时可取</li><li>目标、约束、决定、待验证假设写进结构化状态</li><li>子 Agent 交回结论 + 证据 ID + 状态</li><li>同类结果去重，旧的标为已取代</li></ul><span class="no">三次 profiling 全量留在窗口里，压缩后约束丢了</span><span class="yes">保留最新一次摘要 + <code>见 e10</code>；约束在 <code>task.md</code> 里常驻</span></div>
+    <div class="afr"><span class="ly"><i style="background:var(--sage)">L4</i><b>自报告工具</b></span><ul><li>schema 小、必填少，Agent 才会常调</li><li>字段一对一对应界面元素</li><li>能校验一致性，拒绝自我拔高</li><li>只报会改变人决策的事</li></ul><span class="no">「我已经验证过了」</span><span class="yes"><code>state=validated</code> 必须挂数值校验证据，否则被拒绝写入</span></div>
+    <div class="afr"><span class="ly"><i style="background:var(--sky)">L5</i><b>领域 schema</b></span><ul><li>算子、kernel、shape、dtype、commit、设备、证据阶段都有 ID 和单位</li><li>supports / refutes / derived_from / supersedes 是一等公民</li><li>工具返回、界面渲染、人 @ 引用的是同一个对象</li><li>schema 有版本，旧 trace 仍可读</li></ul><span class="no">「那个 norm 算子」</span><span class="yes"><code>@rms_norm_split · 04c0c97</code>，工具、视图、输入框同一对象</span></div>
+    <div class="afr"><span class="ly"><i style="background:var(--lav)">L6</i><b>工作空间</b></span><ul><li>所有操作都能用命令行完成</li><li>工具链、CANN、commit、设备型号可锁定</li><li>反馈分层：编译前推导 → 编译后 IR → 上板</li><li>有可执行的完成标准：数值校验、性能基线</li><li>写目录、上板、推送的边界由环境限定</li></ul><span class="no">只能在 GUI 里打开 profiler，换台机器结果对不上</span><span class="yes"><code>msprof</code> 命令行 + 锁定环境 + 校验脚本作为完成标准</span></div>
+  </div>
+  <div class="cps" style="margin-top:22px">
+    <div><b>1</b><h3>有类型</h3><p>有 schema，不是自由文本</p><span class="lyr"><span class="pill sm">L1</span><span class="pill sm">L4</span><span class="pill sm">L5</span></span></div>
+    <div><b>2</b><h3>可寻址</h3><p>有稳定 ID，能被引用和批注</p><span class="lyr"><span class="pill sm">L1</span><span class="pill sm">L3</span><span class="pill sm">L5</span></span></div>
+    <div><b>3</b><h3>有边界</h3><p>大小、作用范围、成本都有上限</p><span class="lyr"><span class="pill sm">L0</span><span class="pill sm">L1</span><span class="pill sm">L3</span></span></div>
+    <div><b>4</b><h3>自描述</h3><p>自带单位、来源、状态、副作用</p><span class="lyr"><span class="pill sm">L0</span><span class="pill sm">L2</span><span class="pill sm">L4</span></span></div>
+    <div><b class="r5">5</b><h3>可验证、可回退</h3><p>有客观的完成标准，也有检查点</p><span class="lyr"><span class="pill sm">L2</span><span class="pill sm">L6</span></span></div>
   </div>
 </section>
 
