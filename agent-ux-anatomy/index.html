@@ -1,0 +1,1054 @@
+<title>Agent 体验架构剖面</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Noto+Serif+SC:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: 纸本 deck 式长页——暖米底、衬线大标题、柔和色块卡片、手写体注脚；第 06 节为可回放的运行瀑布流。刻意单一浅色主题。 */
+:root{
+  color-scheme:light;
+  --paper:#f3efe7; --card:#fbf9f4; --sunk:#ebe5d9; --ink:#1d1c1a; --muted:#6e6a62; --line:#d9d2c4;
+  --salmon:#f4b69c; --sky:#afcfe8; --sage:#cfe59c; --butter:#f2e8a0; --lav:#cbbdee;
+  --salmon-d:#d9714a; --sky-d:#4f86b8; --sage-d:#6b9a2f; --butter-d:#b8981b; --lav-d:#7d63c9; --red:#d64545;
+  --k-agent:#8c877c; --k-sub:#5d594f; --k-llm:var(--lav-d); --k-tool:var(--sage-d); --k-report:var(--sky-d); --k-gate:var(--salmon-d); --k-mem:var(--butter-d);
+  --f-serif:"Noto Serif SC","Songti SC","STSong",serif;
+  --f-sans:"Plus Jakarta Sans","PingFang SC","Noto Sans SC","Microsoft YaHei",system-ui,sans-serif;
+  --f-hand:"Caveat","Bradley Hand",cursive;
+  --f-mono:"JetBrains Mono","SFMono-Regular",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-sans);font-size:15px;line-height:1.75;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 72px}
+.wrap{max-width:1180px;margin:0 auto}
+h1,h2,h3{margin:0;text-wrap:balance;font-family:var(--f-serif);font-weight:600;letter-spacing:.01em}
+h1{font-size:clamp(38px,5.6vw,68px);line-height:1.18}
+h2{font-size:clamp(30px,4.2vw,50px);line-height:1.22}
+h3{font-size:19px;line-height:1.4}
+p{margin:0}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.28em;text-transform:uppercase}
+.eyebrow b{letter-spacing:.18em;margin-right:.6em}
+.hand{font-family:var(--f-hand);font-size:26px;line-height:1.2;font-weight:500}
+.rule{width:48px;height:2px;background:var(--ink)}
+.side{color:var(--ink);font-size:14.5px;line-height:1.8;max-width:44ch;opacity:.86}
+.caps{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);font-weight:600}
+
+.pill{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:4px 13px;font-size:13px;font-weight:500;border:1.2px solid var(--ink);background:transparent;white-space:nowrap;color:var(--ink)}
+.pill.solid{background:var(--card);border-color:transparent;box-shadow:0 1px 0 rgba(0,0,0,.06)}
+.pill.dot::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ink)}
+.pill.ink{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.pill.sa{background:var(--salmon);border-color:transparent}.pill.sk{background:var(--sky);border-color:transparent}
+.pill.sg{background:var(--sage);border-color:transparent}.pill.bt{background:var(--butter);border-color:transparent}.pill.lv{background:var(--lav);border-color:transparent}
+
+.fig{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.fig svg{display:block;width:100%;height:auto}
+.fig svg text{font-family:var(--f-sans)}
+.fig svg text:not([fill]){fill:var(--ink)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.5fr);min-height:620px;border-radius:6px;overflow:hidden}
+@media (max-width:900px){.hero{grid-template-columns:1fr}}
+.hero-l{background:var(--lav);padding:56px 44px 40px;display:flex;flex-direction:column;gap:28px;position:relative}
+.hero-l::after{content:"";position:absolute;top:0;bottom:0;right:-3px;width:6px;background:radial-gradient(circle,var(--ink) 1.6px,transparent 2px) 0 0/6px 22px repeat-y;opacity:.55}
+@media (max-width:900px){.hero-l::after{display:none}.hero-l{padding:40px 24px}}
+.hero-l .grow{flex:1}
+.hero-r{padding:56px 0 40px 48px;display:grid;gap:36px;align-content:space-between}
+@media (max-width:900px){.hero-r{padding:36px 0 0}}
+.hero-note{justify-self:end;display:grid;gap:14px;max-width:420px}
+.steps{display:grid;grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1fr);align-items:end}
+.steps .ar{text-align:center;font-size:20px;padding-bottom:110px}
+@media (max-width:640px){.steps{grid-template-columns:1fr;gap:12px}.steps .ar{display:none}}
+.scard{border-radius:4px;padding:22px 22px 18px;display:flex;flex-direction:column;gap:12px}
+.scard .top{display:flex;justify-content:space-between;align-items:flex-start}
+.scard .num{font-family:var(--f-serif);font-size:56px;line-height:1;font-weight:500}
+.scard .grow{flex:1}
+.scard h3{font-size:24px}
+.scard .tags{display:flex;flex-wrap:wrap;gap:6px}
+.scard .tags .pill{font-size:12px;padding:2px 10px}
+.scard .ft{display:flex;justify-content:space-between;align-items:baseline;border-top:1.5px solid var(--ink);padding-top:10px}
+.scard .ft b{font-family:var(--f-serif);font-size:18px}
+@media (max-width:640px){.scard{min-height:0!important}}
+
+/* sections */
+.sec{padding-top:110px;display:grid;gap:40px}
+.sec-head{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:28px;align-items:end}
+.sec-head .l{display:grid;gap:18px}
+.sec-head .r{display:grid;gap:14px;justify-items:start}
+@media (max-width:820px){.sec-head{grid-template-columns:1fr}}
+.sec-foot{display:flex;justify-content:space-between;padding-top:8px}
+
+/* 01 */
+.nest-fig svg{min-width:760px}
+.nest-cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
+@media (max-width:860px){.nest-cols{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.nest-cols{grid-template-columns:1fr}}
+.nest-cols>div{display:grid;gap:10px;align-content:start;border-top:1.5px solid var(--ink);padding-top:14px}
+.nest-cols q{font-family:var(--f-serif);font-size:18px;font-weight:600;quotes:"「" "」"}
+.nest-cols ul{margin:0;padding-left:18px;font-size:13.5px;line-height:1.8;color:var(--muted)}
+
+/* 02 */
+.meta{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center}
+@media (max-width:860px){.meta{grid-template-columns:1fr}}
+.meta-fig svg{min-width:440px;max-width:600px;margin:0 auto}
+.meta-notes{display:grid}
+.meta-notes>div{display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px 14px;padding:18px 0;border-top:1.5px solid var(--ink)}
+.meta-notes>div:last-child{border-bottom:1.5px solid var(--ink)}
+.meta-notes .n{font-family:var(--f-serif);font-size:26px;line-height:1.1;grid-row:span 2}
+.meta-notes p{font-size:14px;color:var(--muted)}
+
+/* 03 waterfall */
+.wf{background:var(--card);border-radius:6px;overflow:hidden;--tw:300px;box-shadow:0 1px 0 var(--line)}
+@media (max-width:680px){.wf{--tw:132px}.wf .ndetail{display:none}}
+.wf-top{display:flex;flex-wrap:wrap;gap:10px 16px;justify-content:space-between;align-items:center;padding:18px 22px;background:var(--sky)}
+.wf-title{display:flex;gap:12px;align-items:baseline;min-width:0;flex-wrap:wrap}
+.wf-title b{font-family:var(--f-serif);font-size:19px}
+.wf-title span{font-size:13.5px}
+.status{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;padding:3px 12px;border-radius:999px;background:var(--card)}
+.status i{width:7px;height:7px;border-radius:50%;background:var(--sage-d)}
+.status.run i{animation:pulse 1.2s infinite}
+.status.wait{background:var(--salmon)} .status.wait i{background:var(--ink)}
+@keyframes pulse{50%{opacity:.25}}
+.wf-stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border-bottom:1px solid var(--line)}
+@media (max-width:680px){.wf-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.wf-stats div{padding:12px 22px;display:grid;gap:2px;border-right:1px solid var(--line)}
+.wf-stats div:last-child{border-right:0}
+.wf-stats small{font-size:10.5px;color:var(--muted);letter-spacing:.2em;font-weight:600}
+.wf-stats b{font-family:var(--f-serif);font-size:22px;font-weight:500;font-variant-numeric:tabular-nums}
+.wf-ctrl{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 22px;border-bottom:1px solid var(--line);background:var(--paper)}
+.btn{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:6px 15px;border-radius:999px;background:var(--ink);color:var(--paper)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.2px solid var(--ink)}
+.btn:focus-visible,.rowbtn:focus-visible,.chev:focus-visible,.mk:focus-visible{outline:2px solid var(--sky-d);outline-offset:2px}
+.scrub{flex:1;min-width:120px;accent-color:var(--ink)}
+.clock{font-family:var(--f-mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:86px;text-align:right}
+.wf-body{position:relative}
+.wf-grid{position:absolute;top:0;bottom:0;left:var(--tw);right:0;pointer-events:none}
+.wf-grid .gl{position:absolute;top:0;bottom:0;width:1px;background:var(--line)}
+.nowline{position:absolute;top:0;bottom:0;width:2px;background:var(--ink);margin-left:-1px;z-index:3}
+.nowline::before{content:"";position:absolute;top:-1px;left:-3px;width:8px;height:8px;border-radius:50%;background:var(--ink)}
+.wf-axis,.wf-phase{display:grid;grid-template-columns:var(--tw) minmax(0,1fr);border-bottom:1px solid var(--line);position:relative;z-index:1}
+.wf-axis>span:first-child,.wf-phase>span:first-child{font-size:10.5px;color:var(--muted);letter-spacing:.2em;font-weight:600;padding:7px 22px}
+.ticks{position:relative;height:30px}
+.ticks span{position:absolute;top:6px;font-family:var(--f-mono);font-size:11px;color:var(--muted);transform:translateX(4px)}
+.phases{position:relative;height:32px}
+.phases span{position:absolute;top:5px;bottom:5px;border-radius:999px;font-size:11.5px;font-weight:600;display:flex;align-items:center;justify-content:center;overflow:hidden;white-space:nowrap;border:1.2px solid var(--ink);transition:left .6s ease,width .6s ease,opacity .3s}
+.phases span.cur{background:var(--ink);color:var(--paper)}
+.rows{position:relative;z-index:1}
+.row{display:grid;grid-template-rows:1fr;transition:grid-template-rows .35s ease,opacity .35s ease}
+.row.pending{grid-template-rows:0fr;opacity:0}
+.row-in{min-height:0;overflow:hidden;display:grid;grid-template-columns:var(--tw) minmax(0,1fr)}
+.row.sel .row-in{background:color-mix(in srgb,var(--butter) 55%,transparent)}
+.cname{display:flex;align-items:center;gap:6px;min-width:0;height:34px;padding-right:8px;border-right:1px solid var(--line)}
+.rowbtn{all:unset;cursor:pointer;display:flex;align-items:center;gap:7px;min-width:0;flex:1;height:100%}
+.chev{all:unset;cursor:pointer;width:16px;height:16px;display:grid;place-items:center;color:var(--muted);transition:transform .25s;flex:none}
+.chev.closed{transform:rotate(-90deg)}
+.chev-sp{width:16px;flex:none}
+.kic{width:10px;height:10px;border-radius:3px;flex:none}
+.nname{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ndetail{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cbar{position:relative;height:34px}
+.bar{position:absolute;top:9px;height:16px;border-radius:4px;background:color-mix(in srgb,var(--kc) 26%,var(--card));border:1.2px solid var(--kc);min-width:3px}
+.wf.rescale .bar,.wf.rescale .blabel,.wf.rescale .mark,.wf.rescale .gl,.wf.rescale .ticks span{transition:left .6s ease,width .6s ease}
+.bar.running{background-image:linear-gradient(100deg,transparent 30%,color-mix(in srgb,var(--kc) 50%,transparent) 50%,transparent 70%);background-size:200% 100%;animation:sheen 1.4s linear infinite;box-shadow:4px 0 12px -3px var(--kc)}
+@keyframes sheen{from{background-position:150% 0}to{background-position:-50% 0}}
+.bar.gate{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--kc) 35%,var(--card)) 0 5px,var(--card) 5px 10px)}
+.bar.failed{--kc:var(--red)!important}
+.blabel{position:absolute;top:8px;font-family:var(--f-mono);font-size:11px;color:var(--muted);white-space:nowrap;display:flex;gap:6px;align-items:center}
+.slow{font-family:var(--f-sans);font-size:10.5px;font-weight:700;background:var(--butter);color:var(--ink);border-radius:999px;padding:0 7px}
+.mark{position:absolute;top:13px;width:3px;height:8px;border-radius:2px;background:var(--kc)}
+.mood{display:grid;grid-template-columns:var(--tw) minmax(0,1fr);border-top:1px solid var(--line);position:relative;z-index:1}
+.mood-l{padding:14px 22px;display:grid;gap:6px;align-content:start;border-right:1px solid var(--line)}
+.mood-l b{font-family:var(--f-serif);font-size:16px}
+.mood-l small{font-size:11.5px;color:var(--muted);line-height:1.6}
+.mood-c{position:relative;height:150px}
+.mood-c svg{position:absolute;inset:0;width:100%;height:100%}
+.mk{all:unset;cursor:pointer;position:absolute;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:11px;font-weight:700;display:grid;place-items:center;transition:transform .3s,opacity .3s;z-index:4}
+.mk.hid{opacity:0;transform:scale(.4);pointer-events:none}
+.mk.risk{background:var(--salmon-d);color:#fff}
+.wf-detail{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);border-top:1px solid var(--line)}
+@media (max-width:760px){.wf-detail{grid-template-columns:1fr}}
+.wf-detail>div{padding:20px 22px;display:grid;gap:10px;align-content:start;min-width:0}
+.wf-detail>div+div{background:var(--sage)}
+.kv{display:grid;grid-template-columns:72px minmax(0,1fr);gap:4px 12px;font-size:13px}
+.kv dt{color:var(--muted);font-size:12px;padding-top:1px}
+.kv dd{margin:0;overflow-wrap:anywhere}
+.kv dd.mono{font-family:var(--f-mono);font-size:12px}
+.dtitle{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.dtitle b{font-family:var(--f-serif);font-size:17px}
+.quote{font-family:var(--f-serif);font-size:20px;font-weight:600;line-height:1.45}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.insights{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:860px){.insights{grid-template-columns:1fr}}
+.ins{all:unset;cursor:pointer;background:var(--card);border-radius:4px;padding:18px;display:grid;grid-template-columns:36px minmax(0,1fr);gap:4px 12px;align-content:start;border-top:3px solid var(--ink)}
+.ins.risk{border-top-color:var(--salmon-d)}
+.ins:hover{background:var(--butter)}
+.ins:focus-visible{outline:2px solid var(--sky-d)}
+.ins .n{grid-row:span 2;font-family:var(--f-serif);font-size:28px;line-height:1}
+.ins b{font-family:var(--f-serif);font-size:16px}
+.ins p{font-size:13px;color:var(--muted)}
+
+/* 04 */
+.dd-fig{background:var(--card);border-radius:6px;padding:18px 8px}
+.dd-fig svg{min-width:900px}
+.dd-notes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@media (max-width:860px){.dd-notes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.dd-notes{grid-template-columns:1fr}}
+.dd-notes>div{display:grid;gap:10px;align-content:start;border-radius:4px;padding:18px}
+.dd-notes p{font-size:13.5px}
+
+/* 05 */
+.att{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;align-items:end}
+@media (max-width:900px){.att{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.att{grid-template-columns:1fr}.att .scard{min-height:0!important}}
+.mock{background:rgba(255,255,255,.55);border-radius:6px;padding:12px;display:grid;gap:7px;font-size:12px}
+.mrow{display:flex;align-items:center;gap:7px;min-width:0}
+.mrow .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ck{width:13px;height:13px;border-radius:50%;flex:none;border:1.5px solid var(--ink);opacity:.5}
+.ck.done{background:var(--ink);opacity:1}
+.ck.now{opacity:1;box-shadow:0 0 0 3px rgba(29,28,26,.15)}
+.mbar{height:8px;border-radius:3px}
+.zoomline{display:flex;align-items:center;gap:12px;font-size:13px}
+.zoomline .ln{flex:1;height:1.5px;background:var(--ink);position:relative}
+.zoomline .ln::after{content:"";position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left:8px solid var(--ink);border-right:0}
+
+/* 06 quadrant */
+.quad{display:grid;grid-template-columns:150px 22px minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto auto;gap:14px 16px}
+.yax{grid-column:1;display:grid;align-content:space-between;padding-block:6px}
+.yax h3{font-size:22px;line-height:1.3}
+.yax small{font-size:12.5px;color:var(--muted);line-height:1.8;display:block;margin-top:8px}
+.yline{grid-column:2;grid-row:1/3;position:relative}
+.yline::before{content:"";position:absolute;left:50%;top:0;bottom:-20px;width:1.5px;background:var(--ink)}
+.yline::after{content:"";position:absolute;left:calc(50% - 5px);top:-4px;border:5px solid transparent;border-bottom:8px solid var(--ink);border-top:0}
+.q{border-radius:4px;padding:24px 26px;display:grid;gap:10px;align-content:start;min-height:250px}
+.q .tg{font-size:11.5px;font-weight:600;letter-spacing:.2em}
+.q h3{font-size:28px}
+.q p{font-size:14px}
+.q .ex{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.q .ex .pill{border:0;background:rgba(255,255,255,.62)}
+.xax{grid-column:3/5;display:grid;gap:12px}
+.xline{height:1.5px;background:var(--ink);position:relative;margin-left:-38px}
+.xline::after{content:"";position:absolute;right:-2px;top:-4px;border:5px solid transparent;border-left:8px solid var(--ink);border-right:0}
+.xlabels{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:13px}
+.xlabels h3{font-size:22px}
+@media (max-width:760px){.quad{grid-template-columns:1fr}.yax,.yline{display:none}.xax{grid-column:1}.xline{margin-left:0}}
+
+/* 07 */
+.cal{display:grid;gap:22px}
+.calbar{position:relative;height:64px;border-radius:999px;background:linear-gradient(90deg,var(--sky),var(--card) 34%,var(--card) 66%,var(--salmon));}
+.calzone{position:absolute;left:35%;width:30%;top:8px;bottom:8px;border-radius:999px;background:var(--sage);display:grid;place-items:center;font-family:var(--f-serif);font-size:15px;font-weight:600}
+.calends{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+@media (max-width:760px){.calends{grid-template-columns:1fr}}
+.calends>div{display:grid;gap:8px;align-content:start;border-top:1.5px solid var(--ink);padding-top:14px}
+.calends p{font-size:14px;color:var(--muted)}
+.ladder{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.ladder .arr{font-family:var(--f-hand);font-size:20px}
+
+/* 08 */
+.tr{display:grid}
+.trh,.trr{display:grid;grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr) 44px minmax(0,1.2fr);align-items:center}
+.trh{padding:10px 0}
+.trr{padding:16px 0;border-top:1.5px solid var(--ink)}
+.trr:last-child{border-bottom:1.5px solid var(--ink)}
+.trr .c{display:grid;gap:5px;min-width:0}
+.trr .c small{font-size:12.5px;color:var(--muted)}
+.trr .cn{height:1.5px;background:var(--ink);margin:0 8px;position:relative}
+.trr .cn::after{content:"";position:absolute;right:-1px;top:-3.5px;border:4.5px solid transparent;border-left:7px solid var(--ink);border-right:0}
+.trr .src{font-size:13px;font-weight:500}
+.trr .src b{font-family:var(--f-mono);font-size:11px;font-weight:500;color:var(--muted);display:block;letter-spacing:.06em}
+.bub{font-family:var(--f-serif);font-size:18px;font-weight:600}
+@media (max-width:760px){.trh{display:none}.trr{grid-template-columns:1fr;gap:8px}.trr .cn{display:none}}
+/* 04 lifecycle */
+.life{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.stage{border-radius:4px;padding:20px 18px;display:flex;flex-direction:column;gap:10px;position:relative;min-width:0}
+.stage:not(:last-child)::after{content:"→";position:absolute;right:-14px;top:46%;font-size:16px}
+.stage .num{font-family:var(--f-serif);font-size:44px;line-height:1;font-weight:500}
+.stage h3{font-size:19px}
+.stage dl{margin:0;display:grid;gap:3px;font-size:13px;flex:1}
+.stage dt{font-size:11px;font-weight:600;letter-spacing:.18em;margin-top:6px}
+.stage dd{margin:0}
+.stage .sq{font-family:var(--f-serif);font-size:15px;font-weight:600;border-top:1.5px solid var(--ink);padding-top:10px}
+.stage .pill{align-self:flex-start}
+.life-arcs svg{min-width:0}
+@media (max-width:1000px){.life{grid-template-columns:repeat(2,minmax(0,1fr))}.stage::after{display:none}.life-arcs{display:none}}
+@media (max-width:560px){.life{grid-template-columns:1fr}}
+
+/* 09 loop */
+.loop{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center}
+@media (max-width:900px){.loop{grid-template-columns:1fr}}
+.loop-fig svg{min-width:420px;max-width:560px;margin:0 auto}
+.handoff{background:var(--card);border-radius:6px;overflow:hidden;box-shadow:0 1px 0 var(--line)}
+.handoff .hh{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 18px;background:var(--ink);color:var(--paper);font-size:13px}
+.handoff .hh span{font-family:var(--f-mono);font-size:12px;opacity:.75}
+.handoff dl{margin:0;padding:16px 18px;display:grid;grid-template-columns:64px minmax(0,1fr);gap:8px 14px;font-size:13px}
+.handoff dt{color:var(--muted);font-size:12px}
+.handoff dd{margin:0;overflow-wrap:anywhere}
+.handoff .mono{font-family:var(--f-mono);font-size:12px}
+.handoff .hf{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px 18px;border-top:1px solid var(--line);background:var(--paper)}
+.handoff .hf small{color:var(--muted);font-size:12px}
+.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:760px){.metrics{grid-template-columns:1fr}}
+.metrics>div{border-top:1.5px solid var(--ink);padding-top:14px;display:grid;gap:6px}
+.metrics b{font-family:var(--f-serif);font-size:22px}
+.metrics p{font-size:13.5px;color:var(--muted)}
+.prov{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:13px}
+
+/* parts */
+.part{padding-top:130px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px 28px;align-items:end;border-bottom:1.5px solid var(--ink);padding-bottom:18px}
+.part .pn{font-family:var(--f-serif);font-size:clamp(56px,8vw,96px);line-height:.9;font-weight:500}
+.part h2{font-size:clamp(26px,3.4vw,40px)}
+.part .caps{color:var(--ink)}
+@media (max-width:700px){.part{grid-template-columns:1fr}}
+
+/* runtime stack */
+.stack{display:grid;gap:8px}
+.band{margin-inline:calc(var(--i)*18px);border-radius:4px;background:var(--bc)}
+.band>button{all:unset;cursor:pointer;box-sizing:border-box;width:100%;display:grid;grid-template-columns:56px minmax(0,200px) minmax(0,1fr) auto;gap:16px;align-items:center;padding:14px 20px}
+.band>button:focus-visible{outline:2px solid var(--sky-d);outline-offset:2px}
+.band .lv{font-family:var(--f-serif);font-size:28px;line-height:1}
+.band .nm{display:grid}
+.band .nm b{font-family:var(--f-serif);font-size:18px}
+.band .nm code{font-family:var(--f-mono);font-size:11px;opacity:.7}
+.band .mc{font-size:13.5px}
+.band .det{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;padding:4px 20px 18px 92px;font-size:13.5px}
+.band .det[hidden]{display:none}
+.band .det .caps{display:block;margin-bottom:4px}
+.band.open{box-shadow:0 0 0 1.5px var(--ink)}
+.band.dark,.band.dark .caps{color:var(--paper)}
+.band.dark .pill{border-color:var(--paper);color:var(--paper)}
+.band.dark.open{box-shadow:0 0 0 1.5px var(--salmon-d)}
+@media (max-width:760px){.band{margin-inline:0}.band>button{grid-template-columns:44px minmax(0,1fr)}.band .mc,.band .fd{grid-column:2}.band .fd{justify-self:start}.band .det{grid-template-columns:1fr;padding:4px 20px 18px}}
+.loopd svg{min-width:720px}
+.cps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+@media (max-width:900px){.cps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.cps{grid-template-columns:1fr}}
+.cps>div{border-top:1.5px solid var(--ink);padding-top:12px;display:grid;gap:4px;align-content:start}
+.cps b{width:24px;height:24px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;font-size:12px}
+.cps b.r5{background:var(--salmon-d);color:#fff}
+.cps h3{font-size:17px}
+.cps p{font-size:13px;color:var(--muted)}
+
+.foot{margin-top:80px;padding-top:18px;border-top:1.5px solid var(--ink);font-size:12.5px;color:var(--muted);display:grid;gap:4px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+
+<!-- hero -->
+<header class="hero">
+  <div class="hero-l">
+    <span class="eyebrow"><b>00</b>/ &nbsp;Agent UX Anatomy</span>
+    <h1>Agent 背后的<br>体验架构</h1>
+    <span class="rule"></span>
+    <p class="side">从 Agent 的底层运行机制出发，逐层向上推到体验设计：先讲 Agent 怎样运行、这些机制会让用户产生哪些疑问；再看把一件工程任务交给 Agent 以后，人会经历哪些时刻、冒出哪些疑问、信心怎样起伏，界面在每个时刻该回应什么。最后落到算子开发：分析证据分几个阶段，人和 Agent 怎样围绕同一份证据协作，已有的可视化 Pattern 各自回答什么问题。</p>
+    <span class="grow"></span>
+    <span class="hand">from operating<br>to delegating</span>
+    <span class="caps">Experience Architecture · RMSNorm Case</span>
+  </div>
+  <div class="hero-r">
+    <div class="hero-note">
+      <span class="rule"></span>
+      <p class="side"><b>三种角色并存：</b>Agent 带来的是一种新的分工方式，不是简单替代工具。同一个工程师，今天可能在三种角色之间来回切换。</p>
+      <span class="hand">operate → supervise → delegate</span>
+    </div>
+    <div class="steps">
+      <div class="scard" style="background:var(--salmon);min-height:330px">
+        <div class="top"><span class="num">01</span><svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="#1d1c1a" stroke-width="1.4" aria-hidden="true"><path d="M4 10h26M4 17h26M4 24h26"/><path d="M12 7l3 3-3 3-3-3z M22 14l3 3-3 3-3-3z M14 21l3 3-3 3-3-3z" fill="#f4b69c"/></svg></div>
+        <span class="grow"></span><h3>操作者</h3><p>人决定并执行每一步</p>
+        <div class="tags"><span class="pill">点击</span><span class="pill">配置</span><span class="pill">逐步执行</span></div>
+        <div class="ft"><b>工具</b><span class="caps" style="color:var(--ink)">Tool</span></div>
+      </div>
+      <span class="ar">→</span>
+      <div class="scard" style="background:var(--sky);min-height:380px">
+        <div class="top"><span class="num">02</span><svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="#1d1c1a" stroke-width="1.4" aria-hidden="true"><path d="M14 4c1 6 3 8 9 9-6 1-8 3-9 9-1-6-3-8-9-9 6-1 8-3 9-9z"/><path d="M26 20c.5 3 1.5 4 4 4.5-2.5.5-3.5 1.5-4 4.5-.5-3-1.5-4-4-4.5 2.5-.5 3.5-1.5 4-4.5z"/></svg></div>
+        <span class="grow"></span><h3>监督者</h3><p>Agent 执行，人盯着过程</p>
+        <div class="tags"><span class="pill">看进度</span><span class="pill">批准</span><span class="pill">纠偏</span></div>
+        <div class="ft"><b>协同</b><span class="caps" style="color:var(--ink)">Collaboration</span></div>
+      </div>
+      <span class="ar">→</span>
+      <div class="scard" style="background:var(--sage);min-height:430px">
+        <div class="top"><span class="num">03</span><svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="#1d1c1a" stroke-width="1.4" aria-hidden="true"><circle cx="17" cy="17" r="5"/><circle cx="17" cy="17" r="12" stroke-dasharray="2 3"/><circle cx="29" cy="17" r="2" fill="#1d1c1a"/><circle cx="9" cy="8" r="2" fill="#1d1c1a"/><circle cx="11" cy="27" r="2" fill="#1d1c1a"/></svg></div>
+        <span class="grow"></span><h3>委托人</h3><p>交代目标，验收结果</p>
+        <div class="tags"><span class="pill">目标</span><span class="pill">证据</span><span class="pill">验收</span></div>
+        <div class="ft"><b>托付</b><span class="caps" style="color:var(--ink)">Delegation</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="part"><span class="pn">I</span><div><span class="caps">Part I · Runtime</span><h2>机制底座：Agent 怎样运行</h2></div><span class="hand">from token to loop</span></div>
+
+<!-- 01 -->
+<section class="sec" id="runtime">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>01</b>/ &nbsp;Agent Runtime Stack</span><h2>Agent 底层机制：<br>七层，自下而上</h2></div>
+    <div class="r"><span class="rule"></span><p class="side">后面所有的体验判断，都建立在这七层之上。下层约束上层：界面上的每个对象，运行时到底由谁、在什么时候产生，决定了它能不能被可靠地展示。点击任意一层，展开它对体验的约束和应该沉淀的设计资产。</p><span class="hand">token → protocol → loop → context → schema → experience</span></div>
+  </div>
+  <div class="stack" id="stack">
+    <div class="band" style="--i:6;--bc:var(--lav)"><button type="button" aria-expanded="false"><span class="lv">L6</span><span class="nm"><b>体验模板</b><code>Workspaces</code></span><span class="mc">Operator / Training / Inference 工作空间。视图是「对象 + 关系 + 当前选择」的投影</span><span class="fd pill">可理解</span></button>
+      <div class="det" hidden><div><span class="caps" style="color:var(--ink)">体验约束</span><p>流程用什么图形，由实际执行拓扑决定；界面围绕问题定位路径组织，而不是堆指标。</p></div><div><span class="caps" style="color:var(--ink)">设计资产</span><p>三个领域工作空间模板；Pattern 按数据来源排期落地。</p></div></div></div>
+    <div class="band" style="--i:5;--bc:var(--sky)"><button type="button" aria-expanded="false"><span class="lv">L5</span><span class="nm"><b>领域本体</b><code>Domain Schema</code></span><span class="mc">AI Infra 计算对象 + 关系。Agent 工具输出和 UI 共用同一套 Schema</span><span class="fd pill">可理解</span></button>
+      <div class="det" hidden><div><span class="caps" style="color:var(--ink)">体验约束</span><p>工具每返回一次，UI 就拿到能联动的对象，选中一个算子，所有视图一起高亮；不一致的数据（比如并行维度乘积对不上 Rank 数）在上屏前就被拦下。</p></div><div><span class="caps" style="color:var(--ink)">设计资产</span><p>Object Registry；工具输出契约；Schema 校验门禁。</p></div></div></div>
+    <div class="band" style="--i:4;--bc:var(--sage)"><button type="button" aria-expanded="false"><span class="lv">L4</span><span class="nm"><b>语义埋点</b><code>Self-report</code></span><span class="mc">plan / evidence / finding / artifact 等「自我汇报」工具，把执行过程翻译成对象</span><span class="fd pill">可信任</span></button>
+      <div class="det" hidden><div><span class="caps" style="color:var(--ink)">体验约束</span><p>任务、发现、产物都是 Agent 自报的，阶段叙事也是模型自己写的，可能出错，所以每一条都要能链回原始记录。</p></div><div><span class="caps" style="color:var(--ink)">设计资产</span><p>自报协议：结论状态和证据编号为必填；自报内容与原始事件的一致性检查。</p></div></div></div>
+    <div class="band" style="--i:3;--bc:var(--butter)"><button type="button" aria-expanded="false"><span class="lv">L3</span><span class="nm"><b>上下文工程</b><code>Context</code></span><span class="mc">system prompt、工具描述、记忆、压缩、子 Agent。上下文窗口就是全部状态</span><span class="fd pill">可控制</span></button>
+      <div class="det" hidden><div><span class="caps" style="color:var(--ink)">体验约束</span><p>Agent 知道什么，取决于窗口里还剩什么。压缩会让证据原文消失；子 Agent 用全新的窗口运行，只交回一段报告；工具返回的内容是不可信数据。</p></div><div><span class="caps" style="color:var(--ink)">设计资产</span><p>上下文检查器；压缩标记；子 Agent 轨迹下钻；token 与时长预算条；证据可信度标记。</p></div></div></div>
+    <div class="band open" style="--i:2;--bc:var(--salmon)"><button type="button" aria-expanded="true"><span class="lv">L2</span><span class="nm"><b>Harness 循环</b><code>Agent Loop</code></span><span class="mc">while (stop_reason == tool_use)：执行 → 回填 → 再推理。权限、hooks、重试、中断都在这一层</span><span class="fd pill">可控制</span></button>
+      <div class="det"><div><span class="caps" style="color:var(--ink)">体验约束</span><p>用户只能在循环的 5 个挂点上插手（见下图）。「暂停」在实现上通常是中止；外部副作用撤不回；重试要分基础设施重试和模型换方法再试。</p></div><div><span class="caps" style="color:var(--ink)">设计资产</span><p>干预点清单；工具风险分级（可回退 / 幂等 / 外部副作用）；审批卡片规范。</p></div></div></div>
+    <div class="band" style="--i:1;--bc:var(--card)"><button type="button" aria-expanded="false"><span class="lv">L1</span><span class="nm"><b>消息协议</b><code>Content Blocks</code></span><span class="mc">thinking / text / tool_use / tool_result，stop_reason 决定下一步，一轮可并行多个工具调用</span><span class="fd pill">可理解</span></button>
+      <div class="det" hidden><div><span class="caps" style="color:var(--ink)">体验约束</span><p>只有 tool_use（动作）和 tool_result（证据）是天生结构化的；thinking 可能被摘要或加密，不能当作决策依据展示。</p></div><div><span class="caps" style="color:var(--ink)">设计资产</span><p>内容块到组件的映射表；Tool Call 卡片；thinking 展示策略。</p></div></div></div>
+    <div class="band dark" style="--i:0;--bc:var(--ink)"><button type="button" aria-expanded="false"><span class="lv">L0</span><span class="nm"><b>模型</b><code>Token Stream</code></span><span class="mc">自回归逐 token 生成，两次调用之间不保留状态。规划、反思都只是它写出来的文字</span><span class="fd pill">可感知</span></button>
+      <div class="det" hidden><div><span class="caps">体验约束</span><p>最小渲染单位是流式片段；首个 token 出来多快，决定用户觉得它「有没有在干活」；思考中、输出中、等工具是三种不同的等待。</p></div><div><span class="caps">设计资产</span><p>三种等待态规范；流式渲染规则；长任务通知策略。</p></div></div></div>
+  </div>
+
+  <div class="sec-head" style="margin-top:36px">
+    <div class="l"><h3 style="font-size:28px">L2 展开：Agent 就是一个循环，<br>用户只能在缝隙里插手</h3></div>
+    <div class="r"><p class="side">模型每输出一轮，循环看 stop_reason：要调用工具就先过权限关卡，执行后把结果回填给模型再推理；不再调用工具就交付。界面上的每个控制按钮，都要对应到下面 5 个真实挂点之一。</p></div>
+  </div>
+  <div class="fig loopd" style="background:var(--card);border-radius:6px;padding:18px">
+    <svg viewBox="0 0 920 360" role="img" aria-label="Agent 循环：用户消息进入模型推理，按 stop_reason 分为交付或工具调用；工具调用经过权限关卡和执行后回填给模型">
+      <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#1d1c1a"/></marker></defs>
+      <rect x="196" y="120" width="208" height="134" rx="10" fill="none" stroke="#6e6a62" stroke-dasharray="4 4"/>
+      <text x="206" y="246" font-size="12" fill="#6e6a62">上下文窗口 = 全部状态</text>
+      <rect x="20" y="160" width="140" height="56" rx="28" fill="#fbf9f4" stroke="#1d1c1a" stroke-width="1.2"/>
+      <text x="90" y="184" text-anchor="middle" font-weight="600" font-size="14">用户消息</text><text x="90" y="203" text-anchor="middle" font-size="12" fill="#6e6a62">目标 / 插话 / 回答</text>
+      <rect x="220" y="160" width="160" height="56" rx="28" fill="#cbbdee"/>
+      <text x="300" y="184" text-anchor="middle" font-weight="600" font-size="14">模型推理</text><text x="300" y="203" text-anchor="middle" font-size="12">逐 token 流式生成</text>
+      <polygon points="470,152 524,188 470,224 416,188" fill="#fbf9f4" stroke="#1d1c1a" stroke-width="1.2"/>
+      <text x="470" y="185" text-anchor="middle" font-size="11" font-family="JetBrains Mono,monospace">stop_</text><text x="470" y="199" text-anchor="middle" font-size="11" font-family="JetBrains Mono,monospace">reason</text>
+      <rect x="590" y="34" width="170" height="56" rx="28" fill="#cfe59c"/>
+      <text x="675" y="58" text-anchor="middle" font-weight="600" font-size="14">交付</text><text x="675" y="77" text-anchor="middle" font-size="12">文本 / 产物 / 待决问题</text>
+      <rect x="590" y="160" width="150" height="56" rx="28" fill="#f4b69c"/>
+      <text x="665" y="184" text-anchor="middle" font-weight="600" font-size="14">权限关卡</text><text x="665" y="203" text-anchor="middle" font-size="12">规则 / hooks / 用户</text>
+      <rect x="770" y="160" width="134" height="56" rx="28" fill="#afcfe8"/>
+      <text x="837" y="184" text-anchor="middle" font-weight="600" font-size="14">工具执行</text><text x="837" y="203" text-anchor="middle" font-size="12">产生副作用</text>
+      <g fill="none" stroke="#1d1c1a" stroke-width="1.4">
+        <path d="M160 188H218" marker-end="url(#ar)"/><path d="M380 188H414" marker-end="url(#ar)"/><path d="M524 188H588" marker-end="url(#ar)"/>
+        <path d="M470 152V62H588" marker-end="url(#ar)"/><path d="M740 188H768" marker-end="url(#ar)"/>
+        <path d="M837 216V316H300V218" stroke-dasharray="5 4" marker-end="url(#ar)"/><path d="M665 216V316" stroke-dasharray="5 4"/>
+      </g>
+      <text x="556" y="178" text-anchor="middle" font-size="11" font-family="JetBrains Mono,monospace">tool_use</text>
+      <text x="480" y="104" font-size="11" font-family="JetBrains Mono,monospace">end_turn</text>
+      <text x="560" y="340" text-anchor="middle" font-size="12">tool_result 回填上下文（被拒绝也会作为结果回给模型）</text>
+      <g font-size="12" font-weight="700" text-anchor="middle" fill="#f3efe7">
+        <circle cx="300" cy="146" r="12" fill="#1d1c1a"/><text x="300" y="150" fill="#f3efe7">1</text>
+        <circle cx="665" cy="146" r="12" fill="#1d1c1a"/><text x="665" y="150" fill="#f3efe7">2</text>
+        <circle cx="189" cy="166" r="12" fill="#1d1c1a"/><text x="189" y="170" fill="#f3efe7">3</text>
+        <circle cx="420" cy="316" r="12" fill="#1d1c1a"/><text x="420" y="320" fill="#f3efe7">4</text>
+        <circle cx="382" cy="238" r="12" fill="#d9714a"/><text x="382" y="242" fill="#ffffff">5</text>
+      </g>
+    </svg>
+  </div>
+  <div class="cps">
+    <div><b>1</b><h3>中断</h3><p>流式生成期间只能取消，不能冻结后原样继续</p></div>
+    <div><b>2</b><h3>审批</h3><p>工具执行前的唯一硬关卡，也是人机协同的真实落点</p></div>
+    <div><b>3</b><h3>插话 / 改目标</h3><p>进入下一轮上下文；运行中途纠偏需要 Harness 排队</p></div>
+    <div><b>4</b><h3>回退 / 分支</h3><p>只能回退对话和本地文件，外部副作用回不去</p></div>
+    <div><b class="r5">5</b><h3>压缩</h3><p>窗口快满时把旧内容改写成摘要，证据可能在这里丢失</p></div>
+  </div>
+
+  <div class="sec-head" style="margin-top:36px">
+    <div class="l"><h3 style="font-size:28px">L1 展开：六类对象里，<br>只有两类是运行时自带的</h3></div>
+    <div class="r"><p class="side">设计系统里常见的六类对象，来源并不对等。动作和证据由协议直接产生；目标、任务、决策、产物都要 Agent 主动汇报。后者需要先设计汇报工具，界面才有数据可绑。</p></div>
+  </div>
+  <div class="calends" style="grid-template-columns:minmax(0,1fr) minmax(0,2fr)">
+    <div><h3>原生 · 协议自带</h3><div class="ladder"><span class="pill sg">Action · tool_use</span><span class="pill sg">Evidence · tool_result</span></div><p>结构化、可信度高。要补的是风险等级、来源可信度和压缩后的原文入口。</p></div>
+    <div><h3>自报 · 需要埋点</h3><div class="ladder"><span class="pill bt">Goal · 用户原话 + 复述</span><span class="pill bt">Task · 计划工具</span><span class="pill bt">Decision · 文字说明 + 证据</span><span class="pill bt">Artifact · 写文件 / 发布</span></div><p>需要和原始事件对账：标为完成的任务有没有对应的动作；决策必须带证据编号，否则只能标为「假设」；thinking 不能代替决策说明。</p></div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="sec" id="mechanism">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>02</b>/ &nbsp;Mechanism to Feeling</span><h2>每个体验问题，<br>都有运行机制的根源</h2></div>
+    <div class="r"><span class="rule"></span><p class="side">后面的体验判断都能追溯到 Agent 的运行方式。这张表先把技术机制翻译成用户语言：左边是机制，中间是用户当时心里的问题，右边是设计回应。</p><span class="hand">mechanism → feeling → design</span></div>
+  </div>
+  <div class="tr">
+    <div class="trh"><span class="caps">运行机制</span><span></span><span class="caps">用户心里的问题</span><span></span><span class="caps">设计回应</span></div>
+    <div id="trRows"></div>
+  </div>
+</section>
+
+<div class="part"><span class="pn">II</span><div><span class="caps">Part II · Experience</span><h2>体验架构：人怎样和 Agent 协作</h2></div><span class="hand">from feeling to design</span></div>
+
+<!-- 03 -->
+<section class="sec" id="needs">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>03</b>/ &nbsp;Experience Needs</span><h2>四层需求，<br>由内向外逐层成立</h2></div>
+    <div class="r"><span class="rule"></span><p class="side">用户感知不到 Agent 在运行，就谈不上看懂它；看不懂，就没法有效控制；控制不了，就不会放心托付。设计投入应该先保证内层，再往外扩。</p><span class="hand">aliveness → legibility → agency → trust</span></div>
+  </div>
+  <div class="fig nest-fig"><svg id="nestSvg" viewBox="0 0 1440 760" role="img" aria-label="四层嵌套：可感知、可理解、可控制、可信任"></svg></div>
+  <div class="nest-cols">
+    <div><span class="pill sa" style="justify-self:start">可感知 · Aliveness</span><q>它还在运行吗？</q><ul><li>区分思考中、输出中、等工具三种状态</li><li>长任务显示已用时和当前动作</li><li>离开后，完成或卡住时能收到通知</li></ul></div>
+    <div><span class="pill bt" style="justify-self:start">可理解 · Legibility</span><q>它在做什么，为什么？</q><ul><li>按阶段压缩叙事，默认只给一句话</li><li>决策说明带证据，不展示思考过程</li><li>每句叙事都能回到原始记录</li></ul></div>
+    <div><span class="pill sk" style="justify-self:start">可控制 · Agency</span><q>我能叫停或纠正吗？</q><ul><li>明确告诉用户现在能不能插手</li><li>高风险操作前停下来等确认</li><li>打断、纠偏、回退的后果说清楚</li></ul></div>
+    <div><span class="pill lv" style="justify-self:start">可信任 · Trust</span><q>结果我敢直接用吗？</q><ul><li>结论如实标注：假设、推断还是已验证</li><li>「已验证」必须附验证结果</li><li>产物写明依赖了哪些证据</li></ul></div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="sec" id="moments">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>04</b>/ &nbsp;Four Moments</span><h2>人机协作的<br>四个时刻</h2></div>
+    <div class="r"><span class="rule"></span><p class="side">和 Agent 协作时，用户只在四个时刻出现：交代任务、观察进展、必要时干预、最后验收。观察和干预并行发生，可以在运行中反复切换。</p><span class="hand">delegate · monitor · steer · adopt</span></div>
+  </div>
+  <div class="meta">
+    <div class="fig meta-fig"><svg id="metaSvg" viewBox="0 0 720 860" role="img" aria-label="四个相连的圆：委托、观察、干预、采纳"></svg></div>
+    <div class="meta-notes">
+      <div><span class="n">01</span><h3>委托：把模糊需求变成可确认的目标</h3><p>Agent 复述目标、约束和完成标准，把它自己推断的约束单独标出来。用户只确认有疑问的部分，不用重写需求。</p></div>
+      <div><span class="n">02</span><h3>观察：只在需要时才被打扰</h3><p>默认停在「扫视」距离：一行状态加阶段叙事。想看细节再逐层展开，不必一开始就面对工具日志。</p></div>
+      <div><span class="n">02</span><h3>干预：控制入口和真实时机对齐</h3><p>能批准的地方给批准，能打断的地方给打断。界面不承诺做不到的事，比如「暂停后原样继续」，或撤回已经推送出去的修改。</p></div>
+      <div><span class="n">03</span><h3>采纳：验收的是证据，不是语气</h3><p>交付时先给结论状态和证据，再给报告。用户核对的是「验证过没有」，而不是「它说得够不够自信」。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="sec" id="diamond">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>05</b>/ &nbsp;Task Lifecycle</span><h2>从一句话需求，<br>到可回溯的交付</h2></div>
+    <div class="r"><span class="rule"></span><p class="side">一次任务分五个阶段。每个阶段里，用户和 Agent 各做一件事，界面要回答一个问题，并留一个关键触点。最后的「回溯」不是终点：带着证据可以回到任意一步，重新开始或从中间续跑。</p><span class="hand">input → plan → execute → output → trace back</span></div>
+  </div>
+  <div class="life">
+    <div class="stage" style="background:var(--sky)">
+      <span class="num">01</span><h3>用户输入 · 意图识别</h3><span class="caps" style="color:var(--ink)">Intent</span>
+      <dl><dt>用户</dt><dd>一句话描述问题，附上算子仓库、shape、dtype</dd><dt>Agent</dt><dd>识别算子和目标（性能还是正确性），补全缺失参数，单独标出自己推断的前提</dd></dl>
+      <p class="sq">「它理解的是我说的那个问题吗？」</p>
+      <span class="pill ink">确认目标与前提</span>
+    </div>
+    <div class="stage" style="background:var(--butter)">
+      <span class="num">02</span><h3>任务规划</h3><span class="caps" style="color:var(--ink)">Plan</span>
+      <dl><dt>用户</dt><dd>看计划，调整范围，比如只做编译前分析、暂不上板</dd><dt>Agent</dt><dd>拆成调查步骤，说明每步需要什么证据、调用什么工具</dd></dl>
+      <p class="sq">「它打算怎么查，要多久？」</p>
+      <span class="pill ink">调整范围</span>
+    </div>
+    <div class="stage" style="background:var(--sage)">
+      <span class="num">03</span><h3>任务执行</h3><span class="caps" style="color:var(--ink)">Execute</span>
+      <dl><dt>用户</dt><dd>余光关注，只在需要时批准</dd><dt>Agent</dt><dd>读源码、推导映射、调用性能模型、采集 Profile</dd></dl>
+      <p class="sq">「做到哪了，卡住没有？」</p>
+      <span class="pill ink">高风险审批</span>
+    </div>
+    <div class="stage" style="background:var(--salmon)">
+      <span class="num">04</span><h3>产物输出</h3><span class="caps" style="color:var(--ink)">Output</span>
+      <dl><dt>用户</dt><dd>在调查视图里点选对象，核对证据</dd><dt>Agent</dt><dd>生成交互视图、发现卡片和报告，每条结论标明证据阶段</dd></dl>
+      <p class="sq">「这个结论凭什么成立？」</p>
+      <span class="pill ink">验收结论</span>
+    </div>
+    <div class="stage" style="background:var(--lav)">
+      <span class="num">05</span><h3>任务回溯</h3><span class="caps" style="color:var(--ink)">Trace back</span>
+      <dl><dt>用户</dt><dd>复盘，或带着新问题回到某一步</dd><dt>Agent</dt><dd>按固定版本重放，导出问题与证据，从指定节点继续</dd></dl>
+      <p class="sq">「当时为什么这么判断，能从这里接着做吗？」</p>
+      <span class="pill ink">带证据继续调查</span>
+    </div>
+  </div>
+  <div class="fig life-arcs" aria-hidden="true">
+    <svg viewBox="0 0 1000 120">
+      <defs><marker id="la" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#1d1c1a"/></marker></defs>
+      <path d="M900,6 C900,112 100,112 100,10" fill="none" stroke="#1d1c1a" stroke-width="1.5" marker-end="url(#la)"/>
+      <path d="M900,6 C900,58 500,58 500,10" fill="none" stroke="#1d1c1a" stroke-width="1.5" stroke-dasharray="5 5" marker-end="url(#la)"/>
+      <circle cx="900" cy="6" r="4" fill="#1d1c1a"/>
+      <text x="700" y="36" text-anchor="middle" font-size="14">从存疑或失败的节点续跑</text>
+      <text x="500" y="110" text-anchor="middle" font-size="14">目标变了：带着已有证据，回到意图重新开始</text>
+    </svg>
+  </div>
+</section>
+
+<!-- 06 -->
+<section class="sec" id="trace">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>06</b>/ &nbsp;Run Trace</span><h2>时间花在哪，<br>信心在哪里起伏</h2></div>
+    <div class="r"><span class="rule"></span><p class="side">一次 RMSNorm 性能诊断（示例数据）。上半部分是运行瀑布流，每个模型调用、工具调用、人工关卡都是时间线上的一条；下半部分是同一时间轴上的用户信心曲线。点击任意一行或编号，下方同时给出技术信息和体验解读。</p><span class="hand">where time goes, where trust moves</span></div>
+  </div>
+  <div class="wf" id="wf">
+    <div class="wf-top">
+      <div class="wf-title"><b>运行轨迹</b><span>定位 hidden=8192 时 RMSNorm 变慢的原因</span></div>
+      <span class="status" id="wfStatus"><i></i><span>等你决定</span></span>
+    </div>
+    <div class="wf-stats">
+      <div><small>总耗时</small><b id="stDur">0s</b></div>
+      <div><small>等你</small><b id="stWait">0s</b></div>
+      <div><small>TOKENS</small><b id="stTok">0</b></div>
+      <div><small>模型调用</small><b id="stLlm">0</b></div>
+      <div><small>工具调用</small><b id="stTool">0</b></div>
+      <div><small>失败</small><b id="stErr">0</b></div>
+    </div>
+    <div class="wf-ctrl">
+      <button class="btn" id="playBtn" type="button">▶ 回放运行</button>
+      <button class="btn ghost" id="foldBtn" type="button">折叠子任务</button>
+      <input class="scrub" id="scrub" type="range" min="0" max="96" step="0.1" value="96" aria-label="拖动时间">
+      <span class="clock" id="clock">96.0s / 96s</span>
+    </div>
+    <div class="wf-body">
+      <div class="wf-grid" id="wfGrid"><div class="nowline" id="nowline"></div></div>
+      <div class="wf-axis"><span>步骤</span><div class="ticks" id="ticks"></div></div>
+      <div class="wf-phase"><span>阶段</span><div class="phases" id="phases"></div></div>
+      <div class="rows" id="rows" role="tree" aria-label="运行步骤"></div>
+      <div class="mood">
+        <div class="mood-l"><b>用户信心</b><small>示意曲线。虚线以上表示安心，以下表示疑虑。橙色编号是用户察觉不到、但风险实际在上升的时刻。</small></div>
+        <div class="mood-c" id="moodC">
+          <svg viewBox="0 0 1000 150" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="mg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#cfe59c" stop-opacity=".95"/><stop offset="1" stop-color="#cfe59c" stop-opacity=".1"/></linearGradient>
+              <clipPath id="mclip"><rect id="mclipR" x="0" y="0" width="1000" height="150"/></clipPath>
+            </defs>
+            <line x1="0" x2="1000" y1="75" y2="75" stroke="#6e6a62" stroke-dasharray="4 5" vector-effect="non-scaling-stroke" stroke-width="1"/>
+            <g clip-path="url(#mclip)">
+              <path id="mArea" fill="url(#mg)"/>
+              <path id="mLine" fill="none" stroke="#1d1c1a" stroke-width="2" vector-effect="non-scaling-stroke"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="wf-detail" id="wfDetail" aria-live="polite"></div>
+  </div>
+  <div class="legend">
+    <span><i style="background:var(--k-llm)"></i>模型调用</span>
+    <span><i style="background:var(--k-tool)"></i>工具调用</span>
+    <span><i style="background:var(--k-report)"></i>Agent 自报（计划、发现、产物）</span>
+    <span><i style="background:var(--k-gate)"></i>人工关卡（斜纹 = 等你的时间）</span>
+    <span><i style="background:var(--k-mem)"></i>上下文压缩</span>
+    <span><i style="background:var(--red)"></i>失败</span>
+  </div>
+  <div class="insights" id="insights"></div>
+</section>
+
+<!-- 07 -->
+<section class="sec" id="distance">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>07</b>/ &nbsp;Viewing Distance</span><h2>同一件事，<br>按注意力分层呈现</h2></div>
+    <div class="r"><span class="rule"></span><p class="side">用户不会一直盯着 Agent。同一次运行要同时提供四种距离的视图，默认停在「扫视」，每一级都能一步进到下一级。卡片越高，代表投入的注意力越多。</p><span class="hand">glance first, dig on demand</span></div>
+  </div>
+  <div class="att">
+    <div class="scard" style="background:var(--butter);min-height:300px">
+      <div class="top"><span class="num">01</span><span class="caps" style="color:var(--ink)">≈ 0.5 秒</span></div>
+      <span class="grow"></span><h3>余光</h3>
+      <div class="mock"><div class="mrow"><span class="status run"><i></i><span>定位中 · 2/5</span></span></div><div class="mrow"><span class="t" style="color:var(--muted)">已用 41s · 正在采集 Profile</span></div></div>
+      <p style="font-size:13px">标签页或通知里的一行状态。回答「还在跑吗」「要不要我」。</p>
+      <div class="ft"><b>状态</b><span class="caps" style="color:var(--ink)">Ambient</span></div>
+    </div>
+    <div class="scard" style="background:var(--sky);min-height:360px">
+      <div class="top"><span class="num">02</span><span class="caps" style="color:var(--ink)">≈ 5 秒 · 默认</span></div>
+      <span class="grow"></span><h3>扫视</h3>
+      <div class="mock">
+        <div class="mrow"><i class="ck done"></i><span class="t">复现：慢 2.8 倍，可稳定复现</span></div>
+        <div class="mrow"><i class="ck now"></i><span class="t"><b>定位：</b>疑似 UB 容量约束</span></div>
+        <div class="mrow"><i class="ck"></i><span class="t" style="color:var(--muted)">修复</span></div>
+        <div class="mrow"><i class="ck"></i><span class="t" style="color:var(--muted)">验证</span></div>
+      </div>
+      <p style="font-size:13px">阶段清单加一句话叙事。回答「做到哪了」「发现了什么」。</p>
+      <div class="ft"><b>叙事</b><span class="caps" style="color:var(--ink)">Glance</span></div>
+    </div>
+    <div class="scard" style="background:var(--sage);min-height:420px">
+      <div class="top"><span class="num">03</span><span class="caps" style="color:var(--ink)">≈ 30 秒</span></div>
+      <span class="grow"></span><h3>细看</h3>
+      <div class="mock">
+        <div class="mrow"><span class="pill bt" style="padding:0 8px;font-size:11px">推断</span><b class="t">H1：两遍规约导致搬运翻倍</b></div>
+        <div class="mrow"><span class="pill" style="padding:0 8px;font-size:11px">慢 2.8×</span><span class="pill" style="padding:0 8px;font-size:11px">two_pass</span></div>
+        <div class="mrow"><span class="pill" style="padding:0 8px;font-size:11px">MTE2 2.01×</span></div>
+      </div>
+      <p style="font-size:13px">发现卡片、证据和结论状态。回答「凭什么这么说」。</p>
+      <div class="ft"><b>证据</b><span class="caps" style="color:var(--ink)">Inspect</span></div>
+    </div>
+    <div class="scard" style="background:var(--salmon);min-height:480px">
+      <div class="top"><span class="num">04</span><span class="caps" style="color:var(--ink)">几分钟</span></div>
+      <span class="grow"></span><h3>深挖</h3>
+      <div class="mock">
+        <div class="mrow"><span class="t" style="width:56px;font-family:var(--f-mono);font-size:10.5px">compile</span><span class="mbar" style="width:30%;margin-left:6%;background:var(--k-tool)"></span></div>
+        <div class="mrow"><span class="t" style="width:56px;font-family:var(--f-mono);font-size:10.5px">llm</span><span class="mbar" style="width:18%;margin-left:36%;background:var(--k-llm)"></span></div>
+        <div class="mrow"><span class="t" style="width:56px;font-family:var(--f-mono);font-size:10.5px">msprof</span><span class="mbar" style="width:16%;margin-left:54%;background:var(--red)"></span></div>
+        <div class="mrow"><span class="t" style="width:56px;font-family:var(--f-mono);font-size:10.5px">msprof</span><span class="mbar" style="width:24%;margin-left:70%;background:var(--k-tool)"></span></div>
+      </div>
+      <p style="font-size:13px">完整轨迹、原始输入输出、IR 原文。回答「到底发生了什么」。</p>
+      <div class="ft"><b>轨迹</b><span class="caps" style="color:var(--ink)">Trace</span></div>
+    </div>
+  </div>
+  <div class="zoomline"><span>投入的注意力少</span><span class="ln"></span><span>投入的注意力多</span></div>
+</section>
+
+<!-- 08 -->
+<section class="sec" id="interrupt">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>08</b>/ &nbsp;Interruption Levels</span><h2>风险越高，<br>打断越强</h2></div>
+    <div class="r"><span class="rule"></span><p class="side">每次打断都在消耗注意力。阻断式审批用多了，用户会不看内容直接点「批准」，这比不审批更危险。用两个问题给每个动作分级：做了能不能撤回？影响只在本地，还是会波及外部和他人？</p><span class="hand">interrupt only when it matters</span></div>
+  </div>
+  <div class="quad">
+    <div class="yax" style="grid-row:1"><div><h3>影响外部</h3><small>推送 /<br>集群 /<br>他人可见</small></div></div>
+    <span class="yline"></span>
+    <div class="q" style="background:var(--sky)"><span class="tg">外部 × 可撤回</span><h3>事后通知</h3><p>能撤回，但别人看得到。完成后发通知，并给出撤回入口。</p><div class="ex"><span class="pill dot">发布报告草稿</span><span class="pill dot">评论到工单</span></div></div>
+    <div class="q" style="background:var(--salmon)"><span class="tg">外部 × 不可撤回</span><h3>阻断确认</h3><p>撤不回且影响外部。必须停下来，讲清楚改了什么、影响谁。</p><div class="ex"><span class="pill dot">推送 PR</span><span class="pill dot">提交集群任务</span><span class="pill dot">发消息</span></div></div>
+    <div class="yax" style="grid-row:2"><div><h3>只在本地</h3><small>文件 /<br>沙箱 /<br>只读</small></div></div>
+    <div class="q" style="background:var(--butter)"><span class="tg">本地 × 可撤回</span><h3>静默执行</h3><p>只读或可撤回的本地动作。只在状态里体现，不打扰。</p><div class="ex"><span class="pill dot">读文件</span><span class="pill dot">跑基准</span><span class="pill dot">采集 Profile</span></div></div>
+    <div class="q" style="background:var(--sage)"><span class="tg">本地 × 不可撤回</span><h3>轻确认</h3><p>只影响本地，但撤不回。一行确认，附「本次会话都允许」。</p><div class="ex"><span class="pill dot">覆盖实验数据</span><span class="pill dot">清理缓存</span></div></div>
+    <span style="grid-column:1/3"></span>
+    <div class="xax"><div class="xline"></div><div class="xlabels"><span>← 可撤回</span><h3>可撤回性</h3><span>不可撤回 →</span></div></div>
+  </div>
+</section>
+
+<!-- 09 -->
+<section class="sec" id="trust">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>09</b>/ &nbsp;Trust Calibration</span><h2>目标不是更多信任，<br>而是恰当的信任</h2></div>
+    <div class="r"><span class="rule"></span><p class="side">过程藏起来，用户会把每个结论重查一遍；叙事太流畅、措辞太笃定，用户又会不经核对直接采纳。好的界面让用户的信任程度和证据强度保持一致。</p><span class="hand">trust ≈ evidence</span></div>
+  </div>
+  <div class="cal">
+    <div class="calbar"><div class="calzone">校准区：信任 ≈ 证据强度</div></div>
+    <div class="calends">
+      <div><h3>过度怀疑</h3><p>过程不可见，不确定的地方没有标注，失败被静默吞掉。用户只能全部重做一遍，Agent 等于没用。</p></div>
+      <div><h3>恰当信任</h3><p>结论分状态展示，证据一键可查，失败和压缩都留下痕迹。用户只抽查最关键的一两条。</p></div>
+      <div><h3>过度信任</h3><p>叙事流畅、语气笃定、满屏绿勾。用户不再核对，直到某个未经验证的结论出了事故。</p></div>
+    </div>
+    <div class="ladder" aria-label="结论状态升级路径">
+      <span class="pill">假设：还没有证据</span><span class="arr">找到证据 →</span>
+      <span class="pill bt">推断：有证据支持</span><span class="arr">对照实验通过 →</span>
+      <span class="pill sg">已验证：附验证结果</span>
+      <span class="arr" style="margin-left:14px">另有</span><span class="pill sk">观测：工具直接返回的事实</span>
+    </div>
+  </div>
+</section>
+
+<div class="part"><span class="pn">III</span><div><span class="caps">Part III · AI Infra · Operators</span><h2>落到算子开发</h2></div><span class="hand">from estimate to evidence</span></div>
+
+<!-- 10 -->
+<section class="sec" id="stages">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>10</b>/ &nbsp;Operator Development · Evidence Stages</span><h2>算子开发里，<br>证据分四个阶段</h2></div>
+    <div class="r"><span class="rule"></span><p class="side">算子从写完源码到真正上板，能拿到的证据逐级变强。每个调查视图都要先说清自己站在哪个阶段、能回答什么、还不能回答什么。用编译前的估算去回答上板的问题，是这个领域最常见的误导。</p><span class="hand">estimate ≠ measurement</span></div>
+  </div>
+  <div class="att">
+    <div class="scard" style="background:var(--butter);min-height:380px">
+      <div class="top"><span class="num">01</span><span class="pill solid">估算</span></div>
+      <span class="grow"></span><h3>编译前分析</h3>
+      <p style="font-size:13px"><b>依据：</b>源码、计算图、性能模型、CPU Golden 参考</p>
+      <p style="font-size:13px"><b>能回答：</b>分块为什么变、搬运多少、理论瓶颈在哪</p>
+      <p style="font-size:13px;color:var(--muted)"><b style="color:var(--ink)">还不能：</b>设备实际怎么执行</p>
+      <div class="ft"><b>推导</b><span class="caps" style="color:var(--ink)">Pre-compile</span></div>
+    </div>
+    <div class="scard" style="background:var(--sky);min-height:420px">
+      <div class="top"><span class="num">02</span><span class="pill solid">编译产物</span></div>
+      <span class="grow"></span><h3>编译后布局</h3>
+      <p style="font-size:13px"><b>依据：</b>编译器分配报告、生成指令、源码映射</p>
+      <p style="font-size:13px"><b>能回答：</b>地址怎么分配、哪条指令对应哪行源码、Pass 改了什么</p>
+      <p style="font-size:13px;color:var(--muted)"><b style="color:var(--ink)">还不能：</b>运行时的耗时和等待</p>
+      <div class="ft"><b>编译</b><span class="caps" style="color:var(--ink)">Post-compile</span></div>
+    </div>
+    <div class="scard" style="background:var(--sage);min-height:460px">
+      <div class="top"><span class="num">03</span><span class="pill solid">实测</span></div>
+      <span class="grow"></span><h3>上板执行</h3>
+      <p style="font-size:13px"><b>依据：</b>设备执行与访存 trace</p>
+      <p style="font-size:13px"><b>能回答：</b>真实执行顺序、核间等待、实际带宽</p>
+      <p style="font-size:13px;color:var(--muted)"><b style="color:var(--ink)">还不能：</b>数值是否正确</p>
+      <div class="ft"><b>执行</b><span class="caps" style="color:var(--ink)">On-device</span></div>
+    </div>
+    <div class="scard" style="background:var(--salmon);min-height:500px">
+      <div class="top"><span class="num">04</span><span class="pill solid">已验证</span></div>
+      <span class="grow"></span><h3>数值校验</h3>
+      <p style="font-size:13px"><b>依据：</b>匹配输入的真实 NPU 输出 + 测试规范</p>
+      <p style="font-size:13px"><b>能回答：</b>精度是否达标，优化有没有带来回退</p>
+      <p style="font-size:13px;color:var(--muted)"><b style="color:var(--ink)">还需要：</b>跨设备、跨轮次的稳定性</p>
+      <div class="ft"><b>验收</b><span class="caps" style="color:var(--ink)">Verified</span></div>
+    </div>
+  </div>
+  <div class="zoomline"><span>证据弱</span><span class="ln"></span><span>证据强</span></div>
+  <div class="cal" style="gap:16px">
+    <h3>例：RMSNorm 在 Ascend 950 上为什么改成两遍分块（第 01 阶段）</h3>
+    <div class="prov">
+      <span class="pill">FP32 [2048, 16384]</span><span class="arr" style="font-family:var(--f-hand);font-size:20px">→</span>
+      <span class="pill bt">整行 live 320 KiB</span><span style="font-size:13px">超过</span><span class="pill bt">UB 可用 248 KiB</span><span class="arr" style="font-family:var(--f-hand);font-size:20px">→</span>
+      <span class="pill sk">两遍分块</span><span class="pill sk">额外重读 X 128 MiB</span><span class="arr" style="font-family:var(--f-hand);font-size:20px">→</span>
+      <span class="pill sa">理论时延 179.024 µs · mte2_bound</span>
+    </div>
+    <p class="side" style="max-width:80ch">字节数和容量条件可以直接从源码推导、独立核对；时延和瓶颈分类来自 CANNBot 性能模型和仓库里保存的硬件标定数据。界面上这两类数字要分开标注，并写明「当前没有本机 NPU 实测」。来源分三种：实测、公开表、推导默认值，Mock 数据单独标出。</p>
+  </div>
+</section>
+
+<!-- 11 -->
+<section class="sec" id="loop">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>11</b>/ &nbsp;Investigation Loop</span><h2>人和 Agent<br>围绕同一份证据</h2></div>
+    <div class="r"><span class="rule"></span><p class="side">算子问题很难只靠文字说清，比如多维索引怎么落到线性地址、尾块和 padding 有没有越界。让 Agent 生成调查视图，用户在图上点选对象，再把「问题 + 证据」一起交回给 Agent 继续核查。交接包是这个闭环里最关键的界面对象。</p><span class="hand">human ⇄ agent, one evidence</span></div>
+  </div>
+  <div class="loop">
+    <div class="fig loop-fig">
+      <svg viewBox="0 0 600 600" role="img" aria-label="调查闭环：源码与假设、生成调查视图、点选对象、交接问题与证据、核查与最小验证">
+        <defs><marker id="lm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#1d1c1a"/></marker></defs>
+        <circle cx="300" cy="300" r="200" fill="none" stroke="#e7e0d2" stroke-width="56"/>
+        <g fill="none" stroke="#1d1c1a" stroke-width="1.5" marker-end="url(#lm)">
+          <path d="M374.9,114.6 A200,200 0 0 1 453.2,171.4"/><path d="M499.5,314 A200,200 0 0 1 469.6,406"/><path d="M348.4,494.1 A200,200 0 0 1 251.6,494.1"/><path d="M130.4,406 A200,200 0 0 1 100.5,314"/><path d="M146.8,171.4 A200,200 0 0 1 225.1,114.6"/>
+        </g>
+        <circle cx="300" cy="100" r="72" fill="#afcfe8"/><circle cx="490" cy="238" r="72" fill="#f2e8a0"/><circle cx="418" cy="462" r="72" fill="#cfe59c"/><circle cx="182" cy="462" r="72" fill="#f4b69c"/><circle cx="110" cy="238" r="72" fill="#cbbdee"/>
+        <g font-size="16" font-weight="600" text-anchor="middle">
+          <text x="300" y="98">源码与假设</text><text x="300" y="120" font-size="12" font-weight="500" fill="#6e6a62">固定版本</text>
+          <text x="490" y="236">生成调查视图</text><text x="490" y="258" font-size="12" font-weight="500" fill="#6e6a62">Agent</text>
+          <text x="418" y="460">点选对象</text><text x="418" y="482" font-size="12" font-weight="500" fill="#6e6a62">用户</text>
+          <text x="182" y="450">交接问题</text><text x="182" y="470">与证据</text><text x="182" y="490" font-size="12" font-weight="500" fill="#6e6a62">复制 / 导出</text>
+          <text x="110" y="226">核查前提</text><text x="110" y="246">最小验证</text><text x="110" y="266" font-size="12" font-weight="500" fill="#6e6a62">Agent</text>
+        </g>
+        <text x="300" y="296" text-anchor="middle" font-size="26" font-weight="600" font-family="'Noto Serif SC','Songti SC',serif">同一份证据</text>
+        <text x="300" y="330" text-anchor="middle" font-size="24" font-family="Caveat,cursive">human ⇄ agent</text>
+      </svg>
+    </div>
+    <div class="handoff">
+      <div class="hh"><b>交接预览</b><span>investigation.txt</span></div>
+      <dl id="handText">
+        <dt>对象</dt><dd>LogSumExp · Case 05 · 尾组</dd>
+        <dt>参数</dt><dd class="mono">[7,27,53,39] · float32 · axes [0,1] → [53,39]</dd>
+        <dt>问题</dt><dd>尾组的请求范围与计算范围是否一致？</dd>
+        <dt>源码</dt><dd class="mono">固定版本 04c0c97dc562 · 未修改算子</dd>
+        <dt>前提</dt><dd>分类循环可能读取未初始化的 dim[2]；设备访问与性能尚未运行确认</dd>
+        <dt>要求</dt><dd>先验证分析前提和 API 约束，列出还需要的运行证据和最小验证方案。不要只凭图中标记认定 bug 或性能根因。</dd>
+      </dl>
+      <div class="hf"><button class="btn" id="copyHand" type="button">复制问题与证据</button><small>示例内容摘自 LogSumExp 归约访存 Pattern</small></div>
+    </div>
+  </div>
+  <div class="metrics">
+    <div><b>定位耗时</b><p>从发现异常到确认根因用了多久。对照组是传统 Profiler 和日志。</p></div>
+    <div><b>遗漏率</b><p>尾块、padding、mask 这类边界有没有被漏查。图形化核查最该改善的就是这一项。</p></div>
+    <div><b>沟通往返次数</b><p>人和 Agent 之间来回解释了几轮。交接包带上了对象和前提，应该能明显减少往返。</p></div>
+  </div>
+</section>
+
+<!-- 12 -->
+<section class="sec" id="patterns">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>12</b>/ &nbsp;Operator Pattern Map</span><h2>每个可视化 Pattern<br>回答一类问题</h2></div>
+    <div class="r"><span class="rule"></span><p class="side">把 Pattern 库里和算子相关的案例按两个维度摆开：关注的是正确性还是性能，依据是源码推导还是编译与运行证据。左下最密、右上最稀，说明下一步最该补的是运行证据的接入。</p><span class="hand">where data goes, where time goes</span></div>
+  </div>
+  <div class="quad">
+    <div class="yax" style="grid-row:1"><div><h3>编译与运行证据</h3><small>编译产物 /<br>执行 trace /<br>测量数据</small></div></div>
+    <span class="yline"></span>
+    <div class="q" style="background:var(--sky)"><span class="tg">运行证据 × 正确性</span><h3>编译与内存诊断</h3><p>Pass 改了什么，内存绑定错在哪里。</p><div class="ex"><span class="pill dot">Pass Error Cases · 内存绑定</span><span class="pill dot">CSA Pass Field · 编译过程</span><span class="pill dot">Memory Inspector · 函数内存</span></div></div>
+    <div class="q" style="background:var(--salmon)"><span class="tg">运行证据 × 性能</span><h3>执行与收益比较</h3><p>多核怎样并行，优化到底有没有收益、会不会退化。</p><div class="ex"><span class="pill dot">Swimlane · 多核执行泳道</span><span class="pill dot">RSFA · 收益与退化比较</span></div></div>
+    <div class="yax" style="grid-row:2"><div><h3>源码推导</h3><small>编译前 /<br>固定 commit /<br>CPU 参考</small></div></div>
+    <div class="q" style="background:var(--butter)"><span class="tg">源码推导 × 正确性</span><h3>映射与边界核查</h3><p>索引怎么落到地址，任务怎么分给核，尾块有没有越界。</p><div class="ex"><span class="pill dot">Unpack · 拆分与任务核查</span><span class="pill dot">Expand · 广播与边界</span><span class="pill dot">Scale · 参数共享</span><span class="pill dot">LogSumExp · 归约访存</span></div></div>
+    <div class="q" style="background:var(--sage)"><span class="tg">源码推导 × 性能</span><h3>驻留与搬运估算</h3><p>数据能不能留在 UB 里，要重读多少，理论瓶颈在哪。</p><div class="ex"><span class="pill dot">RMSNorm · 驻留、重读与内存复用</span></div></div>
+    <span style="grid-column:1/3"></span>
+    <div class="xax"><div class="xline"></div><div class="xlabels"><span>← 数据去了哪</span><h3>关注点</h3><span>时间去了哪 →</span></div></div>
+  </div>
+  <div class="nest-cols">
+    <div><span class="pill sk" style="justify-self:start">领域映射</span><q>算子的语义对不对？</q><ul><li>区分数学上的输入集合和源码实际请求的集合</li><li>推导地址、分块和搬运布局</li><li>保留分析前提，不把推导当运行结果</li></ul></div>
+    <div><span class="pill bt" style="justify-self:start">计算图元</span><q>图形能不能一眼读懂？</q><ul><li>Tensor、OP、数据角色用统一的正式图元</li><li>保留标签结构和类别图标</li><li>跨 Pattern 复用，不各画各的</li></ul></div>
+    <div><span class="pill sg" style="justify-self:start">证据工作台</span><q>结论能不能被核对？</q><ul><li>对象选择、差异、源码依据放在一起</li><li>当前选择可以复制或导出给 Agent</li><li>标明实测、估算和 Mock</li></ul></div>
+    <div><span class="pill sa" style="justify-self:start">空间界面</span><q>复杂关系能不能看全？</q><ul><li>无限画布、关联路径、浮动面板</li><li>切换对象时保持视角</li><li>平移缩放不改变当前选择</li></ul></div>
+  </div>
+  <p class="side" style="max-width:80ch">这四层能力是 Pattern 库里每个案例的共同组装方式：调查工作流按任务依次调用它们，用户不需要记住具体用哪个 Skill。对设计系统来说，这意味着沉淀的单位不只是组件，还包括「领域语义 + 图元 + 证据组织 + 空间交互」这一整套组合。</p>
+</section>
+
+<div class="foot">
+  <span>来源：ChatGPT 分享对话的两轮回答；第 10–12 节的算子开发内容参考 <a href="https://yinyucheng0601.github.io/AI_Infra/ai-infra-research/patterns.html" style="color:inherit">AI Infra Pattern 库</a> 中 RMSNorm、LogSumExp、RSFA 等 Pattern 的页面说明，RMSNorm 数值是其中记录的性能模型估算，不是上板实测。第 06 节的耗时、tokens 和信心曲线是示例数据，用来说明结构。</span>
+  <span>第 06 节瀑布流的交互思路参考了 affectUI 的 Trace Waterfall 组件（行内树、实时增长的条、当前时间线、折叠后在父条上显示刻度），代码为本页独立实现。</span>
+</div>
+</div>
+
+<script>
+(function(){
+const NS='http://www.w3.org/2000/svg';
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const C={ink:'#1d1c1a',paper:'#f3efe7',card:'#fbf9f4',sunk:'#e7e0d2',muted:'#6e6a62',salmon:'#f4b69c',sky:'#afcfe8',sage:'#cfe59c',butter:'#f2e8a0',lav:'#cbbdee'};
+function el(tag,attrs,parent,text){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;if(parent)parent.appendChild(e);return e}
+function tw(s,fs){let w=0;for(const c of s)w+=/[\u0000-ÿ]/.test(c)?fs*0.58:fs*1.02;return w}
+function pill(g,cx,cy,text,o={}){const fs=o.fs||13,h=o.h||28,w=tw(text,fs)+(o.pad||26)+(o.dot?12:0);
+  el('rect',{x:cx-w/2,y:cy-h/2,width:w,height:h,rx:h/2,fill:o.fill||'none',stroke:o.stroke||'none','stroke-width':o.sw||1.2},g);
+  if(o.dot)el('circle',{cx:cx-w/2+15,cy,r:3,fill:o.color||C.ink},g);
+  el('text',{x:cx+(o.dot?6:0),y:cy+fs*0.36,'text-anchor':'middle','font-size':fs,'font-weight':o.fw||500,fill:o.color||C.ink},g,text);return w}
+function txt(s,x,y,t,o={}){return el('text',{x,y,'text-anchor':o.a||'middle','font-size':o.fs||14,'font-weight':o.fw||500,fill:o.c||C.ink,'font-family':o.serif?'"Noto Serif SC","Songti SC",serif':(o.hand?'Caveat,cursive':'inherit')},s,t)}
+
+/* 01 nested */
+(function(){
+  const s=document.getElementById('nestSvg');const cy=380,L=40;
+  const lv=[{r:1400,h:360,c:C.lav},{r:1060,h:300,c:C.sky},{r:720,h:230,c:C.butter},{r:380,h:140,c:C.salmon}];
+  lv.forEach(v=>{const w=(v.r-L)/2,cx=L+w,h=v.h,k=.42;
+    el('path',{d:`M${cx-w},${cy} C${cx-w},${cy-h*k} ${cx-w*k},${cy-h} ${cx},${cy-h} C${cx+w*k},${cy-h} ${cx+w},${cy-h*k} ${cx+w},${cy} C${cx+w},${cy+h*k} ${cx+w*k},${cy+h} ${cx},${cy+h} C${cx-w*k},${cy+h} ${cx-w},${cy+h*k} ${cx-w},${cy}Z`,fill:v.c,stroke:C.ink,'stroke-width':1.2,'stroke-opacity':.35},s)});
+  el('line',{x1:L,x2:1410,y1:cy,y2:cy,stroke:C.ink,'stroke-width':1.5},s);
+  [[210,'可感知','Aliveness'],[550,'可理解','Legibility'],[890,'可控制','Agency'],[1230,'可信任','Trust']].forEach(([x,t,e])=>{const g=el('g',{},s);
+    pill(g,x,cy,t,{fs:28,h:66,pad:64,fill:C.ink,color:C.paper,fw:600});
+    txt(s,x,cy+70,e,{fs:28,hand:true})});
+  txt(s,L+10,cy-150,'内层',{a:'start',fs:16,fw:600,serif:true});txt(s,1390,cy-150,'外层',{a:'end',fs:16,fw:600,serif:true});
+})();
+
+/* 02 metaball */
+(function(){
+  const s=document.getElementById('metaSvg');const defs=el('defs',{},s);
+  const f=el('filter',{id:'goo',x:'-20%',y:'-20%',width:'140%',height:'140%'},defs);
+  el('feGaussianBlur',{in:'SourceGraphic',stdDeviation:22,result:'b'},f);
+  el('feColorMatrix',{in:'b',mode:'matrix',values:'1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 36 -16'},f);
+  const gb=el('g',{filter:'url(#goo)',fill:C.sunk},s);
+  [[360,170],[190,430],[530,430],[360,690]].forEach(([x,y])=>el('circle',{cx:x,cy:y,r:172},gb));el('circle',{cx:360,cy:430,r:160},gb);
+  const M=[
+    {x:360,y:170,fill:C.ink,ink:C.paper,dot:C.sage,tag:'时刻 01',t:'委托',q:'它听懂了吗？',p:['目标复述','假设确认'],pf:C.card},
+    {x:190,y:430,fill:C.card,ink:C.ink,dot:C.ink,tag:'时刻 02',t:'观察',q:'它在做什么？',p:['活性信号','阶段叙事'],pf:C.paper},
+    {x:530,y:430,fill:C.card,ink:C.ink,dot:C.ink,tag:'时刻 02',t:'干预',q:'我能叫停吗？',p:['风险审批','中途纠偏'],pf:C.paper},
+    {x:360,y:690,fill:C.sage,ink:C.ink,dot:C.ink,tag:'时刻 03',t:'采纳',q:'结果能用吗？',p:['证据回链','验证状态'],pf:C.card}];
+  M.forEach(m=>{const g=el('g',{},s);el('circle',{cx:m.x,cy:m.y,r:150,fill:m.fill},g);
+    el('circle',{cx:m.x-34,cy:m.y-89,r:4,fill:m.dot},g);
+    txt(g,m.x-24,m.y-84,m.tag,{a:'start',fs:14,c:m.ink});
+    txt(g,m.x,m.y-36,m.t,{fs:40,fw:700,c:m.ink,serif:true});
+    const q=txt(g,m.x,m.y-4,m.q,{fs:15,c:m.ink});q.setAttribute('opacity',.75);
+    m.p.forEach((t,j)=>pill(g,m.x,m.y+44+j*38,t,{fs:14,h:30,fill:m.pf}))});
+})();
+
+/* 04 double diamond */
+(function(){
+  const s=document.getElementById('ddSvg');if(!s)return;const defs=el('defs',{},s);
+  const mk=el('marker',{id:'dda',viewBox:'0 0 10 10',refX:8,refY:5,markerWidth:8,markerHeight:8,orient:'auto-start-reverse'},defs);
+  el('path',{d:'M0,0L10,5L0,10z',fill:C.ink},mk);
+  const cy=240;
+  function diamond(x0,x1){const xm=(x0+x1)/2;
+    [60,420].forEach(yy=>{const yo=yy<cy?cy-8:cy+8;
+      el('path',{d:`M${x0},${yo} C${x0+70},${yo} ${xm-95},${yy} ${xm},${yy} C${xm+95},${yy} ${x1-70},${yo} ${x1},${yo}`,fill:'none',stroke:C.ink,'stroke-width':1.5,'marker-end':'url(#dda)'},s);
+      el('circle',{cx:x0,cy:yo,r:4.5,fill:C.ink},s)});
+    el('line',{x1:xm,x2:xm,y1:56,y2:424,stroke:C.muted,'stroke-dasharray':'5 6'},s);return xm}
+  const m1=diamond(160,532),m2=diamond(668,1040);
+  txt(s,m1-14,cy+5,'发现',{a:'end'});txt(s,m1+14,cy+5,'定义',{a:'start'});txt(s,m2-14,cy+5,'开发',{a:'end'});txt(s,m2+14,cy+5,'交付',{a:'start'});
+  txt(s,24,cy-2,'问题',{a:'start',fw:700,fs:26,serif:true});txt(s,24,cy+22,'hidden=8192 变慢',{a:'start',fs:12,c:C.muted});
+  txt(s,600,cy-2,'发现',{fw:700,fs:26,serif:true});txt(s,600,cy+22,'H1 · UB 容量约束',{fs:12,c:C.muted});
+  txt(s,1176,cy-2,'方案',{a:'end',fw:700,fs:26,serif:true});txt(s,1176,cy+22,'34.1µs · 精度通过',{a:'end',fs:12,c:C.muted});
+  function stack(x,ys,items){const g=el('g',{},s);el('line',{x1:x,x2:x,y1:ys[0],y2:ys[ys.length-1],stroke:C.ink},g);
+    items.forEach((it,i)=>pill(g,x,ys[i],it[0],it[1]?{fs:12.5,h:28,fill:it[1],fw:600,dot:true}:{fs:12.5,h:26,fill:C.card,stroke:C.ink}))}
+  stack(255,[300,336,372],[['复现基准'],['采集 Profile'],['读取 IR']]);
+  stack(438,[110,146,182],[['提出假设'],['关联证据'],['审阅假设',C.butter]]);
+  stack(762,[300,336,372],[['候选方案 A/B'],['批准补丁',C.salmon],['写入补丁']]);
+  stack(946,[110,146,182],[['对照验证'],['精度检查'],['采纳报告',C.sage]]);
+  pill(s,92,300,'确认目标',{fs:12.5,h:28,fill:C.sky,fw:600,dot:true});
+  [[290,'委托者'],[390,'审阅者'],[800,'审批者'],[900,'验收者']].forEach(([x,t])=>pill(s,x,482,t,{fs:12.5,h:26,stroke:C.ink}));
+  txt(s,m1,28,'agent explores evidence → hypothesis',{fs:22,hand:true});
+  txt(s,m2,28,'agent explores fixes → validation',{fs:22,hand:true});
+})();
+
+/* runtime stack accordion */
+document.querySelectorAll('#stack .band>button').forEach(b=>b.addEventListener('click',()=>{const band=b.parentElement,det=band.querySelector('.det');const open=det.hidden;det.hidden=!open;band.classList.toggle('open',open);b.setAttribute('aria-expanded',open)}));
+
+/* 09 handoff copy */
+(function(){const b=document.getElementById('copyHand'),dl=document.getElementById('handText');if(!b)return;
+  b.addEventListener('click',()=>{const dts=[...dl.querySelectorAll('dt')];const t=dts.map(d=>d.textContent+'：'+d.nextElementSibling.textContent).join('\n');
+    const done=()=>{b.textContent='已复制';setTimeout(()=>b.textContent='复制问题与证据',1600)};
+    const fb=()=>{const r=document.createRange();r.selectNodeContents(dl);const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent='已选中，可手动复制'};
+    try{navigator.clipboard.writeText(t).then(done,fb)}catch(e){fb()}})})();
+
+/* 11 translation */
+const TR=[
+ ['L0','模型逐 token 生成，思考时没有输出','它还在运行吗？','活性信号','区分思考中、输出中、等工具，并显示已用时','sa'],
+ ['L1','动作只以工具调用的形式存在','它到底在干嘛？','动作句','把 msprof 调用翻译成「正在采集搬运和 UB 数据」','bt'],
+ ['L2','只能在循环的间隙插手','我现在能叫停吗？','可干预时机','明示此刻能做什么、做了会怎样','sk'],
+ ['L2','有些副作用撤不回','会不会闯祸？','打断分级','按可撤回性 × 影响范围决定打断强度','sa'],
+ ['L3','上下文会被压缩成摘要','它还记得我的约束吗？','约束常驻','约束固定显示；被压缩的证据留下标记','lv'],
+ ['L4','阶段叙事由模型自己写','它会不会编？','回链证据','每句叙事都能点回原始记录','sg'],
+ ['L5','工具输出没有统一结构','这个数对应哪个算子？','对象联动','选中一个算子，所有视图同时高亮','sk']
+];
+document.getElementById('trRows').innerHTML=TR.map(r=>`<div class="trr"><div class="c"><span class="src"><b>${r[0]}</b>${r[1]}</span></div><span class="cn"></span><div class="c"><span class="bub">「${r[2]}」</span></div><span class="cn"></span><div class="c"><span class="pill ${r[5]}" style="justify-self:start">${r[3]}</span><small>${r[4]}</small></div></div>`).join('');
+
+/* 03 waterfall */
+const KIND={agent:['智能体','--k-agent'],sub:['子任务','--k-sub'],llm:['模型调用','--k-llm'],tool:['工具调用','--k-tool'],report:['Agent 自报','--k-report'],gate:['人工关卡','--k-gate'],mem:['上下文','--k-mem']};
+const SP=[
+ {id:'root',p:null,n:'诊断 RMSNorm 性能下降',k:'agent',s:0,e:96,d:'Orchestrator',q:'交出去以后，我还需要管它吗？',show:'整次运行在余光层只占一行：阶段进度、已用时、是否需要你。',dist:'余光',src:'Harness'},
+ {id:'s1',p:'root',n:'理解目标并制定计划',k:'llm',s:0,e:4.2,d:'Opus 5.5',tok:2100,in:'hidden=8192 比 4096 慢很多，帮我查原因',out:'目标 + 约束（精度不回退）+ 4 步计划',q:'它听懂我的意思了吗？',show:'复述目标与约束。「精度不回退」是 Agent 推断的约束，要单独标出来请你确认。',dist:'扫视',src:'原生'},
+ {id:'s2',p:'root',n:'发布计划',k:'report',s:4.2,e:4.6,d:'update_plan',out:'复现 / 定位 / 修复 / 验证',q:'要分几步、大概多久？',show:'任务栏出现 4 步清单，当前步骤高亮。这是用户第一次看到「它有章法」。',dist:'余光',src:'自报'},
+ {id:'g1',p:'root',n:'复现',k:'sub',s:4.6,e:22,d:'子任务',q:'问题能稳定复现吗？',show:'子任务折叠后只显示一条，内部调用作为小刻度留在父条上。',dist:'扫视',src:'自报'},
+ {id:'s3',p:'g1',n:'run_benchmark',k:'tool',s:4.8,e:18.6,d:'shape 4096 / 8192',in:'op=rmsnorm, shapes=[[4096,4096],[4096,8192]]',out:'21.3µs / 59.8µs',q:'14 秒没动静，是不是卡住了？',show:'长时间的工具调用要配动作句「正在对比两种 Shape 的耗时」和已用时，而不是只有一个转圈。',dist:'余光',src:'原生'},
+ {id:'s4',p:'g1',n:'解读基准结果',k:'llm',s:18.6,e:21.8,d:'Sonnet 5.5',tok:1400,out:'慢 2.8 倍，可稳定复现',q:'所以问题确实存在？',show:'第一条证据用「结论句 + 数字」呈现。这是整次运行的第一个安心点，越早出现越好。',dist:'扫视',src:'原生'},
+ {id:'g2',p:'root',n:'定位',k:'sub',s:22,e:52,d:'子任务',q:'原因找到了吗？',show:'阶段结束时用一句话收口：「疑似 UB 容量约束，已有 3 条证据」。',dist:'扫视',src:'自报'},
+ {id:'s5',p:'g2',n:'compile --dump-ir',k:'tool',s:22.3,e:29.2,d:'编译器',out:'tile_n=4096 · reduction=two_pass',q:'这些 IR 我看不懂。',show:'默认只显示一行关键变化「编译器改成了两遍规约」，IR 原文放进深挖层。',dist:'细看',src:'原生'},
+ {id:'s6',p:'g2',n:'提出假设 H1',k:'llm',s:29.2,e:33.6,d:'Opus 5.5',tok:2600,out:'UB 容量约束 → 两遍规约 → 搬运翻倍',q:'凭什么这么判断？',show:'标为「假设」，同时列出打算用哪些数据去验证。不展示思考过程。',dist:'细看',src:'自报'},
+ {id:'s7',p:'g2',n:'msprof（第 1 次）',k:'tool',s:33.6,e:38,d:'Profiler',fail:true,out:'失败：设备忙，采集超时',q:'出错了，它会放弃吗？',show:'失败要留在轨迹上，紧接着显示「已自动重试」。静默吞掉失败，会让后面的结论失去可信度。',dist:'扫视',src:'原生'},
+ {id:'s8',p:'g2',n:'msprof（重试）',k:'tool',s:38.2,e:49.4,d:'Profiler',out:'MTE2 2.01× · UB 182/192 KB',q:'还要等多久？',show:'显示「第 2 次尝试」和预计耗时，让等待有边界。',dist:'余光',src:'原生'},
+ {id:'s9',p:'g2',n:'report_finding H1',k:'report',s:49.5,e:50,d:'发现',out:'状态：推断 · 证据 3 条',q:'现在能下结论了吗？',show:'发现卡片标「推断」，三条证据都能点开。还不能写成「根因」。',dist:'细看',src:'自报'},
+ {id:'gate1',p:'root',n:'等待批准：写入内核补丁',k:'gate',s:52,e:63.5,d:'apply_patch',in:'rmsnorm_kernel.cpp +18 −6',q:'它要改什么？改坏了能撤回吗？',show:'阻断式审批：diff 摘要、影响范围、「本地可回退」标签。这 11.5 秒是你的时间，不该算进 Agent 的耗时。',dist:'扫视',src:'Harness'},
+ {id:'s10',p:'root',n:'apply_patch',k:'tool',s:63.6,e:65,d:'写入文件',out:'+18 −6 · 单遍规约',q:'改完了吗？',show:'在产物区出现 diff，可以对比查看。',dist:'细看',src:'原生'},
+ {id:'s11',p:'root',n:'上下文压缩',k:'mem',s:65,e:67.4,d:'Harness',out:'IR 原文 → 摘要',q:'（用户通常察觉不到）',show:'在轨迹上留下标记。引用了被压缩证据的结论，显示「原文已压缩，可重新获取」。',dist:'深挖',src:'Harness'},
+ {id:'g3',p:'root',n:'验证',k:'sub',s:67.6,e:88,d:'子任务',q:'修好了吗？',show:'阶段收口给出前后对比，而不是「验证完成」四个字。',dist:'扫视',src:'自报'},
+ {id:'s12',p:'g3',n:'benchmark + precision_check',k:'tool',s:67.8,e:84.6,d:'对照 fp32',out:'34.1µs · max_err 1.2e-3 ✓',q:'修好了吗？精度有没有掉？',show:'前后对比：59.8 → 34.1µs；精度在阈值内用绿色标记，并写出阈值。',dist:'扫视',src:'原生'},
+ {id:'s13',p:'g3',n:'update_finding H1 → 已验证',k:'report',s:84.7,e:85.1,d:'发现',out:'推断 → 已验证 · 依据 s12',q:'可以信了吗？',show:'状态升级时附上验证依据。没有验证工具的结果，就不能升级。',dist:'细看',src:'自报'},
+ {id:'s14',p:'root',n:'publish_artifact',k:'report',s:88,e:89.6,d:'诊断报告 v1',out:'报告 · 依赖 4 条证据',q:'我能拿什么去汇报？',show:'产物卡片写明依赖的证据。证据被新结果推翻时，报告自动标为过期。',dist:'扫视',src:'自报'},
+ {id:'s15',p:'root',n:'写交付总结',k:'llm',s:89.6,e:95.4,d:'Sonnet 5.5',tok:1800,out:'三句话：做了什么、证据、还剩什么',q:'一句话告诉我结果。',show:'总结也是模型写的，每句都要链回上面的事件。',dist:'扫视',src:'自报'},
+ {id:'gate2',p:'root',n:'待你决定：是否提交 PR',k:'gate',s:95.4,e:96,d:'wrap_up',q:'下一步该我做什么？',show:'只问一个问题，给两个按钮。推送 PR 是不可撤回的外部操作，属于阻断级。',dist:'余光',src:'Harness'}
+];
+const END=96,SPEED=6;
+const byId={},kids={};SP.forEach(s=>{byId[s.id]=s;(kids[s.p]=kids[s.p]||[]).push(s)});
+const order=[];(function walk(id,dep){(kids[id]||[]).forEach(s=>{s.dep=dep;order.push(s);walk(s.id,dep+1)})})(null,0);
+const PH=[['委托',0,4.6],['复现',4.6,22],['定位',22,52],['修复',52,67.6],['验证',67.6,88],['交付',88,96]];
+const MOOD=[[0,50],[4.6,62],[10,53],[18.6,42],[21.8,66],[29,63],[33.6,70],[36,46],[40,56],[50,72],[52,52],[63.5,66],[66,64],[75,68],[84.6,85],[89.6,87],[96,90]];
+const MK=[
+ {n:1,t:18.6,v:42,sp:'s3',h:'长时间没有反馈',r:'用户开始怀疑卡住了。回应：长调用配动作句和已用时。'},
+ {n:2,t:21.8,v:66,sp:'s4',h:'看到第一条证据',r:'信心第一次明显回升。回应：第一条证据要早、要具体。'},
+ {n:3,t:36,v:46,sp:'s7',h:'看到调用失败',r:'信心跌到最低。回应：失败可见，并立刻显示自动重试。'},
+ {n:4,t:52,v:52,sp:'gate1',h:'它要改内核了',r:'紧张。回应：说明改动内容、影响范围、能否回退。'},
+ {n:5,t:66,v:64,sp:'s11',h:'上下文被压缩',r:'用户无感，但证据原文已经不在窗口里。回应：留下标记。',risk:true},
+ {n:6,t:84.6,v:85,sp:'s13',h:'验证通过',r:'信任建立。回应：状态升级必须附验证依据。'}
+];
+const wf=document.getElementById('wf'),rowsEl=document.getElementById('rows');
+const collapsed=new Set();let sel='gate1',now=END,playing=false,range=100,last=0;
+const R={};
+order.forEach(s=>{
+  const row=document.createElement('div');row.className='row';row.setAttribute('role','treeitem');row.setAttribute('aria-level',s.dep+1);
+  const kc=`var(${KIND[s.k][1]})`;const hasK=!!kids[s.id]&&s.id!=='root';
+  row.innerHTML=`<div class="row-in" style="--kc:${kc}"><div class="cname" style="padding-left:${14+s.dep*14}px">${hasK?'<button class="chev" type="button" aria-label="折叠或展开"><svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button>':'<span class="chev-sp"></span>'}<button class="rowbtn" type="button"><i class="kic" style="background:${kc}"></i><span class="nname">${s.n}</span><span class="ndetail">${s.d||''}</span></button></div><div class="cbar"><div class="bar"></div><span class="blabel"></span></div></div>`;
+  rowsEl.appendChild(row);
+  const r={row,bar:row.querySelector('.bar'),lab:row.querySelector('.blabel'),cbar:row.querySelector('.cbar'),btn:row.querySelector('.rowbtn'),chev:row.querySelector('.chev'),marks:[]};R[s.id]=r;
+  if(s.k==='gate')r.bar.classList.add('gate');
+  r.btn.addEventListener('click',()=>select(s.id));
+  r.btn.addEventListener('keydown',e=>{if(e.key!=='ArrowDown'&&e.key!=='ArrowUp')return;e.preventDefault();const vis=order.filter(o=>!R[o.id].row.classList.contains('pending'));const n=vis[vis.indexOf(s)+(e.key==='ArrowDown'?1:-1)];if(n){R[n.id].btn.focus();select(n.id)}});
+  if(r.chev)r.chev.addEventListener('click',e=>{e.stopPropagation();collapsed.has(s.id)?collapsed.delete(s.id):collapsed.add(s.id);update()});
+  if(hasK)kids[s.id].forEach(c=>{const m=document.createElement('span');m.className='mark';m.style.setProperty('--kc',c.fail?'var(--red)':`var(${KIND[c.k][1]})`);r.cbar.appendChild(m);r.marks.push([c,m])});
+});
+const phEl=document.getElementById('phases');PH.forEach(p=>{const e=document.createElement('span');e.textContent=p[0];phEl.appendChild(e);p.el=e});
+const moodC=document.getElementById('moodC');
+MK.forEach(m=>{const b=document.createElement('button');b.type='button';b.className='mk'+(m.risk?' risk':'');b.textContent=m.n;b.setAttribute('aria-label',`拐点 ${m.n}：${m.h}`);b.addEventListener('click',()=>select(m.sp));moodC.appendChild(b);m.el=b});
+document.getElementById('insights').innerHTML=MK.map(m=>`<button type="button" class="ins${m.risk?' risk':''}" data-sp="${m.sp}"><span class="n">0${m.n}</span><b>${m.h}</b><p>${m.r}</p></button>`).join('');
+document.querySelectorAll('.ins').forEach(b=>b.addEventListener('click',()=>{select(b.dataset.sp);wf.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'})}));
+
+function hiddenByFold(s){let p=s.p;while(p){if(collapsed.has(p))return true;p=byId[p].p}return false}
+function rangeFor(t){return t<=28?30:t<=58?60:100}
+function fmt(x){return x<10?x.toFixed(1):Math.round(x)+''}
+const yv=v=>140-(v-30)/65*130;
+function setRange(r){if(r===range)return;range=r;if(!reduce){wf.classList.add('rescale');clearTimeout(setRange.t);setRange.t=setTimeout(()=>wf.classList.remove('rescale'),650)}renderTicks()}
+function renderTicks(){const st=range===30?10:20;const tk=document.getElementById('ticks'),gr=document.getElementById('wfGrid');tk.innerHTML='';gr.querySelectorAll('.gl').forEach(g=>g.remove());
+  for(let t=0;t<=range;t+=st){const p=t/range*100;const s=document.createElement('span');s.textContent=t+'s';s.style.left=Math.min(p,94)+'%';tk.appendChild(s);const g=document.createElement('div');g.className='gl';g.style.left=p+'%';gr.appendChild(g)}}
+function update(){
+  setRange(playing||now<END?rangeFor(now):100);
+  const pc=t=>t/range*100;
+  let slow=null,sd=0;SP.forEach(s=>{if((s.k==='llm'||s.k==='tool')&&now>=s.e&&s.e-s.s>sd){sd=s.e-s.s;slow=s.id}});
+  let tok=0,llm=0,tool=0,err=0,wait=0;
+  order.forEach(s=>{const r=R[s.id];const started=now>=s.s;r.row.classList.toggle('pending',!(started&&!hiddenByFold(s)));
+    if(r.chev){r.chev.classList.toggle('closed',collapsed.has(s.id));r.row.setAttribute('aria-expanded',!collapsed.has(s.id))}
+    if(started){const e=Math.min(now,s.e),run=now<s.e;
+      if(s.k==='llm'){llm++;tok+=Math.round(s.tok*(e-s.s)/(s.e-s.s))}
+      if(s.k==='tool')tool++;if(s.fail&&!run)err++;if(s.k==='gate')wait+=e-s.s;
+      r.bar.style.left=pc(s.s)+'%';r.bar.style.width=Math.max(.3,pc(e-s.s))+'%';
+      r.bar.classList.toggle('running',run&&!reduce);r.bar.classList.toggle('failed',!!s.fail&&!run);
+      const endp=pc(e);r.lab.innerHTML=(s.k==='gate'?(run?'等你 ':'等了 '):'')+fmt(e-s.s)+'s'+(s.fail&&!run?' · 失败':'')+(s.id===slow?'<span class="slow">最慢</span>':'');
+      if(endp>80){r.lab.style.left='auto';r.lab.style.right=(100-pc(s.s))+'%';r.lab.style.paddingRight='6px';r.lab.style.paddingLeft='0'}else{r.lab.style.right='auto';r.lab.style.left=endp+'%';r.lab.style.paddingLeft='6px';r.lab.style.paddingRight='0'}
+      const folded=collapsed.has(s.id);r.marks.forEach(([c,m])=>{m.hidden=!(folded&&now>=c.s);m.style.left=pc(c.s)+'%'});
+    }
+    r.row.classList.toggle('sel',s.id===sel);
+  });
+  document.getElementById('nowline').style.left=pc(now)+'%';
+  document.getElementById('stDur').textContent=fmt(now)+'s';document.getElementById('stWait').textContent=fmt(wait)+'s';
+  document.getElementById('stTok').textContent=(tok/1000).toFixed(1)+'k';document.getElementById('stLlm').textContent=llm;document.getElementById('stTool').textContent=tool;document.getElementById('stErr').textContent=err;
+  PH.forEach(p=>{p.el.style.left=pc(p[1])+'%';p.el.style.width=`calc(${pc(p[2]-p[1])}% - 3px)`;p.el.style.opacity=now>=p[1]?1:.25;p.el.classList.toggle('cur',now>=p[1]&&(now<p[2]||(p[0]==='交付'&&now>=END)))});
+  const pts=MOOD.map(([t,v])=>[t/range*1000,yv(v)]);let d=`M${pts[0][0]},${pts[0][1]}`;
+  for(let i=1;i<pts.length;i++){const [x0,y0]=pts[i-1],[x1,y1]=pts[i],mx=(x0+x1)/2;d+=` C${mx},${y0} ${mx},${y1} ${x1},${y1}`}
+  document.getElementById('mLine').setAttribute('d',d);document.getElementById('mArea').setAttribute('d',d+` L${pts[pts.length-1][0]},150 L0,150Z`);
+  document.getElementById('mclipR').setAttribute('width',Math.max(0,now/range*1000));
+  MK.forEach(m=>{m.el.style.left=pc(m.t)+'%';m.el.style.top=yv(m.v)+'px';m.el.classList.toggle('hid',now<m.t)});
+  const st=document.getElementById('wfStatus');const waiting=SP.some(s=>s.k==='gate'&&now>=s.s&&(now<s.e||(s.id==='gate2'&&now>=END)));
+  st.className='status'+(waiting?' wait':(now<END?' run':''));st.lastElementChild.textContent=waiting?'等你决定':(now<END?'运行中':'已完成');
+  document.getElementById('clock').textContent=now.toFixed(1)+'s / 96s';document.getElementById('scrub').value=now;
+}
+function select(id){sel=id;const s=byId[id];let p=s.p;while(p){collapsed.delete(p);p=byId[p].p}
+  if(now<s.s){now=s.e;playing=false;syncBtn()}update();renderDetail()}
+function renderDetail(){const s=byId[sel];const k=KIND[s.k];const srcCls=s.src==='原生'?'sg':(s.src==='自报'?'sk':'sa');
+  document.getElementById('wfDetail').innerHTML=`<div><div class="dtitle"><i class="kic" style="background:var(${k[1]});width:12px;height:12px"></i><b>${s.n}</b><span class="pill" style="padding:0 10px">${k[0]}</span></div>
+  <dl class="kv"><dt>时间</dt><dd class="mono">${s.s.toFixed(1)}s → ${s.e.toFixed(1)}s · ${fmt(s.e-s.s)}s</dd>${s.tok?`<dt>Tokens</dt><dd class="mono">${s.tok.toLocaleString()}</dd>`:''}${s.in?`<dt>输入</dt><dd class="mono">${s.in}</dd>`:''}${s.out?`<dt>${s.fail?'错误':'输出'}</dt><dd class="mono"${s.fail?' style="color:var(--red)"':''}>${s.out}</dd>`:''}<dt>来源</dt><dd><span class="pill ${srcCls}" style="padding:0 10px">${s.src}</span></dd></dl></div>
+  <div><span class="caps" style="color:var(--ink)">体验解读</span><p class="quote">「${s.q}」</p><p style="font-size:14px">${s.show}</p><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="font-size:12.5px">注视距离</span><span class="pill ink" style="padding:0 11px">${s.dist}</span></div></div>`}
+const playBtn=document.getElementById('playBtn');
+function syncBtn(){playBtn.textContent=playing?'❚❚ 暂停':(now>=END?'▶ 回放运行':'▶ 继续')}
+function tick(ts){if(!playing)return;const dt=Math.min(64,ts-last);last=ts;now=Math.min(END,now+dt/1000*SPEED);
+  const act=[...SP].reverse().find(s=>now>=s.s&&now<s.e&&s.k!=='sub'&&s.k!=='agent');if(act&&act.id!==sel){sel=act.id;renderDetail()}
+  update();if(now>=END){playing=false;syncBtn();return}requestAnimationFrame(tick)}
+function play(){if(reduce){now=END;update();return}if(now>=END)now=0;playing=true;last=performance.now();syncBtn();requestAnimationFrame(tick)}
+playBtn.addEventListener('click',()=>{if(playing){playing=false;syncBtn()}else play()});
+document.getElementById('scrub').addEventListener('input',e=>{playing=false;now=+e.target.value;syncBtn();update()});
+const foldBtn=document.getElementById('foldBtn');
+foldBtn.addEventListener('click',()=>{const all=['g1','g2','g3'].every(i=>collapsed.has(i));['g1','g2','g3'].forEach(i=>all?collapsed.delete(i):collapsed.add(i));foldBtn.textContent=all?'折叠子任务':'展开子任务';update()});
+renderTicks();update();renderDetail();syncBtn();
+if('IntersectionObserver' in window&&!reduce){const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){io.disconnect();setTimeout(play,350)}},{threshold:.35});io.observe(wf)}
+})();
+</script>
