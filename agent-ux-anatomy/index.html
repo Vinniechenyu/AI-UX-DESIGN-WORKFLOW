@@ -381,9 +381,20 @@ p{margin:0}
 .gt-scroll{overflow-x:auto}
 .gt-scroll svg{display:block;width:100%;min-width:780px;height:auto}
 .gt svg text{font-family:var(--f-sans)}
-.gt svg .gbar{transform-box:fill-box;transform-origin:left center;animation:gtgrow .5s ease both}
-@keyframes gtgrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-@media (prefers-reduced-motion:reduce){.gt svg .gbar{animation:none}}
+.gt-ctrl{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 22px;border-bottom:1px solid var(--line);background:var(--paper)}
+.gt-now{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;padding:12px 22px;min-height:50px;border-bottom:1px solid var(--line);font-size:14px}
+.gt-now .gn-t{font-family:var(--f-mono);font-size:12px;font-weight:500;background:var(--ink);color:var(--paper);padding:2px 9px;border-radius:999px}
+.gt-now .gn-w{font-weight:700}
+.gt-now .gn-x{min-width:0}
+.gt-now .gn-n{flex-basis:100%;font-size:12px;color:var(--muted)}
+.gt svg .gbar text,.gt svg .gann,.gt svg .garr,.gt svg .gnow{transition:opacity .25s}
+.gt svg .gbar.run rect{animation:gtpulse .9s ease-in-out infinite alternate}
+@keyframes gtpulse{from{opacity:.55}to{opacity:1}}
+.gt svg .gdot.on{animation:gtpulse .7s ease-in-out infinite alternate}
+.gt svg .gev{fill:var(--card);stroke:var(--ink);stroke-width:1.4;cursor:pointer}
+.gt svg .gev.past{fill:var(--ink)}
+.gt svg .gev:hover,.gt svg .gev:focus-visible{stroke:var(--salmon-d);stroke-width:2.4;outline:none}
+@media (prefers-reduced-motion:reduce){.gt svg .gbar.run rect,.gt svg .gdot.on{animation:none}}
 .gt svg.dim .gbar:not(.crit){opacity:.18}
 .gt svg.dim .garr:not(.crit){opacity:.15}
 .gt-notes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line)}
@@ -731,7 +742,7 @@ p{margin:0}
   <div class="insights" id="insights"></div>
   <div class="sec-head" style="margin-top:40px">
     <div class="l"><h3 style="font-size:28px">参与者变多以后：<br>从瀑布流到甘特图</h3></div>
-    <div class="r"><p class="side">瀑布流回答「它这一步在干什么」，适合一个 Agent 的一次运行。参与者一多，用户关心的就变成「谁在等谁、哪条线拖慢了整体、这件事现在归谁」。这时要换成甘特图：泳道是参与者，横轴是时间，重点画出依赖、等待和争用。下面三种协作规模，泳道怎么划、什么最该突出，各不相同（示例数据）。</p><span class="hand">who waits for whom</span></div>
+    <div class="r"><p class="side">瀑布流回答「它这一步在干什么」，适合一个 Agent 的一次运行。参与者一多，用户关心的就变成「谁在等谁、哪条线拖慢了整体、这件事现在归谁」。这时要换成甘特图：泳道是参与者，横轴是时间，重点画出依赖、等待和争用。下面三种协作规模，泳道怎么划、什么最该突出，各不相同。点「回放」可以看任务一步步执行，泳道头的圆点和小字会实时显示每条线当前的状态（示例数据）。</p><span class="hand">who waits for whom</span></div>
   </div>
   <div class="gt" id="gt">
     <div class="gt-top">
@@ -743,6 +754,12 @@ p{margin:0}
       <span class="caps" style="color:var(--ink)">RMSNorm 诊断 · 0–60 min</span>
     </div>
     <div class="gt-q"><small>用户最想知道</small><b id="gtQ"></b><small id="gtU"></small><button class="btn ghost gt-crit" id="gtCrit" type="button" aria-pressed="false">只看关键路径</button></div>
+    <div class="gt-ctrl">
+      <button class="btn" id="gtPlay" type="button" aria-pressed="false">▶ 回放执行过程</button>
+      <input class="scrub" id="gtScrub" type="range" min="0" max="60" step="0.1" value="60" aria-label="拖动时间">
+      <span class="clock" id="gtClock">60.0 / 60 min</span>
+    </div>
+    <div class="gt-now" id="gtNow" aria-live="polite"></div>
     <div class="gt-scroll"><svg id="gtSvg" role="img" aria-label="甘特图"></svg></div>
     <div class="gt-notes" id="gtNotes"></div>
   </div>
@@ -1336,7 +1353,8 @@ single:{q:'它卡在哪？是在等我吗？',u:'泳道 = Agent 自报的任务'
   {id:'t4',n:'T4 上板实测',sub:'自报任务',s:[[21,28,'gate','等你批准上板'],[28,32,'tool','上板 #1'],[32,34,'err','超时'],[34,40,'tool','上板 #2']]},
   {id:'t5',n:'T5 修复与验证',sub:'自报任务',s:[[40,44,'llm','改 tiling'],[44,51,'tool','数值校验'],[51,52,'rep','']]}],
  ar:[[21,'t4',26,'h','w'],[28,'h',28,'t4','d'],[52,'t5',52,'h','d']],
- ann:[[33.5,'t3','等你 7 min'],[45,'t2','失败就地重试，不另起一行']],mk:[[36,'t4','压缩']],
+ ann:[[33.5,'t3','等你 7 min',24],[45,'t2','失败就地重试，不另起一行',33]],mk:[[36,'t4','压缩']],
+ ev:[[0,'h','你委托：找出 hidden=8192 时 RMSNorm 变慢的原因'],[2,'t1','Agent 复述目标和完成标准，写进自报计划 T1–T5'],[5,'t2','编译前推导：估算整行在 UB 里要占多少'],[13,'t3','编译后读 IR：编译器改成了两遍规约'],[19,'t3','自报发现 H1：整行 live 320 KiB 超出 UB 248 KiB'],[21,'t4','要上板验证，这是外部副作用，停下来等你批准'],[26,'h','你看到通知，批准上板（已等 5 min）'],[28,'t4','上板 #1 开始'],[32,'t4','上板超时，就地自动重试'],[36,'t4','上下文接近上限，旧的 profiling 日志被压缩成摘要'],[40,'t5','根因确认，开始改 tiling'],[44,'t5','数值校验：max_err 在阈值内'],[52,'h','交付产物和证据链，等你验收']],
  notes:[['泳道来自自报计划','一条泳道是一个任务，不是一次工具调用。没有 L4 的计划工具，这张图就画不出来。'],['人单独一条','只放跟他有关的三个时刻：委托、批准、验收。其余时间他可以离开。'],['斜纹最显眼','只有一个 Agent 时，人往往就是唯一的瓶颈。「等你 7 min」比任何进度条都重要。'],['失败就地标注','失败和重试画在原任务里，压缩等事件用竖线标记，点开看证据。']]},
 fleet:{q:'哪条线拖慢了整体？我先处理哪个请求？',u:'泳道 = 主 Agent + 子 Agent',crit:true,
  rows:[
@@ -1346,13 +1364,14 @@ fleet:{q:'哪条线拖慢了整体？我先处理哪个请求？',u:'泳道 = �
   {id:'b',n:'子 Agent B',sub:'Profiling',ind:1,s:[[4,10,'tool','编译',1],[10,18,'gate','等审批',1],[20,28,'tool','上板',1],[28,30,'rep','',1]]},
   {id:'c',n:'子 Agent C',sub:'对照实验',ind:1,s:[[4,9,'tool','基线'],[9,11,'err','失败'],[11,12,'tool',''],[12,21,'gate','排队等审批'],[23,28,'tool','上板'],[28,29,'rep','']]}],
  ar:[[4,'m',4,'a','d'],[4,'m',4,'b','d',1],[4,'m',4,'c','d'],[15,'a',30,'m','d'],[30,'b',30,'m','d',1],[29,'c',30,'m','d'],[10,'b',18,'h','w',1],[12,'c',21,'h','w'],[20,'h',20,'b','d',1],[23,'h',23,'c','d'],[34,'m',38,'h','w',1],[40,'h',40,'m','d',1]],
- ann:[[9.5,'h','2 个请求在排队'],[43,'a','15 min 前已交回，在空等']],mk:[],
+ ann:[[9.5,'h','2 个请求在排队',12],[43,'a','15 min 前已交回，在空等',30]],mk:[],
+ ev:[[0,'h','你委托，主 Agent 把任务拆成三条线'],[4,'m','子 Agent A / B / C 并行启动，各用一个全新的上下文'],[9,'c','C 的基线跑失败，自动重试'],[10,'b','B 要上板，请求审批'],[12,'c','C 也要上板：你的审批队列里有 2 个请求'],[15,'a','A 交回报告，之后一直空等'],[18,'h','你批准 B（B 已等 8 min，在关键路径上）'],[21,'h','你批准 C'],[28,'b','B、C 相继交回报告'],[30,'m','主 Agent 汇总三份报告'],[34,'m','给出两套修复方案，等你选'],[40,'h','你选方案 B，主 Agent 开始修复'],[47,'m','回归验证'],[55,'h','你验收']],
  notes:[['子 Agent 缩进一级','主 Agent 一条，子 Agent 缩在下面，可以整体折叠成一条汇总条，只露出状态和交回时间。'],['画出分叉和汇合','从主 Agent 分出去、再汇回来的依赖线，决定了总耗时。最慢的那条就是关键路径，要高亮。'],['审批会排队','多个 Agent 同时请求，人那条泳道上会叠起来。要显示队列和每个请求等了多久，并支持批量批准。'],['只交回报告','子 Agent 只交回一段报告，末端放「交回」标记，点开下钻它自己的完整轨迹。']]},
 team:{q:'谁在等谁？这件事现在归谁？',u:'泳道 = 人 → 他的 Agent，加共享资源',crit:true,
  rows:[
   {g:'你 · 算子开发'},
   {id:'h1',n:'你',sub:'审批人',hu:1,s:[[0,2,'h','委托'],[24,26,'h','批准',1],[44,47,'h','交接',1]]},
-  {id:'a1',n:'你的 Agent',sub:'可改本地 · 上板需批',ind:1,s:[[2,8,'llm','推导'],[8,12,'tool','编译'],[12,20,'tool','上板',1],[20,24,'gate','等你',1],[26,34,'tool','修复',1],[34,36,'res','等板卡',1],[36,42,'tool','复测',1],[42,44,'rep','交接包',1]]},
+  {id:'a1',n:'你的 Agent',sub:'可改本地 · 上板需批',ind:1,s:[[2,8,'llm','推导'],[8,12,'tool','编译'],[12,20,'tool','上板',1],[20,26,'gate','等你',1],[26,34,'tool','修复',1],[34,36,'res','等板卡',1],[36,42,'tool','复测',1],[42,44,'rep','交接包',1]]},
   {g:'同事 · 性能调优'},
   {id:'h2',n:'同事',sub:'接手人',hu:1,s:[[0,3,'h','委托'],[47,50,'h','接收',1],[56,59,'h','合并',1]]},
   {id:'a2',n:'同事的 Agent',sub:'只读 · 可上板',ind:1,s:[[3,14,'tool','模型级 profiling'],[14,22,'res','等板卡 #3'],[22,36,'tool','上板 ×2'],[36,44,'llm','分析'],[50,56,'tool','回归验证',1]]},
@@ -1360,44 +1379,85 @@ team:{q:'谁在等谁？这件事现在归谁？',u:'泳道 = 人 → 他的 Age
   {id:'r1',n:'板卡 #3',sub:'Ascend NPU',s:[[12,20,'o1','你的 Agent',1],[22,36,'o2','同事的 Agent'],[36,42,'o1','你的 Agent',1]]},
   {id:'r2',n:'代码仓',sub:'main',s:[[44,45,'o1',''],[58,59,'o2','']]}],
  ar:[[14,'a2',20,'r1','w'],[34,'a1',36,'r1','w',1],[20,'a1',24,'h1','w',1],[26,'h1',26,'a1','d',1],[44,'a1',47,'h2','x',1],[50,'h2',50,'a2','d',1],[56,'a2',56,'h2','d',1]],
- ann:[[17,'h2','同事的 Agent 在等你的 Agent 释放板卡'],[40.5,'h2','交接包']],mk:[],
+ ann:[[17,'h2','同事的 Agent 在等你的 Agent 释放板卡',14],[40.5,'h2','交接包',44]],mk:[],
+ ev:[[0,'h1','你和同事各自委托自己的 Agent'],[8,'a1','你的 Agent 编译完成'],[12,'r1','你的 Agent 占用板卡 #3 上板'],[14,'a2','同事的 Agent 也要上板：板卡被占，开始排队'],[20,'a1','你的 Agent 释放板卡，请你批准修复方案'],[22,'r1','同事的 Agent 拿到板卡'],[24,'h1','你批准，你的 Agent 开始修复'],[34,'a1','你的 Agent 要复测，板卡还被同事占着：等待'],[36,'r1','板卡释放，你的 Agent 复测'],[42,'a1','生成交接包：对象、证据、前提、要求'],[44,'r2','推分支，交接给同事'],[47,'h2','同事接收交接包，这件事的归属转到同事'],[50,'a2','同事的 Agent 跑回归验证'],[56,'h2','同事审批，合并到 main']],
  notes:[['按人分组','每个人和他的 Agent 是一组。默认只展开自己这组，别人的折叠成一条状态条。'],['资源单独成泳道','板卡、代码仓、配额各占一条，按占用者着色。争用时双方都标出「在等谁」。'],['交接要画出来','跨人的交接用一条连线表示，点开就是交接包：对象、证据、前提、要求。'],['归属写在泳道头','谁的 Agent、能改什么、谁来审批，写在泳道头。交接之后，归属随之转移。']]}};
-const NS='http://www.w3.org/2000/svg',X0=200,W=780,T=60,LH=40,GH=28,TOP=34;const x=t=>X0+t*W/T;
+const NS='http://www.w3.org/2000/svg',X0=200,W=780,T=60,LH=40,GH=28,TOP=40;const sc=W/T,x=t=>X0+t*sc;
 const ST={h:['#1d1c1a','#1d1c1a','#f3efe7'],llm:['#cbbdee','#7d63c9'],tool:['#cfe59c','#6b9a2f'],rep:['#afcfe8','#4f86b8'],gate:['url(#gtH1)','#d9714a'],res:['url(#gtH2)','#8c877c'],err:['#f2b3b3','#d64545'],o1:['#afcfe8','#4f86b8'],o2:['#f2e8a0','#b8981b']};
+const KN={h:'人在操作',llm:'模型推理',tool:'工具执行',rep:'自报 / 交回',gate:'等人',res:'等资源',err:'失败',o1:'被占用',o2:'被占用',idle:'空等'};
 const el=(n,a,t)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(t!=null)e.textContent=t;return e};
-let cur='single',dim=false;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let cur='single',dim=false,t=T,raf=0,last=0,R={};
+const $=id=>document.getElementById(id),scrub=$('gtScrub'),clock=$('gtClock'),pb=$('gtPlay'),now=$('gtNow');
 function draw(m){const d=D[m];svg.replaceChildren();svg.classList.toggle('dim',dim&&d.crit);
- let y=TOP;const Y={};d.rows.forEach(r=>{if(r.g){r._y=y;y+=GH}else{r._y=y;Y[r.id]=y+LH/2;y+=LH}});const H=y+12;
+ R={bars:[],ars:[],anns:[],mks:[],dots:[],evs:[],lanes:[]};
+ let y=TOP;const Y={},NM={};d.rows.forEach(r=>{if(r.g){r._y=y;y+=GH}else{r._y=y;Y[r.id]=y+LH/2;NM[r.id]=r.n;y+=LH}});const H=y+12;
  svg.setAttribute('viewBox',`0 0 1000 ${H}`);
- const df=el('defs',{});svg.append(df);df.innerHTML='<pattern id="gtH1" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="#fbf9f4"/><rect width="3" height="7" fill="#f4b69c"/></pattern><pattern id="gtH2" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="#fbf9f4"/><rect width="3" height="7" fill="#d4cdbf"/></pattern><marker id="gtAd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#1d1c1a"/></marker><marker id="gtAw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#8c877c"/></marker><marker id="gtAx" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#d9714a"/></marker>';
- for(let t=0;t<=T;t+=10){svg.append(el('line',{x1:x(t),x2:x(t),y1:TOP-6,y2:H-8,stroke:'#d9d2c4','stroke-width':1}));svg.append(el('text',{x:x(t),y:18,'font-size':11,fill:'#6e6a62','text-anchor':t?'middle':'start'},t?t+' min':'0'))}
- d.rows.forEach((r,i)=>{if(r.g){svg.append(el('rect',{x:0,y:r._y+2,width:1000,height:GH-4,fill:'#ebe5d9'}));svg.append(el('text',{x:14,y:r._y+GH/2+4,'font-size':11.5,'font-weight':700,fill:'#1d1c1a','letter-spacing':'.12em'},r.g));return}
+ const df=el('defs',{});svg.append(df);df.innerHTML='<pattern id="gtH1" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="#fbf9f4"/><rect width="3" height="7" fill="#f4b69c"/></pattern><pattern id="gtH2" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="#fbf9f4"/><rect width="3" height="7" fill="#d4cdbf"/></pattern>'+[['d','#1d1c1a'],['w','#8c877c'],['x','#d9714a']].map(([k,c])=>`<marker id="gtA${k}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="${c}"/></marker>`).join('');
+ for(let k=0;k<=T;k+=10){svg.append(el('line',{x1:x(k),x2:x(k),y1:TOP-6,y2:H-8,stroke:'#d9d2c4','stroke-width':1}));svg.append(el('text',{x:x(k),y:16,'font-size':11,fill:'#6e6a62','text-anchor':k?'middle':'start'},k?k+' min':'0'))}
+ const hl=el('rect',{x:0,y:0,width:1000,height:LH,fill:'#f2e8a0',opacity:0});svg.append(hl);R.hl=hl;
+ d.rows.forEach(r=>{if(r.g){svg.append(el('rect',{x:0,y:r._y+2,width:1000,height:GH-4,fill:'#ebe5d9'}));svg.append(el('text',{x:14,y:r._y+GH/2+4,'font-size':11.5,'font-weight':700,fill:'#1d1c1a','letter-spacing':'.12em'},r.g));return}
   if(r.hu)svg.append(el('rect',{x:0,y:r._y,width:1000,height:LH,fill:'#f3efe7',opacity:.7}));
   svg.append(el('line',{x1:0,x2:1000,y1:r._y+LH,y2:r._y+LH,stroke:'#e6e0d4'}));
   const lx=r.ind?34:14;if(r.ind)svg.append(el('path',{d:`M20 ${r._y+4}V${r._y+LH/2}H28`,fill:'none',stroke:'#bdb6a8'}));
   if(r.hu)svg.append(el('circle',{cx:lx+4,cy:r._y+LH/2-5,r:4,fill:'#1d1c1a'}));
   svg.append(el('text',{x:lx+(r.hu?13:0),y:r._y+LH/2-1,'font-size':13,'font-weight':700,fill:'#1d1c1a'},r.n));
-  svg.append(el('text',{x:lx+(r.hu?13:0),y:r._y+LH/2+13,'font-size':10.5,fill:'#6e6a62'},r.sub));
-  r.s.forEach(([a,b,k,lb,c])=>{const x1=x(a),w=x(b)-x1,yy=r._y+11,delay=(a/T*0.9).toFixed(2)+'s';
-   if(k==='idle'){const g=el('g',{class:'gbar'+(c?' crit':''),style:`animation-delay:${delay}`});g.append(el('line',{x1:x1+2,x2:x1+w-2,y1:yy+9,y2:yy+9,stroke:'#8c877c','stroke-dasharray':'4 4'}));g.append(el('text',{x:x1+w/2,y:yy+5,'font-size':11,fill:'#6e6a62','text-anchor':'middle'},lb));svg.append(g);return}
-   const [f,st,tc]=ST[k];const g=el('g',{class:'gbar'+(c?' crit':''),style:`animation-delay:${delay}`});const hy=k==='h'?r._y+6:yy;
-   g.append(el('rect',{x:x1,y:hy,width:Math.max(w,3),height:k==='h'?16:18,rx:4,fill:f,stroke:c&&d.crit?'#1d1c1a':st,'stroke-width':c&&d.crit?2:1.2}));
-   g.append(el('title',{},`${r.n} · ${lb||k} · ${a}–${b} min`));
-   const tw=lb?[...lb].reduce((a,ch)=>a+(/[\u2E80-\uFFFF]/.test(ch)?11:6.3),0):0;
-   if(lb&&k==='h')g.append(el('text',{x:x1+w/2,y:r._y+35,'font-size':10.5,'font-weight':600,fill:'#1d1c1a','text-anchor':'middle'},lb));
-   else if(lb&&tw+10<=w)g.append(el('text',{x:x1+6,y:yy+13,'font-size':11,'font-weight':600,fill:tc||'#1d1c1a'},lb));
-   svg.append(g)})});
- d.mk.forEach(([t,id,lb])=>{const yc=Y[id];svg.append(el('line',{x1:x(t),x2:x(t),y1:yc-16,y2:yc+16,stroke:'#b8981b','stroke-width':2.5}));svg.append(el('text',{x:x(t)+5,y:yc-10,'font-size':10.5,fill:'#8a7212','font-weight':600},lb))});
+  const sub=el('text',{x:lx+(r.hu?13:0),y:r._y+LH/2+13,'font-size':10.5,fill:'#6e6a62'},r.sub);svg.append(sub);
+  const dot=el('circle',{cx:X0-14,cy:r._y+LH/2,r:5,fill:'#d9d2c4',class:'gdot'});svg.append(dot);
+  R.lanes.push({r,dot,sub,y:r._y});
+  r.s.forEach(([a,b,k,lb,c])=>{const x1=x(a),w=x(b)-x1,yy=r._y+11;
+   const g=el('g',{class:'gbar'+(c?' crit':'')});
+   if(k==='idle'){const ln=el('line',{x1:x1+2,x2:x1+2,y1:yy+9,y2:yy+9,stroke:'#8c877c','stroke-dasharray':'4 4'});g.append(ln);const tx=el('text',{x:x1+w/2,y:yy+5,'font-size':11,fill:'#6e6a62','text-anchor':'middle'},lb);g.append(tx);svg.append(g);R.bars.push({a,b,k,g,ln,tx,x1,w,lane:r});return}
+   const [f,s2,tc]=ST[k];const hy=k==='h'?r._y+6:yy;
+   const rc=el('rect',{x:x1,y:hy,width:Math.max(w,3),height:k==='h'?16:18,rx:4,fill:f,stroke:c&&d.crit?'#1d1c1a':s2,'stroke-width':c&&d.crit?2:1.2});g.append(rc);
+   g.append(el('title',{},`${r.n} · ${lb||KN[k]} · ${a}–${b} min`));
+   const tw=lb?[...lb].reduce((s,ch)=>s+(/[⺀-￿]/.test(ch)?11:6.3),0):0;let tx=null;
+   if(lb&&k==='h'){tx=el('text',{x:x1+w/2,y:r._y+35,'font-size':10.5,'font-weight':600,fill:'#1d1c1a','text-anchor':'middle'},lb);g.append(tx)}
+   else if(lb&&tw+10<=w){tx=el('text',{x:x1+6,y:yy+13,'font-size':11,'font-weight':600,fill:tc||'#1d1c1a'},lb);g.append(tx)}
+   svg.append(g);R.bars.push({a,b,k,g,rc,tx,x1,w,tw,lane:r})})});
+ d.mk.forEach(([tt,id,lb])=>{const yc=Y[id],g=el('g',{});g.append(el('line',{x1:x(tt),x2:x(tt),y1:yc-16,y2:yc+16,stroke:'#b8981b','stroke-width':2.5}));g.append(el('text',{x:x(tt)+5,y:yc-10,'font-size':10.5,fill:'#8a7212','font-weight':600},lb));svg.append(g);R.mks.push({t:tt,g})});
  d.ar.forEach(([t1,i1,t2,i2,k,c])=>{let y1=Y[i1],y2=Y[i2];const dn=y2>y1;y1+=dn?9:-9;y2+=dn?-9:9;const x1=x(t1),x2=x(t2);
-  const p=x1===x2?`M${x1} ${y1}V${y2}`:`M${x1} ${y1}C${x1} ${(y1+y2)/2} ${x2} ${(y1+y2)/2} ${x2} ${y2}`;
+  const pd=x1===x2?`M${x1} ${y1}V${y2}`:`M${x1} ${y1}C${x1} ${(y1+y2)/2} ${x2} ${(y1+y2)/2} ${x2} ${y2}`;
   const col=k==='x'?'#d9714a':k==='w'?'#8c877c':'#1d1c1a';
-  svg.append(el('path',{class:'garr'+(c?' crit':''),d:p,fill:'none',stroke:col,'stroke-width':k==='x'?2.2:1.3,'stroke-dasharray':k==='w'?'3 3':k==='x'?'6 4':'none','marker-end':`url(#gtA${k})`}))});
- d.ann.forEach(([t,id,txt])=>{svg.append(el('text',{x:x(t),y:Y[id]+6,'font-size':17,fill:'#d9714a','font-family':'Caveat,cursive','text-anchor':'middle'},txt))});
- document.getElementById('gtQ').textContent=d.q;document.getElementById('gtU').textContent=d.u;
- const cb=document.getElementById('gtCrit');cb.hidden=!d.crit;
- document.getElementById('gtNotes').innerHTML=d.notes.map((n,i)=>`<div><b>${i+1}</b><h3>${n[0]}</h3><p>${n[1]}</p></div>`).join('');
- svg.setAttribute('aria-label',`甘特图：${d.u}`)}
-document.querySelectorAll('#gt [role=tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#gt [role=tab]').forEach(o=>o.setAttribute('aria-selected',o===b));cur=b.dataset.m;draw(cur)}));
-document.getElementById('gtCrit').addEventListener('click',e=>{dim=!dim;e.currentTarget.setAttribute('aria-pressed',dim);e.currentTarget.textContent=dim?'显示全部':'只看关键路径';svg.classList.toggle('dim',dim)});
-draw(cur)})();
+  const pa=el('path',{class:'garr'+(c?' crit':''),d:pd,fill:'none',stroke:col,'stroke-width':k==='x'?2.2:1.3,'stroke-dasharray':k==='w'?'3 3':k==='x'?'6 4':'none','marker-end':`url(#gtA${k})`});svg.append(pa);R.ars.push({t:k==='w'?t1:t2,pa})});
+ d.ann.forEach(([ax,id,txt,at])=>{const a=el('text',{x:x(ax),y:Y[id]+6,'font-size':17,fill:'#d9714a','font-family':'Caveat,cursive','text-anchor':'middle',class:'gann'},txt);svg.append(a);R.anns.push({t:at,a})});
+ d.ev.forEach(([tt,id],i)=>{const c=el('circle',{cx:x(tt),cy:28,r:4,class:'gev',tabindex:0,role:'button','aria-label':`跳到 ${tt} min`});c.append(el('title',{},`${tt} min · ${d.ev[i][2]}`));c.addEventListener('click',()=>{stop();setT(tt+.01)});c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();stop();setT(tt+.01)}});svg.append(c);R.dots.push({t:tt,c})});
+ R.Y=Y;R.NM=NM;R.ev=d.ev;
+ const nl=el('g',{class:'gnow'});nl.append(el('line',{x1:0,x2:0,y1:TOP-6,y2:H-8,stroke:'#d9714a','stroke-width':1.6}));nl.append(el('path',{d:'M-5 34L5 34L0 40Z',fill:'#d9714a'}));svg.append(nl);R.nl=nl;
+ $('gtQ').textContent=d.q;$('gtU').textContent=d.u;$('gtCrit').hidden=!d.crit;
+ $('gtNotes').innerHTML=d.notes.map((n,i)=>`<div><b>${i+1}</b><h3>${n[0]}</h3><p>${n[1]}</p></div>`).join('');
+ svg.setAttribute('aria-label',`甘特图：${d.u}`);setT(t)}
+function setT(v){t=Math.max(0,Math.min(T,v));const full=t>=T;
+ R.bars.forEach(b=>{const vis=t>b.a,cw=Math.max(0,(Math.min(t,b.b)-b.a)*sc),run=t>b.a&&t<b.b&&!full;
+  b.g.style.display=vis?'':'none';b.g.classList.toggle('run',run);
+  if(b.k==='idle'){b.ln.setAttribute('x2',b.x1+Math.max(2,cw-2));b.tx.style.opacity=t>=b.a+(b.b-b.a)*.5?1:0;return}
+  b.rc.setAttribute('width',Math.max(cw,vis?3:0));if(b.tx)b.tx.style.opacity=(b.k==='h'||cw>=b.tw+10)?1:0});
+ R.ars.forEach(a=>a.pa.style.opacity=t>=a.t?'':0);
+ R.anns.forEach(a=>a.a.style.opacity=t>=a.t?1:0);
+ R.mks.forEach(m=>m.g.style.opacity=t>=m.t?1:0);
+ R.dots.forEach(d=>d.c.classList.toggle('past',t>=d.t));
+ R.lanes.forEach(L=>{const sg=L.r.s.find(s=>t>=s[0]&&t<s[1]);let col='#e6e0d4',lab='未开始';
+  if(sg){const k=sg[2];col=k==='idle'?'#bdb6a8':k==='gate'?'#d9714a':k==='res'?'#8c877c':(ST[k]||['','#1d1c1a'])[1];lab=(sg[3]&&k!=='o1'&&k!=='o2'?sg[3]+' · ':'')+KN[k]}
+  else if(L.r.s.length&&t>=L.r.s[L.r.s.length-1][1])col='#d9d2c4',lab=L.r.hu?'离开':'完成';
+  else if(L.r.s.length&&t>=L.r.s[0][0])lab=L.r.hu?'离开':'空闲';
+  if(L.r.hu&&!sg&&!full){const n=R.lanes.filter(o=>!o.r.hu&&o.r.s.some(s=>s[2]==='gate'&&t>=s[0]&&t<s[1])&&(cur!=='team'||L.r.id==='h1')).length;if(n){col='#d9714a';lab=`${n} 个请求待你处理`}}
+  L.dot.setAttribute('fill',col);L.dot.classList.toggle('on',!!sg&&!full);L.sub.textContent=full?L.r.sub:lab});
+ R.nl.setAttribute('transform',`translate(${x(t)},0)`);R.nl.style.opacity=full?0:1;
+ let ci=-1;R.ev.forEach((e,i)=>{if(t>=e[0])ci=i});
+ const e=R.ev[ci],nx=R.ev[ci+1];
+ if(full){now.innerHTML=`<span class="gn-t">全程</span><span class="gn-x">${R.ev.length} 个关键事件。点「回放」看任务一步步执行，或点时间轴上的圆点跳到某一刻。</span>`;R.hl.setAttribute('opacity',0)}
+ else if(e){now.innerHTML=`<span class="gn-t">${e[0]} min</span><span class="gn-w">${R.NM[e[1]]}</span><span class="gn-x">${e[2]}</span>${nx?`<span class="gn-n">下一步 · ${nx[0]} min ${nx[2]}</span>`:''}`;R.hl.setAttribute('y',R.Y[e[1]]-LH/2);R.hl.setAttribute('opacity',.35)}
+ else{now.innerHTML='<span class="gn-t">0 min</span><span class="gn-x">准备开始</span>';R.hl.setAttribute('opacity',0)}
+ scrub.value=t;clock.textContent=`${t.toFixed(1)} / ${T} min`}
+const SPD=T/16;
+function tick(ts){if(!last)last=ts;setT(t+(ts-last)/1000*SPD);last=ts;if(t<T)raf=requestAnimationFrame(tick);else stop()}
+function play(){if(t>=T)t=0;cancelAnimationFrame(raf);last=0;pb.textContent='❚❚ 暂停';pb.setAttribute('aria-pressed','true');raf=requestAnimationFrame(tick)}
+function stop(){cancelAnimationFrame(raf);raf=0;pb.textContent='▶ 回放执行过程';pb.setAttribute('aria-pressed','false')}
+pb.addEventListener('click',()=>raf?stop():play());
+scrub.addEventListener('input',()=>{stop();setT(+scrub.value)});
+document.querySelectorAll('#gt [role=tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#gt [role=tab]').forEach(o=>o.setAttribute('aria-selected',o===b));cur=b.dataset.m;stop();t=reduce?T:0;draw(cur);if(!reduce)play()}));
+$('gtCrit').addEventListener('click',e=>{dim=!dim;e.currentTarget.setAttribute('aria-pressed',dim);e.currentTarget.textContent=dim?'显示全部':'只看关键路径';svg.classList.toggle('dim',dim)});
+draw(cur);
+if('IntersectionObserver' in window&&!reduce){const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){io.disconnect();t=0;setT(0);setTimeout(play,300)}},{threshold:.35});io.observe($('gt'))}
+})();
 </script>
