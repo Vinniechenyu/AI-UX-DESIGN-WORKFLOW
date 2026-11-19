@@ -475,11 +475,71 @@ p{margin:0}
 
 .foot{margin-top:80px;padding-top:18px;border-top:1.5px solid var(--ink);font-size:12.5px;color:var(--muted);display:grid;gap:4px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ===== 16:9 分页外壳：不改任何已有组件样式，只负责把原有内容按页摆放 ===== */
+html,body{height:100%}
+body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
+#deck{height:100dvh;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none}
+#deck::-webkit-scrollbar{display:none}
+.slide{height:100dvh;display:grid;place-items:center;scroll-snap-align:center}
+.sheet{position:relative;width:min(100vw,calc(100dvh*16/9));height:min(calc(100vw*9/16),100dvh);background:var(--paper);overflow:hidden}
+.stage{position:absolute;left:50%;top:50%;width:1600px;height:900px;transform:translate(-50%,-50%) scale(var(--k,1));transform-origin:50% 50%}
+.pad{position:absolute;inset:52px 96px 62px;display:grid;align-content:start}
+.slide[data-tight] .pad{inset:26px 56px 44px}
+.slide[data-center] .pad{align-content:center}
+.slide.vmid .pad{align-content:center}
+.fitw{transform-origin:top left;transform:scale(var(--f,1));width:var(--fw,100%)}
+.stage h1{font-size:64px}
+.stage h2{font-size:46px}
+.stage .sec{padding-top:0;gap:28px}
+.stage .part{padding-top:0;padding-bottom:20px}
+.stage .sec-head,.stage .sec-head[style*="margin-top"]{margin-top:0!important}
+.stage .sec-head.chead{grid-template-columns:minmax(0,.62fr) minmax(0,1.38fr);align-items:center;gap:24px}
+.stage .sec-head.chead .r{justify-items:stretch}
+.stage .hero{min-height:0;height:100%}
+.stage .foot{margin-top:0;border-top:0;padding-top:0}
+.gt-notes-loose{border-top:1px solid var(--line);background:var(--card);border-radius:6px}
+.pageno{position:absolute;right:96px;bottom:24px;font-family:var(--f-mono);font-size:12px;color:var(--muted);letter-spacing:.08em}
+.pagetag{position:absolute;left:96px;bottom:24px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.slide[data-tight] .pageno{right:56px;bottom:14px}.slide[data-tight] .pagetag{left:56px;bottom:14px}
+.zoomb{position:absolute;right:96px;top:22px;z-index:3;all:unset;cursor:pointer;font-size:11.5px;font-weight:600;color:var(--muted);
+ border:1.2px solid var(--line);border-radius:999px;padding:4px 12px;background:var(--card);opacity:0;transition:opacity .2s}
+.slide[data-tight] .zoomb{right:56px;top:12px}
+.sheet:hover .zoomb,.zoomb:focus-visible{opacity:1}
+/* 放大查看：原尺寸 + 可滚动 */
+.slide.zoomed .sheet{position:fixed;inset:0;width:100vw;height:100dvh;z-index:46;overflow:auto;background:var(--paper)}
+.slide.zoomed .stage{position:relative;left:0;top:0;transform:none;width:1600px;height:auto;margin:0 auto}
+.slide.zoomed .pad{position:relative;inset:auto;padding:40px 0 60px;align-content:start}
+.slide.zoomed .fitw{transform:none!important;width:100%!important}
+.slide.zoomed .pageno,.slide.zoomed .pagetag{display:none}
+.slide.zoomed .zoomb{opacity:1;position:fixed;right:20px;top:16px;background:var(--ink);color:var(--paper);border-color:var(--ink)}
+/* 控制栏 */
+#ctl{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);display:flex;align-items:center;gap:2px;padding:5px 8px;border-radius:999px;
+ background:rgba(29,28,26,.88);color:#f3efe7;backdrop-filter:blur(8px);opacity:0;transition:opacity .25s;z-index:40;font-size:13px}
+#ctl.on{opacity:1}
+#ctl button{all:unset;cursor:pointer;padding:5px 11px;border-radius:999px;line-height:1}
+#ctl button:hover{background:rgba(255,255,255,.14)}
+#ctl button:focus-visible{outline:2px solid var(--sky)}
+#ctl .pn{font-family:var(--f-mono);font-size:12px;opacity:.82;padding:0 8px;font-variant-numeric:tabular-nums}
+#ctl .sep{width:1px;height:15px;background:rgba(255,255,255,.22);margin:0 5px}
+/* 概览 */
+#ov{position:fixed;inset:0;z-index:50;background:rgba(29,28,26,.95);display:none;overflow-y:auto;padding:36px}
+#ov.on{display:block}
+#ov .ovt{contain:paint}
+#ov .g{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:16px;max-width:1520px;margin:0 auto}
+#ov .t{position:relative;cursor:pointer;border-radius:3px;overflow:hidden;background:var(--paper);aspect-ratio:16/9;box-shadow:0 0 0 1.5px rgba(255,255,255,.16)}
+#ov .t:hover,#ov .t:focus-visible{box-shadow:0 0 0 2.5px var(--salmon);outline:none}
+#ov .t.cur{box-shadow:0 0 0 2.5px var(--sage)}
+#ov .t i{position:absolute;left:0;right:0;bottom:0;font-style:normal;font-size:10.5px;font-family:var(--f-mono);color:#f3efe7;background:rgba(29,28,26,.74);padding:3px 7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ov .t .mini{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;pointer-events:none}
+#ov .hd{color:#f3efe7;font-size:14px;max-width:1520px;margin:0 auto 16px;letter-spacing:.04em;opacity:.8}
+@media (prefers-reduced-motion:no-preference){#deck{scroll-behavior:smooth}}
+@media print{#ctl,#ov{display:none}}
 </style>
 
-<div class="wrap">
-
-<!-- hero -->
+<div id="deck">
+<div class="slide" data-center data-tag="Agent UX Anatomy" aria-label="第 1 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
 <header class="hero">
   <div class="hero-l">
     <span class="eyebrow"><b>00</b>/ &nbsp;Agent UX Anatomy</span>
@@ -520,11 +580,16 @@ p{margin:0}
     </div>
   </div>
 </header>
-
+  </div></div><span class="pagetag">Agent UX Anatomy</span><span class="pageno">01 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-center data-tag="Part I · Runtime" aria-label="第 2 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
 <div class="part"><span class="pn">I</span><div><span class="caps">Part I · Runtime</span><h2>机制底座：Agent 怎样运行</h2></div><span class="hand">from token to loop</span></div>
-
-<!-- 01 -->
-<section class="sec" id="runtime">
+  </div></div><span class="pagetag">Part I · Runtime</span><span class="pageno">02 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="01 / Agent Runtime Stack" aria-label="第 3 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="runtime-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>01</b>/ &nbsp;Agent Runtime Stack</span><h2>Agent 底层机制：<br>七层，自下而上</h2></div>
     <div class="r"><span class="rule"></span><p class="side">后面所有的体验判断，都建立在这七层之上。下层约束上层：界面上的每个对象，运行时到底由谁、在什么时候产生，决定了它能不能被可靠地展示。点击任意一层，展开它对体验的约束、应该沉淀的设计资产，以及让这一层对 Agent 亲和的条件。</p><span class="hand">token → protocol → loop → context → schema → experience</span></div>
@@ -545,7 +610,12 @@ p{margin:0}
     <div class="band dark" style="--i:0;--bc:var(--ink)"><button type="button" aria-expanded="false"><span class="lv">L0</span><span class="nm"><b>模型</b><code>Token Stream</code></span><span class="mc">自回归逐 token 生成，两次调用之间不保留状态。规划、反思都只是它写出来的文字</span><span class="fd pill">可感知</span></button>
       <div class="det" hidden><div><span class="caps">体验约束</span><p>最小渲染单位是流式片段；首个 token 出来多快，决定用户觉得它「有没有在干活」；思考中、输出中、等工具是三种不同的等待。</p></div><div><span class="caps">设计资产</span><p>三种等待态规范；流式渲染规则；长任务通知策略。</p></div><div class="aff"><span class="caps">Agent 亲和条件</span><p>信息密、单位和标识写全；不变内容放前缀命中缓存；文本结构优先于截图。</p></div></div></div>
   </div>
-
+</section>
+  </div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">03 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="01 / Agent Runtime Stack" aria-label="第 4 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="runtime-1-0">
   <div class="sec-head" style="margin-top:36px">
     <div class="l"><h3 style="font-size:28px">L2 展开：Agent 就是一个循环，<br>用户只能在缝隙里插手</h3></div>
     <div class="r"><p class="side">模型每输出一轮，循环看 stop_reason：要调用工具就先过权限关卡，执行后把结果回填给模型再推理；不再调用工具就交付。界面上的每个控制按钮，都要对应到下面 5 个真实挂点之一。</p></div>
@@ -591,7 +661,12 @@ p{margin:0}
     <div><b>4</b><h3>回退 / 分支</h3><p>只能回退对话和本地文件，外部副作用回不去</p></div>
     <div><b class="r5">5</b><h3>压缩</h3><p>窗口快满时把旧内容改写成摘要，证据可能在这里丢失</p></div>
   </div>
-
+</section>
+  </div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">04 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="01 / Agent Runtime Stack" aria-label="第 5 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="runtime-2-0">
   <div class="sec-head" style="margin-top:36px">
     <div class="l"><h3 style="font-size:28px">L1 展开：六类对象里，<br>只有两类是运行时自带的</h3></div>
     <div class="r"><p class="side">设计系统里常见的六类对象，来源并不对等。动作和证据由协议直接产生；目标、任务、决策、产物都要 Agent 主动汇报。后者需要先设计汇报工具，界面才有数据可绑。</p></div>
@@ -600,7 +675,12 @@ p{margin:0}
     <div><h3>原生 · 协议自带</h3><div class="ladder"><span class="pill sg">Action · tool_use</span><span class="pill sg">Evidence · tool_result</span></div><p>结构化、可信度高。要补的是风险等级、来源可信度和压缩后的原文入口。</p></div>
     <div><h3>自报 · 需要埋点</h3><div class="ladder"><span class="pill bt">Goal · 用户原话 + 复述</span><span class="pill bt">Task · 计划工具</span><span class="pill bt">Decision · 文字说明 + 证据</span><span class="pill bt">Artifact · 写文件 / 发布</span></div><p>需要和原始事件对账：标为完成的任务有没有对应的动作；决策必须带证据编号，否则只能标为「假设」；thinking 不能代替决策说明。</p></div>
   </div>
-
+</section>
+  </div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">05 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="01 / Agent Runtime Stack" aria-label="第 6 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="runtime-3-0">
   <div class="sec-head" style="margin-top:36px">
     <div class="l"><h3 style="font-size:28px">每一层怎样才算<br>「对 Agent 亲和」</h3></div>
     <div class="r"><p class="side">亲和的意思是：这一层流过的内容，Agent 拿到不用猜就能直接用，产出的东西下一层和界面上的人也能直接接住。条件因层而异，但最后都会落到界面上：决策包能「结论先行、证据带标签」，靠的就是这些底层条件。</p><span class="hand">agent-friendly = human-friendly</span></div>
@@ -611,9 +691,32 @@ p{margin:0}
     <div class="afr"><span class="ly"><i style="background:var(--card)">L1</i><b>内容块</b></span><ul><li>工具入参用枚举和清晰描述约束</li><li>结果有大小上限，超长带 <code>truncated</code> 和取全文方式</li><li>报错说清哪一步、为什么、怎么改</li><li>每份产出返回稳定 ID</li></ul><span class="no"><code>exit 1</code></span><span class="yes">UB 溢出：live 320 KiB &gt; 248 KiB，可减小 tile · 记为 <code>e10</code></span></div>
     <div class="afr"><span class="ly"><i style="background:var(--salmon)">L2</i><b>Harness 循环</b></span><ul><li>工具自声明可逆性、影响范围、成本，审批才能自动分级</li><li>幂等可重试；高风险先 dry-run</li><li>每步对齐一个检查点</li><li>长任务返回句柄，循环不阻塞</li><li>拒绝也带理由回填</li></ul><span class="no">每个动作都弹审批；上板跑十分钟期间无法插话</span><span class="yes">读文件、编译自动放行；上板异步执行、只问一次；拒绝附原因</span></div>
     <div class="afr"><span class="ly"><i style="background:var(--butter)">L3</i><b>上下文工程</b></span><ul><li>上下文里放摘要和引用，原文随时可取</li><li>目标、约束、决定、待验证假设写进结构化状态</li><li>子 Agent 交回结论 + 证据 ID + 状态</li><li>同类结果去重，旧的标为已取代</li></ul><span class="no">三次 profiling 全量留在窗口里，压缩后约束丢了</span><span class="yes">保留最新一次摘要 + <code>见 e10</code>；约束在 <code>task.md</code> 里常驻</span></div>
+    </div>
+</section>
+  </div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">06 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="01 / Agent Runtime Stack" aria-label="第 7 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="runtime-3-1">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>01</b>/ &nbsp;Agent Runtime Stack</span><h3 style="font-size:30px">上面四层：schema、自报、上下文、循环</h3></div>
+    <div class="r"><span class="rule"></span><p class="side">越往上越靠「约定」而不是「协议」：这四层的亲和条件，决定了界面能不能拿到可联动的对象。</p></div>
+  </div>
+  <div class="aft">
+    <div class="afr afh"><span>层</span><span>亲和条件</span><span>反例</span><span>正例 · 算子场景</span></div>
     <div class="afr"><span class="ly"><i style="background:var(--sage)">L4</i><b>自报告工具</b></span><ul><li>schema 小、必填少，Agent 才会常调</li><li>字段一对一对应界面元素</li><li>能校验一致性，拒绝自我拔高</li><li>只报会改变人决策的事</li></ul><span class="no">「我已经验证过了」</span><span class="yes"><code>state=validated</code> 必须挂数值校验证据，否则被拒绝写入</span></div>
     <div class="afr"><span class="ly"><i style="background:var(--sky)">L5</i><b>领域 schema</b></span><ul><li>算子、kernel、shape、dtype、commit、设备、证据阶段都有 ID 和单位</li><li>supports / refutes / derived_from / supersedes 是一等公民</li><li>工具返回、界面渲染、人 @ 引用的是同一个对象</li><li>schema 有版本，旧 trace 仍可读</li></ul><span class="no">「那个 norm 算子」</span><span class="yes"><code>@rms_norm_split · 04c0c97</code>，工具、视图、输入框同一对象</span></div>
     <div class="afr"><span class="ly"><i style="background:var(--lav)">L6</i><b>工作空间</b></span><ul><li>所有操作都能用命令行完成</li><li>工具链、CANN、commit、设备型号可锁定</li><li>反馈分层：编译前推导 → 编译后 IR → 上板</li><li>有可执行的完成标准：数值校验、性能基线</li><li>写目录、上板、推送的边界由环境限定</li></ul><span class="no">只能在 GUI 里打开 profiler，换台机器结果对不上</span><span class="yes"><code>msprof</code> 命令行 + 锁定环境 + 校验脚本作为完成标准</span></div>
+  </div>
+</section>
+  </div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">07 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="01 / Agent Runtime Stack" aria-label="第 8 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="runtime-3-2">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>01</b>/ &nbsp;Agent Runtime Stack</span><h3 style="font-size:30px">五个条件贯穿七层</h3></div>
+    <div class="r"><span class="rule"></span><p class="side">有类型、可寻址、有边界、自描述、可验证可回退——对 Agent 亲和的条件，和对人亲和的条件基本重合。</p></div>
   </div>
   <div class="cps" style="margin-top:22px">
     <div><b>1</b><h3>有类型</h3><p>有 schema，不是自由文本</p><span class="lyr"><span class="pill sm">L1</span><span class="pill sm">L4</span><span class="pill sm">L5</span></span></div>
@@ -623,9 +726,11 @@ p{margin:0}
     <div><b class="r5">5</b><h3>可验证、可回退</h3><p>有客观的完成标准，也有检查点</p><span class="lyr"><span class="pill sm">L2</span><span class="pill sm">L6</span></span></div>
   </div>
 </section>
-
-<!-- 02 -->
-<section class="sec" id="mechanism">
+  </div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">08 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="02 / Mechanism to Feeling" aria-label="第 9 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="mechanism-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>02</b>/ &nbsp;Mechanism to Feeling</span><h2>每个体验问题，<br>都有运行机制的根源</h2></div>
     <div class="r"><span class="rule"></span><p class="side">后面的体验判断都能追溯到 Agent 的运行方式。这张表先把技术机制翻译成用户语言：左边是机制，中间是用户当时心里的问题，右边是设计回应。</p><span class="hand">mechanism → feeling → design</span></div>
@@ -635,16 +740,31 @@ p{margin:0}
     <div id="trRows"></div>
   </div>
 </section>
-
+  </div></div><span class="pagetag">02 / Mechanism to Feeling</span><span class="pageno">09 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-center data-tag="Part II · Experience" aria-label="第 10 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
 <div class="part"><span class="pn">II</span><div><span class="caps">Part II · Experience</span><h2>体验架构：人怎样和 Agent 协作</h2></div><span class="hand">from feeling to design</span></div>
-
-<!-- 03 -->
-<section class="sec" id="needs">
-  <div class="sec-head">
-    <div class="l"><span class="eyebrow"><b>03</b>/ &nbsp;Experience Needs</span><h2>四层需求，<br>由内向外逐层成立</h2></div>
-    <div class="r"><span class="rule"></span><p class="side">用户感知不到 Agent 在运行，就谈不上看懂它；看不懂，就没法有效控制；控制不了，就不会放心托付。设计投入应该先保证内层，再往外扩。</p><span class="hand">aliveness → legibility → agency → trust</span></div>
+  </div></div><span class="pagetag">Part II · Experience</span><span class="pageno">10 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="03 / Experience Needs" aria-label="第 11 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="needs-0-0">
+  <div class="sec-head chead">
+    <div class="l"><span class="eyebrow"><b>03</b>/ &nbsp;Experience Needs</span></div>
+    <div class="r"><h3 style="font-size:24px;line-height:1.4">四层需求由内向外逐层成立，内层不成立，外层无从谈起</h3></div>
   </div>
   <div class="fig nest-fig"><svg id="nestSvg" viewBox="0 0 1440 760" role="img" aria-label="四层嵌套：可感知、可理解、可控制、可信任"></svg></div>
+</section>
+  </div></div><span class="pagetag">03 / Experience Needs</span><span class="pageno">11 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="03 / Experience Needs" aria-label="第 12 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="needs-0-1">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>03</b>/ &nbsp;Experience Needs</span><h3 style="font-size:30px">每一层各自要回答的问题不同</h3></div>
+    <div class="r"><span class="rule"></span><p class="side">用户感知不到 Agent 在运行，就谈不上看懂它；看不懂，就没法有效控制；控制不了，就不会放心托付。设计投入应该先保证内层，再往外扩。</p></div>
+  </div>
   <div class="nest-cols">
     <div><span class="pill sa" style="justify-self:start">可感知 · Aliveness</span><q>它还在运行吗？</q><ul><li>区分思考中、输出中、等工具三种状态</li><li>长任务显示已用时和当前动作</li><li>离开后，完成或卡住时能收到通知</li></ul></div>
     <div><span class="pill bt" style="justify-self:start">可理解 · Legibility</span><q>它在做什么，为什么？</q><ul><li>按阶段压缩叙事，默认只给一句话</li><li>决策说明带证据，不展示思考过程</li><li>每句叙事都能回到原始记录</li></ul></div>
@@ -652,9 +772,11 @@ p{margin:0}
     <div><span class="pill lv" style="justify-self:start">可信任 · Trust</span><q>结果我敢直接用吗？</q><ul><li>结论如实标注：假设、推断还是已验证</li><li>「已验证」必须附验证结果</li><li>产物写明依赖了哪些证据</li></ul></div>
   </div>
 </section>
-
-<!-- 04 -->
-<section class="sec" id="moments">
+  </div></div><span class="pagetag">03 / Experience Needs</span><span class="pageno">12 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="04 / Four Moments" aria-label="第 13 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="moments-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>04</b>/ &nbsp;Four Moments</span><h2>人机协作的<br>四个时刻</h2></div>
     <div class="r"><span class="rule"></span><p class="side">和 Agent 协作时，用户只在四个时刻出现：交代任务、观察进展、必要时干预、最后验收。观察和干预并行发生，可以在运行中反复切换。</p><span class="hand">delegate · monitor · steer · adopt</span></div>
@@ -664,14 +786,16 @@ p{margin:0}
     <div class="meta-notes">
       <div><span class="n">01</span><h3>委托：把模糊需求变成可确认的目标</h3><p>Agent 复述目标、约束和完成标准，把它自己推断的约束单独标出来。用户只确认有疑问的部分，不用重写需求。</p></div>
       <div><span class="n">02</span><h3>观察：只在需要时才被打扰</h3><p>默认停在「扫视」距离：一行状态加阶段叙事。想看细节再逐层展开，不必一开始就面对工具日志。</p></div>
-      <div><span class="n">02</span><h3>干预：控制入口和真实时机对齐</h3><p>能批准的地方给批准，能打断的地方给打断。界面不承诺做不到的事，比如「暂停后原样继续」，或撤回已经推送出去的修改。</p></div>
-      <div><span class="n">03</span><h3>采纳：验收的是证据，不是语气</h3><p>交付时先给结论状态和证据，再给报告。用户核对的是「验证过没有」，而不是「它说得够不够自信」。</p></div>
+      <div><span class="n">03</span><h3>干预：控制入口和真实时机对齐</h3><p>能批准的地方给批准，能打断的地方给打断。界面不承诺做不到的事，比如「暂停后原样继续」，或撤回已经推送出去的修改。</p></div>
+      <div><span class="n">04</span><h3>采纳：验收的是证据，不是语气</h3><p>交付时先给结论状态和证据，再给报告。用户核对的是「验证过没有」，而不是「它说得够不够自信」。</p></div>
     </div>
   </div>
 </section>
-
-<!-- 05 -->
-<section class="sec" id="diamond">
+  </div></div><span class="pagetag">04 / Four Moments</span><span class="pageno">13 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="05 / Task Lifecycle" aria-label="第 14 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="diamond-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>05</b>/ &nbsp;Task Lifecycle</span><h2>从一句话需求，<br>到可回溯的交付</h2></div>
     <div class="r"><span class="rule"></span><p class="side">一次任务分五个阶段。每个阶段里，用户和 Agent 各做一件事，界面要回答一个问题，并留一个关键触点。最后的「回溯」不是终点：带着证据可以回到任意一步，重新开始或从中间续跑。</p><span class="hand">input → plan → execute → output → trace back</span></div>
@@ -719,12 +843,14 @@ p{margin:0}
     </svg>
   </div>
 </section>
-
-<!-- 06 -->
-<section class="sec" id="trace">
-  <div class="sec-head">
-    <div class="l"><span class="eyebrow"><b>06</b>/ &nbsp;Run Trace</span><h2>时间花在哪，<br>信心在哪里起伏</h2></div>
-    <div class="r"><span class="rule"></span><p class="side">一次 RMSNorm 性能诊断（示例数据）。上半部分是运行瀑布流，每个模型调用、工具调用、人工关卡都是时间线上的一条；下半部分是同一时间轴上的用户信心曲线。点击任意一行或编号，下方同时给出技术信息和体验解读。最后一部分是参与者变多以后的甘特图。</p><span class="hand">where time goes, where trust moves</span></div>
+  </div></div><span class="pagetag">05 / Task Lifecycle</span><span class="pageno">14 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="06 / Run Trace" aria-label="第 15 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="trace-0-0">
+  <div class="sec-head chead">
+    <div class="l"><span class="eyebrow"><b>06</b>/ &nbsp;Run Trace</span></div>
+    <div class="r"><h3 style="font-size:24px;line-height:1.4">一次 RMSNorm 诊断的完整轨迹：时间花在哪，信心在哪里起伏</h3></div>
   </div>
   <div class="wf" id="wf">
     <div class="wf-top">
@@ -769,6 +895,16 @@ p{margin:0}
     </div>
     <div class="wf-detail" id="wfDetail" aria-live="polite"></div>
   </div>
+</section>
+  </div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">15 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="06 / Run Trace" aria-label="第 16 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="trace-0-1">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>06</b>/ &nbsp;Run Trace</span><h3 style="font-size:30px">等人的时间，是这次运行里最大的一块</h3></div>
+    <div class="r"><span class="rule"></span><p class="side">一次 RMSNorm 性能诊断（示例数据）：每个模型调用、工具调用、人工关卡都是时间线上的一条，下半部分是同一时间轴上的信心曲线。点任意一行看技术信息和体验解读。</p></div>
+  </div>
   <div class="legend">
     <span><i style="background:var(--k-llm)"></i>模型调用</span>
     <span><i style="background:var(--k-tool)"></i>工具调用</span>
@@ -778,9 +914,15 @@ p{margin:0}
     <span><i style="background:var(--red)"></i>失败</span>
   </div>
   <div class="insights" id="insights"></div>
-  <div class="sec-head" style="margin-top:40px">
-    <div class="l"><h3 style="font-size:28px">参与者变多以后：<br>从瀑布流到甘特图</h3></div>
-    <div class="r"><p class="side">瀑布流回答「它这一步在干什么」，适合一个 Agent 的一次运行。参与者一多，用户关心的就变成「谁在等谁、哪条线拖慢了整体、这件事现在归谁」。这时要换成甘特图：泳道是参与者，横轴是时间，重点画出依赖、等待和争用。下面三种协作规模，泳道怎么划、什么最该突出，各不相同。点「回放」可以看任务一步步执行，泳道头的圆点和小字会实时显示每条线当前的状态。项目进度只是最外层；选中一个 Agent，还能展开它的思考轮次、每一次工具调用、自报事件和上下文用量，人的泳道下面则展开待处理的请求队列（示例数据）。</p><span class="hand">who waits for whom</span></div>
+</section>
+  </div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">16 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="06 / Run Trace" aria-label="第 17 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="trace-1-0">
+  <div class="sec-head chead">
+    <div class="l"><span class="eyebrow"><b>06</b>/ &nbsp;Run Trace</span></div>
+    <div class="r"><h3 style="font-size:24px;line-height:1.4">参与者变多以后，泳道从「任务」变成「谁在等谁」</h3></div>
   </div>
   <div class="gt" id="gt">
     <div class="gt-top">
@@ -808,8 +950,18 @@ p{margin:0}
     </div>
     <div class="gt-now" id="gtNow" aria-live="polite"></div>
     <div class="gt-scroll"><svg id="gtSvg" role="img" aria-label="甘特图"></svg></div>
-    <div class="gt-notes" id="gtNotes"></div>
   </div>
+</section>
+  </div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">17 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="06 / Run Trace" aria-label="第 18 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="trace-1-1">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>06</b>/ &nbsp;Run Trace</span><h3 style="font-size:30px">泳道怎么划，取决于谁在等谁</h3></div>
+    <div class="r"><span class="rule"></span><p class="side">瀑布流回答「它这一步在干什么」，适合一个 Agent 的一次运行。参与者一多，用户关心的变成「谁在等谁、哪条线拖慢了整体、这件事现在归谁」，这时要换成甘特图。</p></div>
+  </div>
+  <div class="gt-notes gt-notes-loose" id="gtNotes"></div>
   <div class="legend" style="margin-top:12px">
     <span><i style="background:var(--ink)"></i>人的动作</span>
     <span><i style="background:var(--lav)"></i>模型推理</span>
@@ -830,11 +982,12 @@ p{margin:0}
     <div class="gtr"><span>最该突出</span><span>等你的时间；失败与重试</span><span>关键路径；审批队列</span><span>跨人等待；资源争用；归属转移</span></div>
     <div class="gtr"><span>典型交互</span><span>回放、点任意一段看证据</span><span>只看关键路径、批量审批、下钻子 Agent 轨迹</span><span>按人筛选、点交接看交接包、认领或转交</span></div>
   </div>
-
 </section>
-
-<!-- 07 -->
-<section class="sec" id="distance">
+  </div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">18 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="07 / Viewing Distance" aria-label="第 19 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="distance-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>07</b>/ &nbsp;Viewing Distance</span><h2>同一件事，<br>按注意力分层呈现</h2></div>
     <div class="r"><span class="rule"></span><p class="side">用户不会一直盯着 Agent。同一次运行要同时提供四种距离的视图，默认停在「扫视」，每一级都能一步进到下一级。卡片越高，代表投入的注意力越多。</p><span class="hand">glance first, dig on demand</span></div>
@@ -885,9 +1038,11 @@ p{margin:0}
   </div>
   <div class="zoomline"><span>投入的注意力少</span><span class="ln"></span><span>投入的注意力多</span></div>
 </section>
-
-<!-- 08 -->
-<section class="sec" id="interrupt">
+  </div></div><span class="pagetag">07 / Viewing Distance</span><span class="pageno">19 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="08 / Interruption Levels" aria-label="第 20 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="interrupt-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>08</b>/ &nbsp;Interruption Levels</span><h2>风险越高，<br>打断越强</h2></div>
     <div class="r"><span class="rule"></span><p class="side">每次打断都在消耗注意力。阻断式审批用多了，用户会不看内容直接点「批准」，这比不审批更危险。用两个问题给每个动作分级：做了能不能撤回？影响只在本地，还是会波及外部和他人？</p><span class="hand">interrupt only when it matters</span></div>
@@ -904,9 +1059,11 @@ p{margin:0}
     <div class="xax"><div class="xline"></div><div class="xlabels"><span>← 可撤回</span><h3>可撤回性</h3><span>不可撤回 →</span></div></div>
   </div>
 </section>
-
-<!-- 09 -->
-<section class="sec" id="trust">
+  </div></div><span class="pagetag">08 / Interruption Levels</span><span class="pageno">20 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="09 / Trust Calibration" aria-label="第 21 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="trust-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>09</b>/ &nbsp;Trust Calibration</span><h2>目标不是更多信任，<br>而是恰当的信任</h2></div>
     <div class="r"><span class="rule"></span><p class="side">过程藏起来，用户会把每个结论重查一遍；叙事太流畅、措辞太笃定，用户又会不经核对直接采纳。好的界面让用户的信任程度和证据强度保持一致。</p><span class="hand">trust ≈ evidence</span></div>
@@ -926,14 +1083,15 @@ p{margin:0}
     </div>
   </div>
 </section>
-
-<!-- 10 -->
-<section class="sec" id="control">
+  </div></div><span class="pagetag">09 / Trust Calibration</span><span class="pageno">21 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="10 / Control Points" aria-label="第 22 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="control-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>10</b>/ &nbsp;Control Points</span><h2>控制点上，<br>人和 Agent 交换什么</h2></div>
     <div class="r"><span class="rule"></span><p class="side">每个控制点都是一个需要人做决定的时刻。Agent 递上来的应该是做这个决定所需的最少信息，叫「决策包」；人做完决定交回去的，叫「交接包」。两个方向用同一套骨架：对象、证据、前提、动作。少一次「翻译成自然语言再解析回来」，就少一次信息损失。</p><span class="hand">decision pack ⇄ handoff pack</span></div>
   </div>
-
   <div class="packs">
     <div class="pack" style="background:var(--sky)">
       <div class="ph"><span class="caps" style="color:var(--ink)">Agent → 人</span><h3>决策包</h3></div>
@@ -964,7 +1122,12 @@ p{margin:0}
       </dl>
     </div>
   </div>
-
+</section>
+  </div></div><span class="pagetag">10 / Control Points</span><span class="pageno">22 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="10 / Control Points" aria-label="第 23 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="control-1-0">
   <div class="sec-head" style="margin-top:28px">
     <div class="l"><h3 style="font-size:28px">证据怎样组织：<br>按论证关系，不按调用顺序</h3></div>
     <div class="r"><p class="side">工具调用的先后顺序是 Agent 的视角。人做判断需要的是论证结构：哪些支持、哪些反对、还缺什么。每条证据都带三个标签。</p></div>
@@ -989,6 +1152,16 @@ p{margin:0}
     <span><b>结论状态</b>假设 · 推断 · 观测 · 已验证</span>
     <span style="color:var(--muted)">示例沿用第 06 节诊断案例的示例数据</span>
   </div>
+</section>
+  </div></div><span class="pagetag">10 / Control Points</span><span class="pageno">23 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="10 / Control Points" aria-label="第 24 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="control-1-1">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>10</b>/ &nbsp;Control Points</span><h3 style="font-size:30px">证据按论证关系组织，不按调用顺序</h3></div>
+    <div class="r"><span class="rule"></span><p class="side">结论先行、支持反对缺失分组、每条证据带三个标签——人才可能在一屏内做出判断。</p></div>
+  </div>
   <div class="cps" style="grid-template-columns:repeat(5,minmax(0,1fr))">
     <div><b>1</b><h3>结论先行</h3><p>默认只展示主张和依据摘要，原始记录放在下一层</p></div>
     <div><b>2</b><h3>按论证分组</h3><p>支持、反对、缺失三组，而不是按工具调用的时间排</p></div>
@@ -996,7 +1169,12 @@ p{margin:0}
     <div><b>4</b><h3>断言与证据分开</h3><p>「我认为是 UB 约束」是主张，「ub_peak 182 KB」才是证据</p></div>
     <div><b>5</b><h3>只给相关证据</h3><p>审批补丁要的是影响和能否回退，不是整个定位过程</p></div>
   </div>
-
+</section>
+  </div></div><span class="pagetag">10 / Control Points</span><span class="pageno">24 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="10 / Control Points" aria-label="第 25 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="control-2-0">
   <div class="sec-head" style="margin-top:28px">
     <div class="l"><h3 style="font-size:28px">七个控制点，<br>九个人的动作</h3></div>
     <div class="r"><p class="side">人的每个动作都要落在某个对象上。「我觉得不对」Agent 无法利用；「对证据 e10 有疑问」它就能直接处理。拒绝时一定要收集理由，否则 Agent 只收到一个「否」，只能盲猜下一步。</p></div>
@@ -1012,7 +1190,12 @@ p{margin:0}
     <div class="cpr"><span><b>验收</b></span><span>结论状态汇总、前后对比、未覆盖的部分</span><span class="vb"><i>确认</i><i>质疑</i></span><span>验收决定 + 打回原因</span></div>
     <div class="cpr"><span><b>回溯</b></span><span>时间线和各节点状态</span><span class="vb"><i>回退</i><i>补充</i></span><span>交接包</span></div>
   </div>
-
+</section>
+  </div></div><span class="pagetag">10 / Control Points</span><span class="pageno">25 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="10 / Control Points" aria-label="第 26 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="control-3-0">
   <div class="sec-head" style="margin-top:28px">
     <div class="l"><h3 style="font-size:28px">对 Agent 友好的输入：<br>能直接变成可检验的约束</h3></div>
     <div class="r"><p class="side">用户的输入会变成 Agent 上下文里的 token，后续每一步推理都从这里出发。友好的输入不需要 Agent 去猜。但不能指望用户每次都写全，所以要靠界面把输入「结构化」。</p></div>
@@ -1030,6 +1213,16 @@ p{margin:0}
       </dl>
     </div>
   </div>
+</section>
+  </div></div><span class="pagetag">10 / Control Points</span><span class="pageno">26 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="10 / Control Points" aria-label="第 27 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="control-3-1">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>10</b>/ &nbsp;Control Points</span><h3 style="font-size:30px">把「写清楚」的负担交给界面，而不是用户</h3></div>
+    <div class="r"><span class="rule"></span><p class="side">引用代替描述、约束做成标签、完成标准用模板、推断由 Agent 补全并等人确认。</p></div>
+  </div>
   <div class="composer" aria-label="结构化输入框示意">
     <div class="cbar2"><span class="caps" style="color:var(--ink)">输入框示意</span><span class="pill lv sm">作用于：H1 · 证据 e10</span></div>
     <div class="ctext">对 <span class="at">@ub_peak 182/192 KB</span> 有疑问：这是峰值还是常驻？我怀疑和 cache 行为有关。先在 <span class="at">@rms_norm_split · 04c0c97</span> 上区分清楚，再决定要不要改 tiling。</div>
@@ -1044,11 +1237,16 @@ p{margin:0}
     <div><b>5</b><h3>插话指定对象</h3><p>先选中任务、证据或假设再输入，变成有作用范围的批注</p></div>
   </div>
 </section>
-
+  </div></div><span class="pagetag">10 / Control Points</span><span class="pageno">27 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-center data-tag="Part III · AI Infra · Operators" aria-label="第 28 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
 <div class="part"><span class="pn">III</span><div><span class="caps">Part III · AI Infra · Operators</span><h2>落到算子开发</h2></div><span class="hand">from estimate to evidence</span></div>
-
-<!-- 11 -->
-<section class="sec" id="stages">
+  </div></div><span class="pagetag">Part III · AI Infra · Operators</span><span class="pageno">28 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="11 / Operator Development · Evidence Stages" aria-label="第 29 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="stages-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>11</b>/ &nbsp;Operator Development · Evidence Stages</span><h2>算子开发里，<br>证据分四个阶段</h2></div>
     <div class="r"><span class="rule"></span><p class="side">算子从写完源码到真正上板，能拿到的证据逐级变强。每个调查视图都要先说清自己站在哪个阶段、能回答什么、还不能回答什么。用编译前的估算去回答上板的问题，是这个领域最常见的误导。</p><span class="hand">estimate ≠ measurement</span></div>
@@ -1088,6 +1286,16 @@ p{margin:0}
     </div>
   </div>
   <div class="zoomline"><span>证据弱</span><span class="ln"></span><span>证据强</span></div>
+</section>
+  </div></div><span class="pagetag">11 / Operator Development · Evidence Stages</span><span class="pageno">29 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="11 / Operator Development · Evidence Stages" aria-label="第 30 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="stages-0-1">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>11</b>/ &nbsp;Evidence Stages</span><h3 style="font-size:30px">越往后越贵，所以越早排除越划算</h3></div>
+    <div class="r"><span class="rule"></span><p class="side">四个阶段的成本和可信度相反：编译前的估算最便宜也最弱，上板实测最贵也最强，调查顺序应当由此决定。</p></div>
+  </div>
   <div class="cal" style="gap:16px">
     <h3>例：RMSNorm 在 Ascend 950 上为什么改成两遍分块（第 01 阶段）</h3>
     <div class="prov">
@@ -1099,9 +1307,11 @@ p{margin:0}
     <p class="side" style="max-width:80ch">字节数和容量条件可以直接从源码推导、独立核对；时延和瓶颈分类来自 CANNBot 性能模型和仓库里保存的硬件标定数据。界面上这两类数字要分开标注，并写明「当前没有本机 NPU 实测」。来源分三种：实测、公开表、推导默认值，Mock 数据单独标出。</p>
   </div>
 </section>
-
-<!-- 12 -->
-<section class="sec" id="loop">
+  </div></div><span class="pagetag">11 / Operator Development · Evidence Stages</span><span class="pageno">30 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="12 / Investigation Loop" aria-label="第 31 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="loop-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>12</b>/ &nbsp;Investigation Loop</span><h2>人和 Agent<br>围绕同一份证据</h2></div>
     <div class="r"><span class="rule"></span><p class="side">算子问题很难只靠文字说清，比如多维索引怎么落到线性地址、尾块和 padding 有没有越界。让 Agent 生成调查视图，用户在图上点选对象，再把「问题 + 证据」一起交回给 Agent 继续核查。交接包是这个闭环里最关键的界面对象。</p><span class="hand">human ⇄ agent, one evidence</span></div>
@@ -1145,9 +1355,11 @@ p{margin:0}
     <div><b>沟通往返次数</b><p>人和 Agent 之间来回解释了几轮。交接包带上了对象和前提，应该能明显减少往返。</p></div>
   </div>
 </section>
-
-<!-- 13 -->
-<section class="sec" id="patterns">
+  </div></div><span class="pagetag">12 / Investigation Loop</span><span class="pageno">31 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="13 / Operator Pattern Map" aria-label="第 32 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="patterns-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>13</b>/ &nbsp;Operator Pattern Map</span><h2>每个可视化 Pattern<br>回答一类问题</h2></div>
     <div class="r"><span class="rule"></span><p class="side">把 Pattern 库里和算子相关的案例按两个维度摆开：关注的是正确性还是性能，依据是源码推导还是编译与运行证据。左下最密、右上最稀，说明下一步最该补的是运行证据的接入。</p><span class="hand">where data goes, where time goes</span></div>
@@ -1163,6 +1375,16 @@ p{margin:0}
     <span style="grid-column:1/3"></span>
     <div class="xax"><div class="xline"></div><div class="xlabels"><span>← 数据去了哪</span><h3>关注点</h3><span>时间去了哪 →</span></div></div>
   </div>
+</section>
+  </div></div><span class="pagetag">13 / Operator Pattern Map</span><span class="pageno">32 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-tight data-tag="13 / Operator Pattern Map" aria-label="第 33 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<section class="sec" id="patterns-0-1">
+  <div class="sec-head">
+    <div class="l"><span class="eyebrow"><b>13</b>/ &nbsp;Operator Pattern Map</span><h3 style="font-size:30px">四层能力是每个案例的共同组装方式</h3></div>
+    <div class="r"><span class="rule"></span><p class="side">调查工作流按任务依次调用这四层，用户不需要记住具体用哪个 Skill。</p></div>
+  </div>
   <div class="nest-cols">
     <div><span class="pill sk" style="justify-self:start">领域映射</span><q>算子的语义对不对？</q><ul><li>区分数学上的输入集合和源码实际请求的集合</li><li>推导地址、分块和搬运布局</li><li>保留分析前提，不把推导当运行结果</li></ul></div>
     <div><span class="pill bt" style="justify-self:start">计算图元</span><q>图形能不能一眼读懂？</q><ul><li>Tensor、OP、数据角色用统一的正式图元</li><li>保留标签结构和类别图标</li><li>跨 Pattern 复用，不各画各的</li></ul></div>
@@ -1171,12 +1393,27 @@ p{margin:0}
   </div>
   <p class="side" style="max-width:80ch">这四层能力是 Pattern 库里每个案例的共同组装方式：调查工作流按任务依次调用它们，用户不需要记住具体用哪个 Skill。对设计系统来说，这意味着沉淀的单位不只是组件，还包括「领域语义 + 图元 + 证据组织 + 空间交互」这一整套组合。</p>
 </section>
-
+  </div></div><span class="pagetag">13 / Operator Pattern Map</span><span class="pageno">33 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+</div>
+<div class="slide" data-center data-tag="Sources" aria-label="第 34 页，共 34 页">
+  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
 <div class="foot">
   <span>来源：ChatGPT 分享对话的两轮回答；第 11–13 节的算子开发内容参考 <a href="https://yinyucheng0601.github.io/AI_Infra/ai-infra-research/patterns.html" style="color:inherit">AI Infra Pattern 库</a> 中 RMSNorm、LogSumExp、RSFA 等 Pattern 的页面说明，RMSNorm 数值是其中记录的性能模型估算，不是上板实测。第 06 节的耗时、tokens 和信心曲线是示例数据，用来说明结构。</span>
   <span>第 06 节瀑布流的交互思路参考了 affectUI 的 Trace Waterfall 组件（行内树、实时增长的条、当前时间线、折叠后在父条上显示刻度），代码为本页独立实现。</span>
 </div>
+  </div></div><span class="pagetag">Sources</span><span class="pageno">34 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
 </div>
+</div>
+<div id="ctl" role="toolbar" aria-label="翻页">
+ <button id="prev" type="button" aria-label="上一页">←</button>
+ <span class="pn" id="pn">1 / 34</span>
+ <button id="next" type="button" aria-label="下一页">→</button>
+ <span class="sep"></span>
+ <button id="ovb" type="button">概览</button>
+ <button id="fs" type="button">全屏</button>
+</div>
+<div id="ov" role="dialog" aria-label="页面概览"><div class="hd">全部 34 页 · 点击跳转 ｜ ←/→ 翻页 · O 概览 · Z 放大 · F 全屏</div><div class="g"></div></div>
+
 
 <script>
 (function(){
@@ -1215,8 +1452,8 @@ function txt(s,x,y,t,o={}){return el('text',{x,y,'text-anchor':o.a||'middle','fo
   const M=[
     {x:360,y:170,fill:C.ink,ink:C.paper,dot:C.sage,tag:'时刻 01',t:'委托',q:'它听懂了吗？',p:['目标复述','假设确认'],pf:C.card},
     {x:190,y:430,fill:C.card,ink:C.ink,dot:C.ink,tag:'时刻 02',t:'观察',q:'它在做什么？',p:['活性信号','阶段叙事'],pf:C.paper},
-    {x:530,y:430,fill:C.card,ink:C.ink,dot:C.ink,tag:'时刻 02',t:'干预',q:'我能叫停吗？',p:['风险审批','中途纠偏'],pf:C.paper},
-    {x:360,y:690,fill:C.sage,ink:C.ink,dot:C.ink,tag:'时刻 03',t:'采纳',q:'结果能用吗？',p:['证据回链','验证状态'],pf:C.card}];
+    {x:530,y:430,fill:C.card,ink:C.ink,dot:C.ink,tag:'时刻 03',t:'干预',q:'我能叫停吗？',p:['风险审批','中途纠偏'],pf:C.paper},
+    {x:360,y:690,fill:C.sage,ink:C.ink,dot:C.ink,tag:'时刻 04',t:'采纳',q:'结果能用吗？',p:['证据回链','验证状态'],pf:C.card}];
   M.forEach(m=>{const g=el('g',{},s);el('circle',{cx:m.x,cy:m.y,r:150,fill:m.fill},g);
     el('circle',{cx:m.x-34,cy:m.y-89,r:4,fill:m.dot},g);
     txt(g,m.x-24,m.y-84,m.tag,{a:'start',fs:14,c:m.ink});
@@ -1588,5 +1825,92 @@ document.querySelectorAll('.gt-dims [data-d]').forEach(b=>b.addEventListener('cl
 $('gtCrit').addEventListener('click',e=>{dim=!dim;e.currentTarget.setAttribute('aria-pressed',dim);e.currentTarget.textContent=dim?'显示全部':'只看关键路径';svg.classList.toggle('dim',dim)});
 draw(cur);
 if('IntersectionObserver' in window&&!reduce){const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){io.disconnect();t=0;setT(0);setTimeout(play,300)}},{threshold:.35});io.observe($('gt'))}
+})();
+</script>
+<script>
+(function(){
+ var deck=document.getElementById('deck'),slides=[].slice.call(deck.querySelectorAll('.slide')),cur=0,target=0,lastNav=0;
+ function fitOne(sl){
+  var sheet=sl.querySelector('.sheet'),st=sl.querySelector('.stage');
+  if(!sl.classList.contains('zoomed'))st.style.setProperty('--k',(sheet.clientWidth/1600).toFixed(5));
+  var pad=sl.querySelector('.pad'),f=pad.querySelector('.fitw');if(!f)return;
+  if(sl.classList.contains('zoomed')){f.style.removeProperty('--f');f.style.removeProperty('--fw');return}
+  f.style.setProperty('--f',1);f.style.setProperty('--fw','100%');
+  var avail=pad.clientHeight,h=f.scrollHeight;
+  f.setAttribute('data-nh',h);f.setAttribute('data-av',avail);
+  if(h>avail+1){var k=Math.max(.5,avail/h);f.style.setProperty('--f',k.toFixed(4));f.style.setProperty('--fw',(100/k).toFixed(3)+'%')}
+  sl.classList.toggle('vmid',h<avail*0.66);
+ }
+ function fit(){slides.forEach(fitOne)}
+ window.__deckFit=fit;
+ addEventListener('resize',fit);
+ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
+ fit();setTimeout(fit,80);setTimeout(fit,500);
+ // 页内展开/折叠后自动重新适配
+ if(window.ResizeObserver)slides.forEach(function(sl){var f=sl.querySelector('.fitw');if(!f)return;var busy=false;
+  new ResizeObserver(function(){if(busy)return;busy=true;requestAnimationFrame(function(){fitOne(sl);busy=false})}).observe(f)});
+ slides.forEach(function(sl,i){new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){cur=i;
+   if(Date.now()-lastNav>650)target=i;
+   if(pn)pn.textContent=(i+1)+' / '+slides.length;
+   var ts=document.querySelectorAll('#ov .ovt');for(var k=0;k<ts.length;k++)ts[k].classList.toggle('cur',k===i)}})},{threshold:.55}).observe(sl)});
+ var pn=document.getElementById('pn');
+ function go(i){target=Math.max(0,Math.min(slides.length-1,i));lastNav=Date.now();
+  if(pn)pn.textContent=(target+1)+' / '+slides.length;
+  var far=Math.abs(target-cur)>2,red=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var y=slides[target].getBoundingClientRect().top-deck.getBoundingClientRect().top+deck.scrollTop;
+  if(far||red){deck.style.scrollBehavior='auto';deck.scrollTop=y;
+   requestAnimationFrame(function(){deck.style.scrollBehavior=''})}
+  else deck.scrollTo({top:y,behavior:'smooth'})}
+ window.__deckGo=go;
+ document.getElementById('prev').onclick=function(){go(target-1)};
+ document.getElementById('next').onclick=function(){go(target+1)};
+ var ctl=document.getElementById('ctl'),ht;
+ function show(){ctl.classList.add('on');clearTimeout(ht);ht=setTimeout(function(){ctl.classList.remove('on')},2500)}
+ addEventListener('mousemove',function(e){if(innerHeight-e.clientY<120)show()});
+ ctl.addEventListener('mouseenter',function(){clearTimeout(ht);ctl.classList.add('on')});
+ ctl.addEventListener('mouseleave',show);
+ var fsb=document.getElementById('fs');
+ fsb.onclick=function(){if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen()};
+ document.addEventListener('fullscreenchange',function(){fsb.textContent=document.fullscreenElement?'退出全屏':'全屏'});
+ // 放大查看
+ function zoom(sl,on){sl.classList.toggle('zoomed',on);deck.style.overflow=on?'hidden':'';
+  var b=sl.querySelector('.zoomb');if(b)b.textContent=on?'× 收起':'放大查看';fitOne(sl);if(!on){var j=slides.indexOf(sl);if(j>=0){var yy=slides[j].getBoundingClientRect().top-deck.getBoundingClientRect().top+deck.scrollTop;deck.scrollTo({top:yy,behavior:'auto'})}}}
+ slides.forEach(function(sl){var b=sl.querySelector('.zoomb');if(b)b.onclick=function(){zoom(sl,!sl.classList.contains('zoomed'))}});
+ // 概览
+ var ov=document.getElementById('ov'),built=false;
+ function build(){if(built)return;built=true;var g=ov.querySelector('.g');
+  slides.forEach(function(sl,i){var t=document.createElement('div');t.className='t ovt';t.tabIndex=0;
+   var m=sl.querySelector('.stage').cloneNode(true);m.className='mini';m.removeAttribute('style');
+   m.querySelectorAll('[id]').forEach(function(n){n.removeAttribute('id')});
+   m.querySelectorAll('.zoomb').forEach(function(n){n.remove()});
+   t.appendChild(m);var lab=document.createElement('i');lab.textContent=(i+1)+' · '+(sl.dataset.tag||'');t.appendChild(lab);
+   t.onclick=function(){toggle(false);go(i)};t.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle(false);go(i)}};
+   g.appendChild(t);
+   var fitm=function(){m.style.transform='scale('+(t.clientWidth/1600)+')'};fitm();
+   if(window.ResizeObserver)new ResizeObserver(fitm).observe(t);
+  });}
+ function toggle(on){if(on===undefined)on=!ov.classList.contains('on');build();ov.classList.toggle('on',on);
+  if(on){var c=ov.querySelectorAll('.ovt')[cur];if(c)c.classList.add('cur'),c.scrollIntoView({block:'center'})}}
+ document.getElementById('ovb').onclick=function(){toggle()};
+ ov.onclick=function(e){if(e.target===ov)toggle(false)};
+ addEventListener('keydown',function(e){
+  if(e.target.closest&&e.target.closest('input,textarea'))return;
+  var k=e.key,z=document.querySelector('.slide.zoomed');
+  if(ov.classList.contains('on')){if(k==='Escape'||k==='o'||k==='O'){e.preventDefault();toggle(false)}return}
+  if(z){if(k==='Escape'||k==='z'||k==='Z'){e.preventDefault();zoom(z,false)}return}
+  if(k==='ArrowRight'||k==='ArrowDown'||k==='PageDown'||k===' '){e.preventDefault();go(target+1)}
+  else if(k==='ArrowLeft'||k==='ArrowUp'||k==='PageUp'){e.preventDefault();go(target-1)}
+  else if(k==='Home'){e.preventDefault();go(0)}
+  else if(k==='End'){e.preventDefault();go(slides.length-1)}
+  else if(k==='o'||k==='O'){e.preventDefault();toggle()}
+  else if(k==='f'||k==='F'){e.preventDefault();fsb.onclick()}
+  else if(k==='z'||k==='Z'){e.preventDefault();var b=slides[cur].querySelector('.zoomb');if(b)b.click()}
+ });
+ // deck 下的默认态：瀑布流折叠子任务、甘特图先不展开维度，留给观众自己打开
+ setTimeout(function(){
+  var fb=document.getElementById('foldBtn');if(fb&&/折叠/.test(fb.textContent))fb.click();
+  document.querySelectorAll('.gt-dims [data-d]').forEach(function(b){if(b.getAttribute('aria-pressed')==='true')b.click()});
+  fit();
+ },200);
 })();
 </script>
