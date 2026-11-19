@@ -483,40 +483,35 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
 #deck::-webkit-scrollbar{display:none}
 .slide{height:100dvh;display:grid;place-items:center;scroll-snap-align:center}
 .sheet{position:relative;width:min(100vw,calc(100dvh*16/9));height:min(calc(100vw*9/16),100dvh);background:var(--paper);overflow:hidden}
-.stage{position:absolute;left:50%;top:50%;width:1600px;height:900px;transform:translate(-50%,-50%) scale(var(--k,1));transform-origin:50% 50%}
-.pad{position:absolute;inset:52px 96px 62px;display:grid;align-content:start}
-.slide[data-tight] .pad{inset:26px 56px 44px}
-.slide[data-center] .pad{align-content:center}
-.slide.vmid .pad{align-content:center}
-.fitw{transform-origin:top left;transform:scale(var(--f,1));width:var(--fw,100%)}
-.stage h1{font-size:64px}
-.stage h2{font-size:46px}
-.stage .sec{padding-top:0;gap:28px}
-.stage .part{padding-top:0;padding-bottom:20px}
-.stage .sec-head,.stage .sec-head[style*="margin-top"]{margin-top:0!important}
-.stage .sec-head.chead{grid-template-columns:minmax(0,.62fr) minmax(0,1.38fr);align-items:center;gap:24px}
-.stage .sec-head.chead .r{justify-items:stretch}
-.stage .hero{min-height:0;height:100%}
-.stage .foot{margin-top:0;border-top:0;padding-top:0}
+.dstage{position:absolute;left:50%;top:50%;width:1600px;height:900px;transform:translate(-50%,-50%) scale(var(--k,1));transform-origin:50% 50%}
+.pad{position:absolute;inset:70px 120px 84px;display:grid;align-content:center;overflow:hidden}
+
+.fitw{transform-origin:center center;transform:scale(var(--f,1));width:100%}
+.dstage h1{font-size:64px}
+.dstage h2{font-size:46px}
+.dstage .sec{padding-top:0;gap:28px}
+.dstage .part{padding-top:0;padding-bottom:20px}
+.dstage .sec-head,.dstage .sec-head[style*="margin-top"]{margin-top:0!important}
+.dstage .sec-head.chead{grid-template-columns:minmax(0,.62fr) minmax(0,1.38fr);align-items:center;gap:24px}
+.dstage .sec-head.chead .r{justify-items:stretch}
+.dstage .hero{min-height:0;height:100%}
+.dstage .foot{margin-top:0;border-top:0;padding-top:0}
 .gt-notes-loose{border-top:1px solid var(--line);background:var(--card);border-radius:6px}
-.pageno{position:absolute;right:96px;bottom:24px;font-family:var(--f-mono);font-size:12px;color:var(--muted);letter-spacing:.08em}
-.pagetag{position:absolute;left:96px;bottom:24px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:600}
-.slide[data-tight] .pageno{right:56px;bottom:14px}.slide[data-tight] .pagetag{left:56px;bottom:14px}
-.zoomb{position:absolute;right:96px;top:22px;z-index:3;all:unset;cursor:pointer;font-size:11.5px;font-weight:600;color:var(--muted);
- border:1.2px solid var(--line);border-radius:999px;padding:4px 12px;background:var(--card);opacity:0;transition:opacity .2s}
-.slide[data-tight] .zoomb{right:56px;top:12px}
-.sheet:hover .zoomb,.zoomb:focus-visible{opacity:1}
+.pageno{position:absolute;right:120px;bottom:30px;font-family:var(--f-mono);font-size:12px;color:var(--muted);letter-spacing:.08em}
+.pagetag{position:absolute;left:120px;bottom:30px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:600}
+
 /* 放大查看：原尺寸 + 可滚动 */
 .slide.zoomed .sheet{position:fixed;inset:0;width:100vw;height:100dvh;z-index:46;overflow:auto;background:var(--paper)}
-.slide.zoomed .stage{position:relative;left:0;top:0;transform:none;width:1600px;height:auto;margin:0 auto}
+.slide.zoomed .dstage{position:relative;left:0;top:0;transform:none;width:1600px;height:auto;margin:0 auto}
 .slide.zoomed .pad{position:relative;inset:auto;padding:40px 0 60px;align-content:start}
-.slide.zoomed .fitw{transform:none!important;width:100%!important}
+.slide.zoomed .fitw{transform:none!important}
 .slide.zoomed .pageno,.slide.zoomed .pagetag{display:none}
-.slide.zoomed .zoomb{opacity:1;position:fixed;right:20px;top:16px;background:var(--ink);color:var(--paper);border-color:var(--ink)}
+#zhint{position:fixed;right:18px;top:14px;z-index:47;display:none;font-size:12px;font-weight:600;color:var(--paper);background:var(--ink);border-radius:999px;padding:5px 13px}
+#zhint.on{display:block}
 /* 控制栏 */
 #ctl{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);display:flex;align-items:center;gap:2px;padding:5px 8px;border-radius:999px;
- background:rgba(29,28,26,.88);color:#f3efe7;backdrop-filter:blur(8px);opacity:0;transition:opacity .25s;z-index:40;font-size:13px}
-#ctl.on{opacity:1}
+ background:rgba(29,28,26,.88);color:#f3efe7;backdrop-filter:blur(8px);opacity:.82;transition:opacity .2s;z-index:40;font-size:13px}
+#ctl:hover,#ctl:focus-within{opacity:1}
 #ctl button{all:unset;cursor:pointer;padding:5px 11px;border-radius:999px;line-height:1}
 #ctl button:hover{background:rgba(255,255,255,.14)}
 #ctl button:focus-visible{outline:2px solid var(--sky)}
@@ -539,7 +534,7 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
 
 <div id="deck">
 <div class="slide" data-center data-tag="Agent UX Anatomy" aria-label="第 1 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <header class="hero">
   <div class="hero-l">
     <span class="eyebrow"><b>00</b>/ &nbsp;Agent UX Anatomy</span>
@@ -580,15 +575,15 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     </div>
   </div>
 </header>
-  </div></div><span class="pagetag">Agent UX Anatomy</span><span class="pageno">01 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">Agent UX Anatomy</span><span class="pageno">01 / 34</span></div></div>
 </div>
 <div class="slide" data-center data-tag="Part I · Runtime" aria-label="第 2 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <div class="part"><span class="pn">I</span><div><span class="caps">Part I · Runtime</span><h2>机制底座：Agent 怎样运行</h2></div><span class="hand">from token to loop</span></div>
-  </div></div><span class="pagetag">Part I · Runtime</span><span class="pageno">02 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">Part I · Runtime</span><span class="pageno">02 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="01 / Agent Runtime Stack" aria-label="第 3 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 3 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="runtime-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>01</b>/ &nbsp;Agent Runtime Stack</span><h2>Agent 底层机制：<br>七层，自下而上</h2></div>
@@ -611,10 +606,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
       <div class="det" hidden><div><span class="caps">体验约束</span><p>最小渲染单位是流式片段；首个 token 出来多快，决定用户觉得它「有没有在干活」；思考中、输出中、等工具是三种不同的等待。</p></div><div><span class="caps">设计资产</span><p>三种等待态规范；流式渲染规则；长任务通知策略。</p></div><div class="aff"><span class="caps">Agent 亲和条件</span><p>信息密、单位和标识写全；不变内容放前缀命中缓存；文本结构优先于截图。</p></div></div></div>
   </div>
 </section>
-  </div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">03 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">03 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="01 / Agent Runtime Stack" aria-label="第 4 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 4 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="runtime-1-0">
   <div class="sec-head" style="margin-top:36px">
     <div class="l"><h3 style="font-size:28px">L2 展开：Agent 就是一个循环，<br>用户只能在缝隙里插手</h3></div>
@@ -662,10 +657,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div><b class="r5">5</b><h3>压缩</h3><p>窗口快满时把旧内容改写成摘要，证据可能在这里丢失</p></div>
   </div>
 </section>
-  </div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">04 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">04 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="01 / Agent Runtime Stack" aria-label="第 5 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 5 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="runtime-2-0">
   <div class="sec-head" style="margin-top:36px">
     <div class="l"><h3 style="font-size:28px">L1 展开：六类对象里，<br>只有两类是运行时自带的</h3></div>
@@ -676,10 +671,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div><h3>自报 · 需要埋点</h3><div class="ladder"><span class="pill bt">Goal · 用户原话 + 复述</span><span class="pill bt">Task · 计划工具</span><span class="pill bt">Decision · 文字说明 + 证据</span><span class="pill bt">Artifact · 写文件 / 发布</span></div><p>需要和原始事件对账：标为完成的任务有没有对应的动作；决策必须带证据编号，否则只能标为「假设」；thinking 不能代替决策说明。</p></div>
   </div>
 </section>
-  </div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">05 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">05 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="01 / Agent Runtime Stack" aria-label="第 6 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 6 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="runtime-3-0">
   <div class="sec-head" style="margin-top:36px">
     <div class="l"><h3 style="font-size:28px">每一层怎样才算<br>「对 Agent 亲和」</h3></div>
@@ -693,10 +688,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div class="afr"><span class="ly"><i style="background:var(--butter)">L3</i><b>上下文工程</b></span><ul><li>上下文里放摘要和引用，原文随时可取</li><li>目标、约束、决定、待验证假设写进结构化状态</li><li>子 Agent 交回结论 + 证据 ID + 状态</li><li>同类结果去重，旧的标为已取代</li></ul><span class="no">三次 profiling 全量留在窗口里，压缩后约束丢了</span><span class="yes">保留最新一次摘要 + <code>见 e10</code>；约束在 <code>task.md</code> 里常驻</span></div>
     </div>
 </section>
-  </div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">06 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">06 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="01 / Agent Runtime Stack" aria-label="第 7 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 7 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="runtime-3-1">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>01</b>/ &nbsp;Agent Runtime Stack</span><h3 style="font-size:30px">上面四层：schema、自报、上下文、循环</h3></div>
@@ -709,10 +704,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div class="afr"><span class="ly"><i style="background:var(--lav)">L6</i><b>工作空间</b></span><ul><li>所有操作都能用命令行完成</li><li>工具链、CANN、commit、设备型号可锁定</li><li>反馈分层：编译前推导 → 编译后 IR → 上板</li><li>有可执行的完成标准：数值校验、性能基线</li><li>写目录、上板、推送的边界由环境限定</li></ul><span class="no">只能在 GUI 里打开 profiler，换台机器结果对不上</span><span class="yes"><code>msprof</code> 命令行 + 锁定环境 + 校验脚本作为完成标准</span></div>
   </div>
 </section>
-  </div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">07 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">07 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="01 / Agent Runtime Stack" aria-label="第 8 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 8 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="runtime-3-2">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>01</b>/ &nbsp;Agent Runtime Stack</span><h3 style="font-size:30px">五个条件贯穿七层</h3></div>
@@ -726,10 +721,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div><b class="r5">5</b><h3>可验证、可回退</h3><p>有客观的完成标准，也有检查点</p><span class="lyr"><span class="pill sm">L2</span><span class="pill sm">L6</span></span></div>
   </div>
 </section>
-  </div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">08 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">08 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="02 / Mechanism to Feeling" aria-label="第 9 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="02 / Mechanism to Feeling" aria-label="第 9 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="mechanism-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>02</b>/ &nbsp;Mechanism to Feeling</span><h2>每个体验问题，<br>都有运行机制的根源</h2></div>
@@ -740,15 +735,15 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div id="trRows"></div>
   </div>
 </section>
-  </div></div><span class="pagetag">02 / Mechanism to Feeling</span><span class="pageno">09 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">02 / Mechanism to Feeling</span><span class="pageno">09 / 34</span></div></div>
 </div>
 <div class="slide" data-center data-tag="Part II · Experience" aria-label="第 10 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <div class="part"><span class="pn">II</span><div><span class="caps">Part II · Experience</span><h2>体验架构：人怎样和 Agent 协作</h2></div><span class="hand">from feeling to design</span></div>
-  </div></div><span class="pagetag">Part II · Experience</span><span class="pageno">10 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">Part II · Experience</span><span class="pageno">10 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="03 / Experience Needs" aria-label="第 11 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="03 / Experience Needs" aria-label="第 11 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="needs-0-0">
   <div class="sec-head chead">
     <div class="l"><span class="eyebrow"><b>03</b>/ &nbsp;Experience Needs</span></div>
@@ -756,10 +751,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
   </div>
   <div class="fig nest-fig"><svg id="nestSvg" viewBox="0 0 1440 760" role="img" aria-label="四层嵌套：可感知、可理解、可控制、可信任"></svg></div>
 </section>
-  </div></div><span class="pagetag">03 / Experience Needs</span><span class="pageno">11 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">03 / Experience Needs</span><span class="pageno">11 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="03 / Experience Needs" aria-label="第 12 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="03 / Experience Needs" aria-label="第 12 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="needs-0-1">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>03</b>/ &nbsp;Experience Needs</span><h3 style="font-size:30px">每一层各自要回答的问题不同</h3></div>
@@ -772,10 +767,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div><span class="pill lv" style="justify-self:start">可信任 · Trust</span><q>结果我敢直接用吗？</q><ul><li>结论如实标注：假设、推断还是已验证</li><li>「已验证」必须附验证结果</li><li>产物写明依赖了哪些证据</li></ul></div>
   </div>
 </section>
-  </div></div><span class="pagetag">03 / Experience Needs</span><span class="pageno">12 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">03 / Experience Needs</span><span class="pageno">12 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="04 / Four Moments" aria-label="第 13 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="04 / Four Moments" aria-label="第 13 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="moments-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>04</b>/ &nbsp;Four Moments</span><h2>人机协作的<br>四个时刻</h2></div>
@@ -791,10 +786,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     </div>
   </div>
 </section>
-  </div></div><span class="pagetag">04 / Four Moments</span><span class="pageno">13 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">04 / Four Moments</span><span class="pageno">13 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="05 / Task Lifecycle" aria-label="第 14 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="05 / Task Lifecycle" aria-label="第 14 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="diamond-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>05</b>/ &nbsp;Task Lifecycle</span><h2>从一句话需求，<br>到可回溯的交付</h2></div>
@@ -843,10 +838,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     </svg>
   </div>
 </section>
-  </div></div><span class="pagetag">05 / Task Lifecycle</span><span class="pageno">14 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">05 / Task Lifecycle</span><span class="pageno">14 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="06 / Run Trace" aria-label="第 15 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="06 / Run Trace" aria-label="第 15 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="trace-0-0">
   <div class="sec-head chead">
     <div class="l"><span class="eyebrow"><b>06</b>/ &nbsp;Run Trace</span></div>
@@ -896,10 +891,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div class="wf-detail" id="wfDetail" aria-live="polite"></div>
   </div>
 </section>
-  </div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">15 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">15 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="06 / Run Trace" aria-label="第 16 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="06 / Run Trace" aria-label="第 16 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="trace-0-1">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>06</b>/ &nbsp;Run Trace</span><h3 style="font-size:30px">等人的时间，是这次运行里最大的一块</h3></div>
@@ -915,10 +910,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
   </div>
   <div class="insights" id="insights"></div>
 </section>
-  </div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">16 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">16 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="06 / Run Trace" aria-label="第 17 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="06 / Run Trace" aria-label="第 17 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="trace-1-0">
   <div class="sec-head chead">
     <div class="l"><span class="eyebrow"><b>06</b>/ &nbsp;Run Trace</span></div>
@@ -952,10 +947,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div class="gt-scroll"><svg id="gtSvg" role="img" aria-label="甘特图"></svg></div>
   </div>
 </section>
-  </div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">17 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">17 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="06 / Run Trace" aria-label="第 18 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="06 / Run Trace" aria-label="第 18 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="trace-1-1">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>06</b>/ &nbsp;Run Trace</span><h3 style="font-size:30px">泳道怎么划，取决于谁在等谁</h3></div>
@@ -983,10 +978,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div class="gtr"><span>典型交互</span><span>回放、点任意一段看证据</span><span>只看关键路径、批量审批、下钻子 Agent 轨迹</span><span>按人筛选、点交接看交接包、认领或转交</span></div>
   </div>
 </section>
-  </div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">18 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">18 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="07 / Viewing Distance" aria-label="第 19 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="07 / Viewing Distance" aria-label="第 19 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="distance-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>07</b>/ &nbsp;Viewing Distance</span><h2>同一件事，<br>按注意力分层呈现</h2></div>
@@ -1038,10 +1033,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
   </div>
   <div class="zoomline"><span>投入的注意力少</span><span class="ln"></span><span>投入的注意力多</span></div>
 </section>
-  </div></div><span class="pagetag">07 / Viewing Distance</span><span class="pageno">19 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">07 / Viewing Distance</span><span class="pageno">19 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="08 / Interruption Levels" aria-label="第 20 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="08 / Interruption Levels" aria-label="第 20 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="interrupt-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>08</b>/ &nbsp;Interruption Levels</span><h2>风险越高，<br>打断越强</h2></div>
@@ -1059,10 +1054,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div class="xax"><div class="xline"></div><div class="xlabels"><span>← 可撤回</span><h3>可撤回性</h3><span>不可撤回 →</span></div></div>
   </div>
 </section>
-  </div></div><span class="pagetag">08 / Interruption Levels</span><span class="pageno">20 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">08 / Interruption Levels</span><span class="pageno">20 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="09 / Trust Calibration" aria-label="第 21 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="09 / Trust Calibration" aria-label="第 21 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="trust-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>09</b>/ &nbsp;Trust Calibration</span><h2>目标不是更多信任，<br>而是恰当的信任</h2></div>
@@ -1083,10 +1078,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     </div>
   </div>
 </section>
-  </div></div><span class="pagetag">09 / Trust Calibration</span><span class="pageno">21 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">09 / Trust Calibration</span><span class="pageno">21 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="10 / Control Points" aria-label="第 22 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="10 / Control Points" aria-label="第 22 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="control-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>10</b>/ &nbsp;Control Points</span><h2>控制点上，<br>人和 Agent 交换什么</h2></div>
@@ -1123,10 +1118,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     </div>
   </div>
 </section>
-  </div></div><span class="pagetag">10 / Control Points</span><span class="pageno">22 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">10 / Control Points</span><span class="pageno">22 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="10 / Control Points" aria-label="第 23 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="10 / Control Points" aria-label="第 23 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="control-1-0">
   <div class="sec-head" style="margin-top:28px">
     <div class="l"><h3 style="font-size:28px">证据怎样组织：<br>按论证关系，不按调用顺序</h3></div>
@@ -1153,10 +1148,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <span style="color:var(--muted)">示例沿用第 06 节诊断案例的示例数据</span>
   </div>
 </section>
-  </div></div><span class="pagetag">10 / Control Points</span><span class="pageno">23 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">10 / Control Points</span><span class="pageno">23 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="10 / Control Points" aria-label="第 24 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="10 / Control Points" aria-label="第 24 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="control-1-1">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>10</b>/ &nbsp;Control Points</span><h3 style="font-size:30px">证据按论证关系组织，不按调用顺序</h3></div>
@@ -1170,10 +1165,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div><b>5</b><h3>只给相关证据</h3><p>审批补丁要的是影响和能否回退，不是整个定位过程</p></div>
   </div>
 </section>
-  </div></div><span class="pagetag">10 / Control Points</span><span class="pageno">24 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">10 / Control Points</span><span class="pageno">24 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="10 / Control Points" aria-label="第 25 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="10 / Control Points" aria-label="第 25 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="control-2-0">
   <div class="sec-head" style="margin-top:28px">
     <div class="l"><h3 style="font-size:28px">七个控制点，<br>九个人的动作</h3></div>
@@ -1191,10 +1186,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div class="cpr"><span><b>回溯</b></span><span>时间线和各节点状态</span><span class="vb"><i>回退</i><i>补充</i></span><span>交接包</span></div>
   </div>
 </section>
-  </div></div><span class="pagetag">10 / Control Points</span><span class="pageno">25 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">10 / Control Points</span><span class="pageno">25 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="10 / Control Points" aria-label="第 26 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="10 / Control Points" aria-label="第 26 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="control-3-0">
   <div class="sec-head" style="margin-top:28px">
     <div class="l"><h3 style="font-size:28px">对 Agent 友好的输入：<br>能直接变成可检验的约束</h3></div>
@@ -1214,10 +1209,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     </div>
   </div>
 </section>
-  </div></div><span class="pagetag">10 / Control Points</span><span class="pageno">26 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">10 / Control Points</span><span class="pageno">26 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="10 / Control Points" aria-label="第 27 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="10 / Control Points" aria-label="第 27 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="control-3-1">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>10</b>/ &nbsp;Control Points</span><h3 style="font-size:30px">把「写清楚」的负担交给界面，而不是用户</h3></div>
@@ -1237,15 +1232,15 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div><b>5</b><h3>插话指定对象</h3><p>先选中任务、证据或假设再输入，变成有作用范围的批注</p></div>
   </div>
 </section>
-  </div></div><span class="pagetag">10 / Control Points</span><span class="pageno">27 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">10 / Control Points</span><span class="pageno">27 / 34</span></div></div>
 </div>
 <div class="slide" data-center data-tag="Part III · AI Infra · Operators" aria-label="第 28 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <div class="part"><span class="pn">III</span><div><span class="caps">Part III · AI Infra · Operators</span><h2>落到算子开发</h2></div><span class="hand">from estimate to evidence</span></div>
-  </div></div><span class="pagetag">Part III · AI Infra · Operators</span><span class="pageno">28 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">Part III · AI Infra · Operators</span><span class="pageno">28 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="11 / Operator Development · Evidence Stages" aria-label="第 29 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="11 / Operator Development · Evidence Stages" aria-label="第 29 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="stages-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>11</b>/ &nbsp;Operator Development · Evidence Stages</span><h2>算子开发里，<br>证据分四个阶段</h2></div>
@@ -1287,10 +1282,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
   </div>
   <div class="zoomline"><span>证据弱</span><span class="ln"></span><span>证据强</span></div>
 </section>
-  </div></div><span class="pagetag">11 / Operator Development · Evidence Stages</span><span class="pageno">29 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">11 / Operator Development · Evidence Stages</span><span class="pageno">29 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="11 / Operator Development · Evidence Stages" aria-label="第 30 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="11 / Operator Development · Evidence Stages" aria-label="第 30 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="stages-0-1">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>11</b>/ &nbsp;Evidence Stages</span><h3 style="font-size:30px">越往后越贵，所以越早排除越划算</h3></div>
@@ -1307,10 +1302,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <p class="side" style="max-width:80ch">字节数和容量条件可以直接从源码推导、独立核对；时延和瓶颈分类来自 CANNBot 性能模型和仓库里保存的硬件标定数据。界面上这两类数字要分开标注，并写明「当前没有本机 NPU 实测」。来源分三种：实测、公开表、推导默认值，Mock 数据单独标出。</p>
   </div>
 </section>
-  </div></div><span class="pagetag">11 / Operator Development · Evidence Stages</span><span class="pageno">30 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">11 / Operator Development · Evidence Stages</span><span class="pageno">30 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="12 / Investigation Loop" aria-label="第 31 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="12 / Investigation Loop" aria-label="第 31 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="loop-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>12</b>/ &nbsp;Investigation Loop</span><h2>人和 Agent<br>围绕同一份证据</h2></div>
@@ -1355,10 +1350,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div><b>沟通往返次数</b><p>人和 Agent 之间来回解释了几轮。交接包带上了对象和前提，应该能明显减少往返。</p></div>
   </div>
 </section>
-  </div></div><span class="pagetag">12 / Investigation Loop</span><span class="pageno">31 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">12 / Investigation Loop</span><span class="pageno">31 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="13 / Operator Pattern Map" aria-label="第 32 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="13 / Operator Pattern Map" aria-label="第 32 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="patterns-0-0">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>13</b>/ &nbsp;Operator Pattern Map</span><h2>每个可视化 Pattern<br>回答一类问题</h2></div>
@@ -1376,10 +1371,10 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div class="xax"><div class="xline"></div><div class="xlabels"><span>← 数据去了哪</span><h3>关注点</h3><span>时间去了哪 →</span></div></div>
   </div>
 </section>
-  </div></div><span class="pagetag">13 / Operator Pattern Map</span><span class="pageno">32 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">13 / Operator Pattern Map</span><span class="pageno">32 / 34</span></div></div>
 </div>
-<div class="slide" data-tight data-tag="13 / Operator Pattern Map" aria-label="第 33 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+<div class="slide" data-tag="13 / Operator Pattern Map" aria-label="第 33 页，共 34 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <section class="sec" id="patterns-0-1">
   <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>13</b>/ &nbsp;Operator Pattern Map</span><h3 style="font-size:30px">四层能力是每个案例的共同组装方式</h3></div>
@@ -1393,15 +1388,15 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
   </div>
   <p class="side" style="max-width:80ch">这四层能力是 Pattern 库里每个案例的共同组装方式：调查工作流按任务依次调用它们，用户不需要记住具体用哪个 Skill。对设计系统来说，这意味着沉淀的单位不只是组件，还包括「领域语义 + 图元 + 证据组织 + 空间交互」这一整套组合。</p>
 </section>
-  </div></div><span class="pagetag">13 / Operator Pattern Map</span><span class="pageno">33 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">13 / Operator Pattern Map</span><span class="pageno">33 / 34</span></div></div>
 </div>
 <div class="slide" data-center data-tag="Sources" aria-label="第 34 页，共 34 页">
-  <div class="sheet"><div class="stage"><div class="pad"><div class="fitw">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="fitw">
 <div class="foot">
   <span>来源：ChatGPT 分享对话的两轮回答；第 11–13 节的算子开发内容参考 <a href="https://yinyucheng0601.github.io/AI_Infra/ai-infra-research/patterns.html" style="color:inherit">AI Infra Pattern 库</a> 中 RMSNorm、LogSumExp、RSFA 等 Pattern 的页面说明，RMSNorm 数值是其中记录的性能模型估算，不是上板实测。第 06 节的耗时、tokens 和信心曲线是示例数据，用来说明结构。</span>
   <span>第 06 节瀑布流的交互思路参考了 affectUI 的 Trace Waterfall 组件（行内树、实时增长的条、当前时间线、折叠后在父条上显示刻度），代码为本页独立实现。</span>
 </div>
-  </div></div><span class="pagetag">Sources</span><span class="pageno">34 / 34</span><button class="zoomb" type="button">放大查看</button></div></div>
+  </div></div><span class="pagetag">Sources</span><span class="pageno">34 / 34</span></div></div>
 </div>
 </div>
 <div id="ctl" role="toolbar" aria-label="翻页">
@@ -1412,6 +1407,7 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
  <button id="ovb" type="button">概览</button>
  <button id="fs" type="button">全屏</button>
 </div>
+<div id="zhint">原始尺寸 · 按 Z 或 Esc 收起</div>
 <div id="ov" role="dialog" aria-label="页面概览"><div class="hd">全部 34 页 · 点击跳转 ｜ ←/→ 翻页 · O 概览 · Z 放大 · F 全屏</div><div class="g"></div></div>
 
 
@@ -1831,15 +1827,14 @@ if('IntersectionObserver' in window&&!reduce){const io=new IntersectionObserver(
 (function(){
  var deck=document.getElementById('deck'),slides=[].slice.call(deck.querySelectorAll('.slide')),cur=0,target=0,lastNav=0;
  function fitOne(sl){
-  var sheet=sl.querySelector('.sheet'),st=sl.querySelector('.stage');
+  var sheet=sl.querySelector('.sheet'),st=sl.querySelector('.dstage');
   if(!sl.classList.contains('zoomed'))st.style.setProperty('--k',(sheet.clientWidth/1600).toFixed(5));
   var pad=sl.querySelector('.pad'),f=pad.querySelector('.fitw');if(!f)return;
-  if(sl.classList.contains('zoomed')){f.style.removeProperty('--f');f.style.removeProperty('--fw');return}
-  f.style.setProperty('--f',1);f.style.setProperty('--fw','100%');
+  if(sl.classList.contains('zoomed')){f.style.removeProperty('--f');return}
+  f.style.setProperty('--f',1);
   var avail=pad.clientHeight,h=f.scrollHeight;
   f.setAttribute('data-nh',h);f.setAttribute('data-av',avail);
-  if(h>avail+1){var k=Math.max(.5,avail/h);f.style.setProperty('--f',k.toFixed(4));f.style.setProperty('--fw',(100/k).toFixed(3)+'%')}
-  sl.classList.toggle('vmid',h<avail*0.66);
+  if(h>avail+1)f.style.setProperty('--f',Math.max(.42,avail/h).toFixed(4));
  }
  function fit(){slides.forEach(fitOne)}
  window.__deckFit=fit;
@@ -1847,8 +1842,10 @@ if('IntersectionObserver' in window&&!reduce){const io=new IntersectionObserver(
  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
  fit();setTimeout(fit,80);setTimeout(fit,500);
  // 页内展开/折叠后自动重新适配
- if(window.ResizeObserver)slides.forEach(function(sl){var f=sl.querySelector('.fitw');if(!f)return;var busy=false;
-  new ResizeObserver(function(){if(busy)return;busy=true;requestAnimationFrame(function(){fitOne(sl);busy=false})}).observe(f)});
+ slides.forEach(function(sl){var f=sl.querySelector('.fitw');if(!f)return;var tmr;
+  function later(){clearTimeout(tmr);tmr=setTimeout(function(){fitOne(sl)},50)}
+  if(window.ResizeObserver)new ResizeObserver(later).observe(f);
+  sl.addEventListener('click',later);sl.addEventListener('keyup',later)});
  slides.forEach(function(sl,i){new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){cur=i;
    if(Date.now()-lastNav>650)target=i;
    if(pn)pn.textContent=(i+1)+' / '+slides.length;
@@ -1864,25 +1861,19 @@ if('IntersectionObserver' in window&&!reduce){const io=new IntersectionObserver(
  window.__deckGo=go;
  document.getElementById('prev').onclick=function(){go(target-1)};
  document.getElementById('next').onclick=function(){go(target+1)};
- var ctl=document.getElementById('ctl'),ht;
- function show(){ctl.classList.add('on');clearTimeout(ht);ht=setTimeout(function(){ctl.classList.remove('on')},2500)}
- addEventListener('mousemove',function(e){if(innerHeight-e.clientY<120)show()});
- ctl.addEventListener('mouseenter',function(){clearTimeout(ht);ctl.classList.add('on')});
- ctl.addEventListener('mouseleave',show);
  var fsb=document.getElementById('fs');
  fsb.onclick=function(){if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen()};
  document.addEventListener('fullscreenchange',function(){fsb.textContent=document.fullscreenElement?'退出全屏':'全屏'});
  // 放大查看
- function zoom(sl,on){sl.classList.toggle('zoomed',on);deck.style.overflow=on?'hidden':'';
-  var b=sl.querySelector('.zoomb');if(b)b.textContent=on?'× 收起':'放大查看';fitOne(sl);if(!on){var j=slides.indexOf(sl);if(j>=0){var yy=slides[j].getBoundingClientRect().top-deck.getBoundingClientRect().top+deck.scrollTop;deck.scrollTo({top:yy,behavior:'auto'})}}}
- slides.forEach(function(sl){var b=sl.querySelector('.zoomb');if(b)b.onclick=function(){zoom(sl,!sl.classList.contains('zoomed'))}});
+ var zh=document.getElementById('zhint');
+ function zoom(sl,on){sl.classList.toggle('zoomed',on);deck.style.overflow=on?'hidden':'';zh.classList.toggle('on',on);
+  fitOne(sl);if(!on){var j=slides.indexOf(sl);if(j>=0){var yy=slides[j].getBoundingClientRect().top-deck.getBoundingClientRect().top+deck.scrollTop;deck.scrollTo({top:yy,behavior:'auto'})}}}
  // 概览
  var ov=document.getElementById('ov'),built=false;
  function build(){if(built)return;built=true;var g=ov.querySelector('.g');
   slides.forEach(function(sl,i){var t=document.createElement('div');t.className='t ovt';t.tabIndex=0;
-   var m=sl.querySelector('.stage').cloneNode(true);m.className='mini';m.removeAttribute('style');
+   var m=sl.querySelector('.dstage').cloneNode(true);m.className='mini';m.removeAttribute('style');
    m.querySelectorAll('[id]').forEach(function(n){n.removeAttribute('id')});
-   m.querySelectorAll('.zoomb').forEach(function(n){n.remove()});
    t.appendChild(m);var lab=document.createElement('i');lab.textContent=(i+1)+' · '+(sl.dataset.tag||'');t.appendChild(lab);
    t.onclick=function(){toggle(false);go(i)};t.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle(false);go(i)}};
    g.appendChild(t);
@@ -1904,7 +1895,7 @@ if('IntersectionObserver' in window&&!reduce){const io=new IntersectionObserver(
   else if(k==='End'){e.preventDefault();go(slides.length-1)}
   else if(k==='o'||k==='O'){e.preventDefault();toggle()}
   else if(k==='f'||k==='F'){e.preventDefault();fsb.onclick()}
-  else if(k==='z'||k==='Z'){e.preventDefault();var b=slides[cur].querySelector('.zoomb');if(b)b.click()}
+  else if(k==='z'||k==='Z'){e.preventDefault();zoom(slides[cur],true)}
  });
  // deck 下的默认态：瀑布流折叠子任务、甘特图先不展开维度，留给观众自己打开
  setTimeout(function(){
