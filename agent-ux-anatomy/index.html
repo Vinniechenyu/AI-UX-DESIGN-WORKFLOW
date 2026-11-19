@@ -538,7 +538,7 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
 </style>
 
 <div id="deck">
-<div class="slide" data-center data-tag="Agent UX Anatomy" aria-label="第 1 页，共 34 页">
+<div class="slide" data-center data-tag="Agent UX Anatomy" aria-label="第 1 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad nohead"><div class="pbody"><div class="fitw">
 <header class="hero">
   <div class="hero-l">
@@ -580,14 +580,14 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     </div>
   </div>
 </header>
-  </div></div></div><span class="pagetag">Agent UX Anatomy</span><span class="pageno">01 / 34</span></div></div>
+  </div></div></div><span class="pagetag">Agent UX Anatomy</span><span class="pageno">01 / 33</span></div></div>
 </div>
-<div class="slide" data-center data-tag="Part I · Runtime" aria-label="第 2 页，共 34 页">
+<div class="slide" data-center data-tag="Part I · Runtime" aria-label="第 2 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad nohead"><div class="pbody"><div class="fitw">
 <div class="part"><span class="pn">I</span><div><span class="caps">Part I · Runtime</span><h2>机制底座：Agent 怎样运行</h2></div><span class="hand">from token to loop</span></div>
-  </div></div></div><span class="pagetag">Part I · Runtime</span><span class="pageno">02 / 34</span></div></div>
+  </div></div></div><span class="pagetag">Part I · Runtime</span><span class="pageno">02 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 3 页，共 34 页">
+<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 3 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>01</b>/ &nbsp;Agent Runtime Stack</span><h2>Agent 底层机制：<br>七层，自下而上</h2></div>
     <div class="r"><span class="rule"></span><p class="side">后面所有的体验判断，都建立在这七层之上。下层约束上层：界面上的每个对象，运行时到底由谁、在什么时候产生，决定了它能不能被可靠地展示。点击任意一层，展开它对体验的约束、应该沉淀的设计资产，以及让这一层对 Agent 亲和的条件。</p><span class="hand">token → protocol → loop → context → schema → experience</span></div>
@@ -610,9 +610,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
       <div class="det" hidden><div><span class="caps">体验约束</span><p>最小渲染单位是流式片段；首个 token 出来多快，决定用户觉得它「有没有在干活」；思考中、输出中、等工具是三种不同的等待。</p></div><div><span class="caps">设计资产</span><p>三种等待态规范；流式渲染规则；长任务通知策略。</p></div><div class="aff"><span class="caps">Agent 亲和条件</span><p>信息密、单位和标识写全；不变内容放前缀命中缓存；文本结构优先于截图。</p></div></div></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">03 / 34</span></div></div>
+  </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">03 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 4 页，共 34 页">
+<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 4 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head" style="margin-top:36px">
     <div class="l"><span class="eyebrow"><b>01</b>/ &nbsp;Agent Runtime Stack</span><h3 style="font-size:28px">L2 展开：Agent 就是一个循环，<br>用户只能在缝隙里插手</h3></div>
     <div class="r"><span class="rule"></span><p class="side">模型每输出一轮，循环看 stop_reason：要调用工具就先过权限关卡，执行后把结果回填给模型再推理；不再调用工具就交付。界面上的每个控制按钮，都要对应到下面 5 个真实挂点之一。</p></div>
@@ -660,9 +660,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div><b class="r5">5</b><h3>压缩</h3><p>窗口快满时把旧内容改写成摘要，证据可能在这里丢失</p></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">04 / 34</span></div></div>
+  </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">04 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 5 页，共 34 页">
+<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 5 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head" style="margin-top:36px">
     <div class="l"><span class="eyebrow"><b>01</b>/ &nbsp;Agent Runtime Stack</span><h3 style="font-size:28px">L1 展开：六类对象里，<br>只有两类是运行时自带的</h3></div>
     <div class="r"><span class="rule"></span><p class="side">设计系统里常见的六类对象，来源并不对等。动作和证据由协议直接产生；目标、任务、决策、产物都要 Agent 主动汇报。后者需要先设计汇报工具，界面才有数据可绑。</p></div>
@@ -673,9 +673,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div><h3>自报 · 需要埋点</h3><div class="ladder"><span class="pill bt">Goal · 用户原话 + 复述</span><span class="pill bt">Task · 计划工具</span><span class="pill bt">Decision · 文字说明 + 证据</span><span class="pill bt">Artifact · 写文件 / 发布</span></div><p>需要和原始事件对账：标为完成的任务有没有对应的动作；决策必须带证据编号，否则只能标为「假设」；thinking 不能代替决策说明。</p></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">05 / 34</span></div></div>
+  </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">05 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 6 页，共 34 页">
+<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 6 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head" style="margin-top:36px">
     <div class="l"><span class="eyebrow"><b>01</b>/ &nbsp;Agent Runtime Stack</span><h3 style="font-size:28px">每一层怎样才算<br>「对 Agent 亲和」</h3></div>
     <div class="r"><span class="rule"></span><p class="side">亲和的意思是：这一层流过的内容，Agent 拿到不用猜就能直接用，产出的东西下一层和界面上的人也能直接接住。条件因层而异，但最后都会落到界面上：决策包能「结论先行、证据带标签」，靠的就是这些底层条件。</p><span class="hand">agent-friendly = human-friendly</span></div>
@@ -689,9 +689,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div class="afr"><span class="ly"><i style="background:var(--butter)">L3</i><b>上下文工程</b></span><ul><li>上下文里放摘要和引用，原文随时可取</li><li>目标、约束、决定、待验证假设写进结构化状态</li><li>子 Agent 交回结论 + 证据 ID + 状态</li><li>同类结果去重，旧的标为已取代</li></ul><span class="no">三次 profiling 全量留在窗口里，压缩后约束丢了</span><span class="yes">保留最新一次摘要 + <code>见 e10</code>；约束在 <code>task.md</code> 里常驻</span></div>
     </div>
 </section>
-  </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">06 / 34</span></div></div>
+  </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">06 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 7 页，共 34 页">
+<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 7 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>01</b>/ &nbsp;Agent Runtime Stack</span><h3 style="font-size:30px">上面四层：schema、自报、上下文、循环</h3></div>
     <div class="r"><span class="rule"></span><p class="side">越往上越靠「约定」而不是「协议」：这四层的亲和条件，决定了界面能不能拿到可联动的对象。</p></div>
@@ -704,9 +704,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div class="afr"><span class="ly"><i style="background:var(--lav)">L6</i><b>工作空间</b></span><ul><li>所有操作都能用命令行完成</li><li>工具链、CANN、commit、设备型号可锁定</li><li>反馈分层：编译前推导 → 编译后 IR → 上板</li><li>有可执行的完成标准：数值校验、性能基线</li><li>写目录、上板、推送的边界由环境限定</li></ul><span class="no">只能在 GUI 里打开 profiler，换台机器结果对不上</span><span class="yes"><code>msprof</code> 命令行 + 锁定环境 + 校验脚本作为完成标准</span></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">07 / 34</span></div></div>
+  </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">07 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 8 页，共 34 页">
+<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 8 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>01</b>/ &nbsp;Agent Runtime Stack</span><h3 style="font-size:30px">五个条件贯穿七层</h3></div>
     <div class="r"><span class="rule"></span><p class="side">有类型、可寻址、有边界、自描述、可验证可回退——对 Agent 亲和的条件，和对人亲和的条件基本重合。</p></div>
@@ -720,9 +720,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div><b class="r5">5</b><h3>可验证、可回退</h3><p>有客观的完成标准，也有检查点</p><span class="lyr"><span class="pill sm">L2</span><span class="pill sm">L6</span></span></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">08 / 34</span></div></div>
+  </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">08 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="02 / Mechanism to Feeling" aria-label="第 9 页，共 34 页">
+<div class="slide" data-tag="02 / Mechanism to Feeling" aria-label="第 9 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>02</b>/ &nbsp;Mechanism to Feeling</span><h2>每个体验问题，<br>都有运行机制的根源</h2></div>
     <div class="r"><span class="rule"></span><p class="side">后面的体验判断都能追溯到 Agent 的运行方式。这张表先把技术机制翻译成用户语言：左边是机制，中间是用户当时心里的问题，右边是设计回应。</p><span class="hand">mechanism → feeling → design</span></div>
@@ -733,14 +733,14 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div id="trRows"></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">02 / Mechanism to Feeling</span><span class="pageno">09 / 34</span></div></div>
+  </div></div></div><span class="pagetag">02 / Mechanism to Feeling</span><span class="pageno">09 / 33</span></div></div>
 </div>
-<div class="slide" data-center data-tag="Part II · Experience" aria-label="第 10 页，共 34 页">
+<div class="slide" data-center data-tag="Part II · Experience" aria-label="第 10 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad nohead"><div class="pbody"><div class="fitw">
 <div class="part"><span class="pn">II</span><div><span class="caps">Part II · Experience</span><h2>体验架构：人怎样和 Agent 协作</h2></div><span class="hand">from feeling to design</span></div>
-  </div></div></div><span class="pagetag">Part II · Experience</span><span class="pageno">10 / 34</span></div></div>
+  </div></div></div><span class="pagetag">Part II · Experience</span><span class="pageno">10 / 33</span></div></div>
 </div>
-<div class="slide" data-bz="0.86" data-tag="03 / Experience Needs" aria-label="第 11 页，共 34 页">
+<div class="slide" data-bz="0.86" data-tag="03 / Experience Needs" aria-label="第 11 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head chead">
     <div class="l"><span class="eyebrow"><b>03</b>/ &nbsp;Experience Needs</span><h3 style="font-size:30px">四层需求由内向外逐层成立，<br>内层不成立，外层无从谈起</h3></div>
     <div class="r"><span class="rule"></span><p class="side">这张图只回答一件事：设计投入的先后顺序。四层同心，越靠内越基础，内层没做到，外层的设计再精细也立不住。</p></div>
@@ -748,9 +748,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
 <section class="sec" id="needs-0-0">
   <div class="fig nest-fig"><svg id="nestSvg" viewBox="0 0 1440 760" role="img" aria-label="四层嵌套：可感知、可理解、可控制、可信任"></svg></div>
 </section>
-  </div></div></div><span class="pagetag">03 / Experience Needs</span><span class="pageno">11 / 34</span></div></div>
+  </div></div></div><span class="pagetag">03 / Experience Needs</span><span class="pageno">11 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="03 / Experience Needs" aria-label="第 12 页，共 34 页">
+<div class="slide" data-tag="03 / Experience Needs" aria-label="第 12 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>03</b>/ &nbsp;Experience Needs</span><h3 style="font-size:30px">每一层各自要回答的问题不同</h3></div>
     <div class="r"><span class="rule"></span><p class="side">用户感知不到 Agent 在运行，就谈不上看懂它；看不懂，就没法有效控制；控制不了，就不会放心托付。设计投入应该先保证内层，再往外扩。</p></div>
@@ -763,9 +763,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div><span class="pill lv" style="justify-self:start">可信任 · Trust</span><q>结果我敢直接用吗？</q><ul><li>结论如实标注：假设、推断还是已验证</li><li>「已验证」必须附验证结果</li><li>产物写明依赖了哪些证据</li></ul></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">03 / Experience Needs</span><span class="pageno">12 / 34</span></div></div>
+  </div></div></div><span class="pagetag">03 / Experience Needs</span><span class="pageno">12 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="04 / Four Moments" aria-label="第 13 页，共 34 页">
+<div class="slide" data-tag="04 / Four Moments" aria-label="第 13 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>04</b>/ &nbsp;Four Moments</span><h2>人机协作的<br>四个时刻</h2></div>
     <div class="r"><span class="rule"></span><p class="side">和 Agent 协作时，用户只在四个时刻出现：交代任务、观察进展、必要时干预、最后验收。观察和干预并行发生，可以在运行中反复切换。</p><span class="hand">delegate · monitor · steer · adopt</span></div>
@@ -781,9 +781,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     </div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">04 / Four Moments</span><span class="pageno">13 / 34</span></div></div>
+  </div></div></div><span class="pagetag">04 / Four Moments</span><span class="pageno">13 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="05 / Task Lifecycle" aria-label="第 14 页，共 34 页">
+<div class="slide" data-tag="05 / Task Lifecycle" aria-label="第 14 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>05</b>/ &nbsp;Task Lifecycle</span><h2>从一句话需求，<br>到可回溯的交付</h2></div>
     <div class="r"><span class="rule"></span><p class="side">一次任务分五个阶段。每个阶段里，用户和 Agent 各做一件事，界面要回答一个问题，并留一个关键触点。最后的「回溯」不是终点：带着证据可以回到任意一步，重新开始或从中间续跑。</p><span class="hand">input → plan → execute → output → trace back</span></div>
@@ -832,9 +832,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     </svg>
   </div>
 </section>
-  </div></div></div><span class="pagetag">05 / Task Lifecycle</span><span class="pageno">14 / 34</span></div></div>
+  </div></div></div><span class="pagetag">05 / Task Lifecycle</span><span class="pageno">14 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="06 / Run Trace" aria-label="第 15 页，共 34 页">
+<div class="slide" data-tag="06 / Run Trace" aria-label="第 15 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head chead">
     <div class="l"><span class="eyebrow"><b>06</b>/ &nbsp;Run Trace</span><h3 style="font-size:30px">一次 RMSNorm 诊断的完整轨迹：<br>时间花在哪，信心在哪里起伏</h3></div>
     <div class="r"><span class="rule"></span><p class="side">每个模型调用、工具调用、人工关卡都是时间线上的一条，下半部分是同一时间轴上的信心曲线。点任意一行看技术信息和体验解读（示例数据）。</p></div>
@@ -884,9 +884,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div class="wf-detail" id="wfDetail" aria-live="polite"></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">15 / 34</span></div></div>
+  </div></div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">15 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="06 / Run Trace" aria-label="第 16 页，共 34 页">
+<div class="slide" data-tag="06 / Run Trace" aria-label="第 16 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>06</b>/ &nbsp;Run Trace</span><h3 style="font-size:30px">等人的时间，是这次运行里最大的一块</h3></div>
     <div class="r"><span class="rule"></span><p class="side">一次 RMSNorm 性能诊断（示例数据）：每个模型调用、工具调用、人工关卡都是时间线上的一条，下半部分是同一时间轴上的信心曲线。点任意一行看技术信息和体验解读。</p></div>
@@ -902,9 +902,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
   </div>
   <div class="insights" id="insights"></div>
 </section>
-  </div></div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">16 / 34</span></div></div>
+  </div></div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">16 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="06 / Run Trace" aria-label="第 17 页，共 34 页">
+<div class="slide" data-tag="06 / Run Trace" aria-label="第 17 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head chead">
     <div class="l"><span class="eyebrow"><b>06</b>/ &nbsp;Run Trace</span><h3 style="font-size:30px">参与者变多以后，<br>泳道从「任务」变成「谁在等谁」</h3></div>
     <div class="r"><span class="rule"></span><p class="side">泳道是参与者，横轴是时间，重点画出依赖、等待和争用。切换上方三种协作规模，看泳道怎么划、什么最该突出。</p></div>
@@ -938,9 +938,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div class="gt-scroll"><svg id="gtSvg" role="img" aria-label="甘特图"></svg></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">17 / 34</span></div></div>
+  </div></div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">17 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="06 / Run Trace" aria-label="第 18 页，共 34 页">
+<div class="slide" data-tag="06 / Run Trace" aria-label="第 18 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>06</b>/ &nbsp;Run Trace</span><h3 style="font-size:30px">泳道怎么划，取决于谁在等谁</h3></div>
     <div class="r"><span class="rule"></span><p class="side">瀑布流回答「它这一步在干什么」，适合一个 Agent 的一次运行。参与者一多，用户关心的变成「谁在等谁、哪条线拖慢了整体、这件事现在归谁」，这时要换成甘特图。</p></div>
@@ -968,9 +968,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div class="gtr"><span>典型交互</span><span>回放、点任意一段看证据</span><span>只看关键路径、批量审批、下钻子 Agent 轨迹</span><span>按人筛选、点交接看交接包、认领或转交</span></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">18 / 34</span></div></div>
+  </div></div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">18 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="07 / Viewing Distance" aria-label="第 19 页，共 34 页">
+<div class="slide" data-tag="07 / Viewing Distance" aria-label="第 19 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>07</b>/ &nbsp;Viewing Distance</span><h2>同一件事，<br>按注意力分层呈现</h2></div>
     <div class="r"><span class="rule"></span><p class="side">用户不会一直盯着 Agent。同一次运行要同时提供四种距离的视图，默认停在「扫视」，每一级都能一步进到下一级。卡片越高，代表投入的注意力越多。</p><span class="hand">glance first, dig on demand</span></div>
@@ -1022,9 +1022,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
   </div>
   <div class="zoomline"><span>投入的注意力少</span><span class="ln"></span><span>投入的注意力多</span></div>
 </section>
-  </div></div></div><span class="pagetag">07 / Viewing Distance</span><span class="pageno">19 / 34</span></div></div>
+  </div></div></div><span class="pagetag">07 / Viewing Distance</span><span class="pageno">19 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="08 / Interruption Levels" aria-label="第 20 页，共 34 页">
+<div class="slide" data-tag="08 / Interruption Levels" aria-label="第 20 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>08</b>/ &nbsp;Interruption Levels</span><h2>风险越高，<br>打断越强</h2></div>
     <div class="r"><span class="rule"></span><p class="side">每次打断都在消耗注意力。阻断式审批用多了，用户会不看内容直接点「批准」，这比不审批更危险。用两个问题给每个动作分级：做了能不能撤回？影响只在本地，还是会波及外部和他人？</p><span class="hand">interrupt only when it matters</span></div>
@@ -1042,9 +1042,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div class="xax"><div class="xline"></div><div class="xlabels"><span>← 可撤回</span><h3>可撤回性</h3><span>不可撤回 →</span></div></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">08 / Interruption Levels</span><span class="pageno">20 / 34</span></div></div>
+  </div></div></div><span class="pagetag">08 / Interruption Levels</span><span class="pageno">20 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="09 / Trust Calibration" aria-label="第 21 页，共 34 页">
+<div class="slide" data-tag="09 / Trust Calibration" aria-label="第 21 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>09</b>/ &nbsp;Trust Calibration</span><h2>目标不是更多信任，<br>而是恰当的信任</h2></div>
     <div class="r"><span class="rule"></span><p class="side">过程藏起来，用户会把每个结论重查一遍；叙事太流畅、措辞太笃定，用户又会不经核对直接采纳。好的界面让用户的信任程度和证据强度保持一致。</p><span class="hand">trust ≈ evidence</span></div>
@@ -1065,9 +1065,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     </div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">09 / Trust Calibration</span><span class="pageno">21 / 34</span></div></div>
+  </div></div></div><span class="pagetag">09 / Trust Calibration</span><span class="pageno">21 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="10 / Control Points" aria-label="第 22 页，共 34 页">
+<div class="slide" data-tag="10 / Control Points" aria-label="第 22 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>10</b>/ &nbsp;Control Points</span><h2>控制点上，<br>人和 Agent 交换什么</h2></div>
     <div class="r"><span class="rule"></span><p class="side">每个控制点都是一个需要人做决定的时刻。Agent 递上来的应该是做这个决定所需的最少信息，叫「决策包」；人做完决定交回去的，叫「交接包」。两个方向用同一套骨架：对象、证据、前提、动作。少一次「翻译成自然语言再解析回来」，就少一次信息损失。</p><span class="hand">decision pack ⇄ handoff pack</span></div>
@@ -1104,9 +1104,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     </div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">10 / Control Points</span><span class="pageno">22 / 34</span></div></div>
+  </div></div></div><span class="pagetag">10 / Control Points</span><span class="pageno">22 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="10 / Control Points" aria-label="第 23 页，共 34 页">
+<div class="slide" data-tag="10 / Control Points" aria-label="第 23 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head" style="margin-top:28px">
     <div class="l"><span class="eyebrow"><b>10</b>/ &nbsp;Control Points</span><h3 style="font-size:28px">证据怎样组织：<br>按论证关系，不按调用顺序</h3></div>
     <div class="r"><span class="rule"></span><p class="side">工具调用的先后顺序是 Agent 的视角。人做判断需要的是论证结构：哪些支持、哪些反对、还缺什么。每条证据都带三个标签。</p></div>
@@ -1133,9 +1133,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <span style="color:var(--muted)">示例沿用第 06 节诊断案例的示例数据</span>
   </div>
 </section>
-  </div></div></div><span class="pagetag">10 / Control Points</span><span class="pageno">23 / 34</span></div></div>
+  </div></div></div><span class="pagetag">10 / Control Points</span><span class="pageno">23 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="10 / Control Points" aria-label="第 24 页，共 34 页">
+<div class="slide" data-tag="10 / Control Points" aria-label="第 24 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>10</b>/ &nbsp;Control Points</span><h3 style="font-size:30px">证据按论证关系组织，不按调用顺序</h3></div>
     <div class="r"><span class="rule"></span><p class="side">结论先行、支持反对缺失分组、每条证据带三个标签——人才可能在一屏内做出判断。</p></div>
@@ -1149,9 +1149,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div><b>5</b><h3>只给相关证据</h3><p>审批补丁要的是影响和能否回退，不是整个定位过程</p></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">10 / Control Points</span><span class="pageno">24 / 34</span></div></div>
+  </div></div></div><span class="pagetag">10 / Control Points</span><span class="pageno">24 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="10 / Control Points" aria-label="第 25 页，共 34 页">
+<div class="slide" data-tag="10 / Control Points" aria-label="第 25 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head" style="margin-top:28px">
     <div class="l"><span class="eyebrow"><b>10</b>/ &nbsp;Control Points</span><h3 style="font-size:28px">七个控制点，<br>九个人的动作</h3></div>
     <div class="r"><span class="rule"></span><p class="side">人的每个动作都要落在某个对象上。「我觉得不对」Agent 无法利用；「对证据 e10 有疑问」它就能直接处理。拒绝时一定要收集理由，否则 Agent 只收到一个「否」，只能盲猜下一步。</p></div>
@@ -1169,9 +1169,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div class="cpr"><span><b>回溯</b></span><span>时间线和各节点状态</span><span class="vb"><i>回退</i><i>补充</i></span><span>交接包</span></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">10 / Control Points</span><span class="pageno">25 / 34</span></div></div>
+  </div></div></div><span class="pagetag">10 / Control Points</span><span class="pageno">25 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="10 / Control Points" aria-label="第 26 页，共 34 页">
+<div class="slide" data-tag="10 / Control Points" aria-label="第 26 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head" style="margin-top:28px">
     <div class="l"><span class="eyebrow"><b>10</b>/ &nbsp;Control Points</span><h3 style="font-size:28px">对 Agent 友好的输入：<br>能直接变成可检验的约束</h3></div>
     <div class="r"><span class="rule"></span><p class="side">用户的输入会变成 Agent 上下文里的 token，后续每一步推理都从这里出发。友好的输入不需要 Agent 去猜。但不能指望用户每次都写全，所以要靠界面把输入「结构化」。</p></div>
@@ -1191,9 +1191,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     </div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">10 / Control Points</span><span class="pageno">26 / 34</span></div></div>
+  </div></div></div><span class="pagetag">10 / Control Points</span><span class="pageno">26 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="10 / Control Points" aria-label="第 27 页，共 34 页">
+<div class="slide" data-tag="10 / Control Points" aria-label="第 27 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>10</b>/ &nbsp;Control Points</span><h3 style="font-size:30px">把「写清楚」的负担交给界面，而不是用户</h3></div>
     <div class="r"><span class="rule"></span><p class="side">引用代替描述、约束做成标签、完成标准用模板、推断由 Agent 补全并等人确认。</p></div>
@@ -1213,14 +1213,14 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div><b>5</b><h3>插话指定对象</h3><p>先选中任务、证据或假设再输入，变成有作用范围的批注</p></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">10 / Control Points</span><span class="pageno">27 / 34</span></div></div>
+  </div></div></div><span class="pagetag">10 / Control Points</span><span class="pageno">27 / 33</span></div></div>
 </div>
-<div class="slide" data-center data-tag="Part III · AI Infra · Operators" aria-label="第 28 页，共 34 页">
+<div class="slide" data-center data-tag="Part III · AI Infra · Operators" aria-label="第 28 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad nohead"><div class="pbody"><div class="fitw">
 <div class="part"><span class="pn">III</span><div><span class="caps">Part III · AI Infra · Operators</span><h2>落到算子开发</h2></div><span class="hand">from estimate to evidence</span></div>
-  </div></div></div><span class="pagetag">Part III · AI Infra · Operators</span><span class="pageno">28 / 34</span></div></div>
+  </div></div></div><span class="pagetag">Part III · AI Infra · Operators</span><span class="pageno">28 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="11 / Operator Development · Evidence Stages" aria-label="第 29 页，共 34 页">
+<div class="slide" data-tag="11 / Operator Development · Evidence Stages" aria-label="第 29 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>11</b>/ &nbsp;Operator Development · Evidence Stages</span><h2>算子开发里，<br>证据分四个阶段</h2></div>
     <div class="r"><span class="rule"></span><p class="side">算子从写完源码到真正上板，能拿到的证据逐级变强。每个调查视图都要先说清自己站在哪个阶段、能回答什么、还不能回答什么。用编译前的估算去回答上板的问题，是这个领域最常见的误导。</p><span class="hand">estimate ≠ measurement</span></div>
@@ -1262,9 +1262,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
   </div>
   <div class="zoomline"><span>证据弱</span><span class="ln"></span><span>证据强</span></div>
 </section>
-  </div></div></div><span class="pagetag">11 / Operator Development · Evidence Stages</span><span class="pageno">29 / 34</span></div></div>
+  </div></div></div><span class="pagetag">11 / Operator Development · Evidence Stages</span><span class="pageno">29 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="11 / Operator Development · Evidence Stages" aria-label="第 30 页，共 34 页">
+<div class="slide" data-tag="11 / Operator Development · Evidence Stages" aria-label="第 30 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>11</b>/ &nbsp;Evidence Stages</span><h3 style="font-size:30px">越往后越贵，所以越早排除越划算</h3></div>
     <div class="r"><span class="rule"></span><p class="side">四个阶段的成本和可信度相反：编译前的估算最便宜也最弱，上板实测最贵也最强，调查顺序应当由此决定。</p></div>
@@ -1281,9 +1281,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <p class="side" style="max-width:80ch">字节数和容量条件可以直接从源码推导、独立核对；时延和瓶颈分类来自 CANNBot 性能模型和仓库里保存的硬件标定数据。界面上这两类数字要分开标注，并写明「当前没有本机 NPU 实测」。来源分三种：实测、公开表、推导默认值，Mock 数据单独标出。</p>
   </div>
 </section>
-  </div></div></div><span class="pagetag">11 / Operator Development · Evidence Stages</span><span class="pageno">30 / 34</span></div></div>
+  </div></div></div><span class="pagetag">11 / Operator Development · Evidence Stages</span><span class="pageno">30 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="12 / Investigation Loop" aria-label="第 31 页，共 34 页">
+<div class="slide" data-tag="12 / Investigation Loop" aria-label="第 31 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>12</b>/ &nbsp;Investigation Loop</span><h2>人和 Agent<br>围绕同一份证据</h2></div>
     <div class="r"><span class="rule"></span><p class="side">算子问题很难只靠文字说清，比如多维索引怎么落到线性地址、尾块和 padding 有没有越界。让 Agent 生成调查视图，用户在图上点选对象，再把「问题 + 证据」一起交回给 Agent 继续核查。交接包是这个闭环里最关键的界面对象。</p><span class="hand">human ⇄ agent, one evidence</span></div>
@@ -1328,9 +1328,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div><b>沟通往返次数</b><p>人和 Agent 之间来回解释了几轮。交接包带上了对象和前提，应该能明显减少往返。</p></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">12 / Investigation Loop</span><span class="pageno">31 / 34</span></div></div>
+  </div></div></div><span class="pagetag">12 / Investigation Loop</span><span class="pageno">31 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="13 / Operator Pattern Map" aria-label="第 32 页，共 34 页">
+<div class="slide" data-tag="13 / Operator Pattern Map" aria-label="第 32 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>13</b>/ &nbsp;Operator Pattern Map</span><h2>每个可视化 Pattern<br>回答一类问题</h2></div>
     <div class="r"><span class="rule"></span><p class="side">把 Pattern 库里和算子相关的案例按两个维度摆开：关注的是正确性还是性能，依据是源码推导还是编译与运行证据。左下最密、右上最稀，说明下一步最该补的是运行证据的接入。</p><span class="hand">where data goes, where time goes</span></div>
@@ -1348,9 +1348,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div class="xax"><div class="xline"></div><div class="xlabels"><span>← 数据去了哪</span><h3>关注点</h3><span>时间去了哪 →</span></div></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">13 / Operator Pattern Map</span><span class="pageno">32 / 34</span></div></div>
+  </div></div></div><span class="pagetag">13 / Operator Pattern Map</span><span class="pageno">32 / 33</span></div></div>
 </div>
-<div class="slide" data-tag="13 / Operator Pattern Map" aria-label="第 33 页，共 34 页">
+<div class="slide" data-tag="13 / Operator Pattern Map" aria-label="第 33 页，共 33 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><section class="sec">  <div class="sec-head">
     <div class="l"><span class="eyebrow"><b>13</b>/ &nbsp;Operator Pattern Map</span><h3 style="font-size:30px">四层能力是每个案例的共同组装方式</h3></div>
     <div class="r"><span class="rule"></span><p class="side">调查工作流按任务依次调用这四层，用户不需要记住具体用哪个 Skill。</p></div>
@@ -1364,27 +1364,19 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
   </div>
   <p class="side" style="max-width:80ch">这四层能力是 Pattern 库里每个案例的共同组装方式：调查工作流按任务依次调用它们，用户不需要记住具体用哪个 Skill。对设计系统来说，这意味着沉淀的单位不只是组件，还包括「领域语义 + 图元 + 证据组织 + 空间交互」这一整套组合。</p>
 </section>
-  </div></div></div><span class="pagetag">13 / Operator Pattern Map</span><span class="pageno">33 / 34</span></div></div>
-</div>
-<div class="slide" data-center data-tag="Sources" aria-label="第 34 页，共 34 页">
-  <div class="sheet"><div class="dstage"><div class="pad nohead"><div class="pbody"><div class="fitw">
-<div class="foot">
-  <span>来源：ChatGPT 分享对话的两轮回答；第 11–13 节的算子开发内容参考 <a href="https://yinyucheng0601.github.io/AI_Infra/ai-infra-research/patterns.html" style="color:inherit">AI Infra Pattern 库</a> 中 RMSNorm、LogSumExp、RSFA 等 Pattern 的页面说明，RMSNorm 数值是其中记录的性能模型估算，不是上板实测。第 06 节的耗时、tokens 和信心曲线是示例数据，用来说明结构。</span>
-  <span>第 06 节瀑布流的交互思路参考了 affectUI 的 Trace Waterfall 组件（行内树、实时增长的条、当前时间线、折叠后在父条上显示刻度），代码为本页独立实现。</span>
-</div>
-  </div></div></div><span class="pagetag">Sources</span><span class="pageno">34 / 34</span></div></div>
+  </div></div></div><span class="pagetag">13 / Operator Pattern Map</span><span class="pageno">33 / 33</span></div></div>
 </div>
 </div>
 <div id="ctl" role="toolbar" aria-label="翻页">
  <button id="prev" type="button" aria-label="上一页">←</button>
- <span class="pn" id="pn">1 / 34</span>
+ <span class="pn" id="pn">1 / 33</span>
  <button id="next" type="button" aria-label="下一页">→</button>
  <span class="sep"></span>
  <button id="ovb" type="button">概览</button>
  <button id="fs" type="button">全屏</button>
 </div>
 <div id="zhint">原始尺寸 · 按 Z 或 Esc 收起</div>
-<div id="ov" role="dialog" aria-label="页面概览"><div class="hd">全部 34 页 · 点击跳转 ｜ ←/→ 翻页 · O 概览 · Z 放大 · F 全屏</div><div class="g"></div></div>
+<div id="ov" role="dialog" aria-label="页面概览"><div class="hd">全部 33 页 · 点击跳转 ｜ ←/→ 翻页 · O 概览 · Z 放大 · F 全屏</div><div class="g"></div></div>
 
 
 <script>
