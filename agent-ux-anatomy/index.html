@@ -5,7 +5,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Noto+Serif+SC:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: 纸本 deck 式长页——暖米底、衬线大标题、柔和色块卡片、手写体注脚；第 06 节为可回放的运行瀑布流。刻意单一浅色主题。 */
+/* Layout: 纸本 deck 式长页——暖米底、衬线大标题、柔和色块卡片、手写体注脚；第 05 节为可回放的运行瀑布流。刻意单一浅色主题。 */
 :root{
   color-scheme:light;
   --paper:#f3efe7; --card:#fbf9f4; --sunk:#ebe5d9; --ink:#1d1c1a; --muted:#6e6a62; --line:#d9d2c4;
@@ -272,7 +272,8 @@ p{margin:0}
 .stage .sq{font-family:var(--f-serif);font-size:15px;font-weight:600;border-top:1.5px solid var(--ink);padding-top:10px}
 .stage .pill{align-self:flex-start}
 .life-arcs svg{min-width:0}
-.slide[data-tag="05 / Task Lifecycle"] .pad{row-gap:48px}
+.dstage #diamond-0-0{gap:0}
+.slide[data-tag="04 / Task Lifecycle"] .pad{row-gap:48px}
 @media (max-width:1000px){.life{grid-template-columns:repeat(2,minmax(0,1fr))}.stage::after{display:none}.life-arcs{display:none}}
 @media (max-width:560px){.life{grid-template-columns:1fr}}
 
@@ -835,33 +836,6 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
   </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">03 / 32</span></div></div>
 </div>
 <div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 4 页，共 32 页">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>01</b>/ &nbsp;Agent Runtime Stack</span></div><h2 class="page-title">六类交互对象：从调用记录到语义建模</h2><p class="page-subtitle">动作与工具结果可从调用记录中提取；目标、任务、决策与产物需要应用定义结构，并通过用户输入、运行时事件或 Agent 上报建立关联。</p></header></div><div class="pbody"><div class="fitw">
-<section class="object-sources" id="runtime-2-0">
- <div class="source-groups">
-  <div class="source-group native-source">
-   <div class="source-group-head"><span class="source-index">01</span><div><h3>原生调用记录</h3><p>先记录“调用了什么、返回了什么”</p></div><span class="pill sg">协议可提供</span></div>
-   <div class="source-route"><span>模型发起调用</span><i>→</i><span>工具执行</span><i>→</i><span>返回结果</span></div>
-   <div class="source-native-cards">
-    <article class="source-card"><div class="source-card-title"><h3>动作 <small>Action</small></h3><code>tool_use</code></div><p>请求调用的工具与参数。实际是否执行、是否成功，由运行时补充结果。</p><div class="source-fields">call_id · 工具名 · 参数 · 执行状态</div></article>
-    <article class="source-card"><div class="source-card-title"><h3>证据 <small>Evidence</small></h3><code>tool_result</code></div><p>工具返回的数据、观察或错误。保留来源与原文入口，供后续判断核验。</p><div class="source-fields">call_id · 返回值 · 错误 · 来源</div></article>
-   </div>
-  </div>
-  <div class="source-group semantic-source">
-   <div class="source-group-head"><span class="source-index">02</span><div><h3>应用语义对象</h3><p>再说明“为什么做、做到哪、交付什么”</p></div><span class="pill lv">需要建模</span></div>
-   <div class="source-route"><span>用户意图 + 执行记录</span><i>→</i><span>结构化记录 / 上报</span></div>
-   <div class="source-semantic-cards">
-    <article class="source-card"><div class="source-card-title"><h3>目标 <small>Goal</small></h3></div><p>用户原话与确认后的目标，区分明确要求和推断前提。</p><div class="source-fields">目标 · 约束 · 完成标准</div></article>
-    <article class="source-card"><div class="source-card-title"><h3>任务 <small>Task</small></h3></div><p>计划拆分与执行进度；完成状态必须能关联实际动作。</p><div class="source-fields">任务 ID · 状态 · 动作引用</div></article>
-    <article class="source-card"><div class="source-card-title"><h3>决策 <small>Decision</small></h3></div><p>选择了什么及依据；区分假设、推断与已验证结论。</p><div class="source-fields">结论 · 证据 ID · 验证状态</div></article>
-    <article class="source-card"><div class="source-card-title"><h3>产物 <small>Artifact</small></h3></div><p>文件、报告或发布结果；记录版本、来源与依赖。</p><div class="source-fields">产物 ID · 版本 · 证据引用</div></article>
-   </div>
-  </div>
- </div>
- <div class="source-linkage"><span class="caps">一条典型关联链</span><div><span>目标</span><i>→</i><span>任务</span><i>→</i><span class="native-link">动作</span><i>→</i><span class="native-link">证据</span><i>→</i><span>决策</span><i>→</i><span>产物</span></div><p>对象通过稳定 ID 关联；有调用记录不等于结论已验证，状态升级需要与执行和验证结果对账。</p></div>
-</section>
-  </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">04 / 32</span></div></div>
-</div>
-<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 5 页，共 32 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>01</b>/ &nbsp;Agent Runtime Stack</span></div><h2 class="page-title">L2 展开：模型提出下一步，运行时决定怎样执行</h2><p class="page-subtitle">以客户端工具循环为例：模型提出调用，运行时检查权限、执行工具，再回填结果。图中使用 Claude 的结束标记；结束本轮、达到上限与任务完成需要分别处理。</p></header></div><div class="pbody"><div class="fitw">
 <section class="sec" id="runtime-1-0">
   <div class="fig loopd" style="padding:18px">
@@ -906,9 +880,9 @@ body{padding:0;margin:0;overflow:hidden;background:#d7cfbf}
     <div><b class="r5">5</b><h3>压缩</h3><p>窗口快满时把旧内容改写成摘要，证据可能在这里丢失</p></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">05 / 32</span></div></div>
+  </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">04 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 6 页，共 32 页">
+<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 5 页，共 32 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>01</b>/ &nbsp;Agent Runtime Stack</span></div><h2 class="page-title">L0–L1 展开：一句请求，怎样变成可执行的调用</h2><p class="page-subtitle">以客户端工具为例：模型生成调用意图，运行时校验并执行，再把结果送回模型。服务端工具由服务方执行；接口字段和执行位置需要分开看。</p></header></div><div class="pbody"><div class="fitw">
 <section class="runtime-closeup" id="runtime-protocol">
  <div class="runtime-rail">
@@ -932,9 +906,9 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
  <div class="runtime-checks"><div><b>一次响应 ≠ 一次工具调用</b>同一响应可包含多项调用；每项都要关联自己的返回结果。</div><div><b>结束本轮 ≠ 任务完成</b>输出上限、拒绝或错误都需要单独处理，不能统一显示“完成”。</div><div><b>调用成功 ≠ 结论成立</b>读取成功只证明拿到了内容；事实与最终产物仍需按完成标准核验。</div></div>
  <div class="runtime-ref"><span>示意字段采用 Claude Messages 格式；状态与校验要求为应用设计建议。</span><span>机制依据：<a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works" target="_blank" rel="noopener">工具循环</a> · <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls" target="_blank" rel="noopener">请求与结果关联</a></span></div>
 </section>
-  </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">06 / 32</span></div></div>
+  </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">05 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 7 页，共 32 页">
+<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 6 页，共 32 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>01</b>/ &nbsp;Agent Runtime Stack</span></div><h2 class="page-title">L3 展开：每轮上下文怎样组装，记忆存在哪里</h2><p class="page-subtitle">上下文是本轮模型可见的信息，持久状态由应用另外保存。每轮执行后选择要保留、回写和重新载入的内容，才能支持长任务与跨轮接续。</p></header></div><div class="pbody"><div class="fitw">
 <section class="runtime-closeup" id="runtime-context">
  <div class="runtime-columns context-columns">
@@ -945,9 +919,9 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
  <div class="runtime-checks"><div><b>检索：决定这轮看什么</b>补充相关事实，并标明来源与时间。外部资料按数据处理，不能自动变成指令。</div><div><b>压缩：保留必要信息</b>把历史改写成摘要时，保留目标、决定、待办和原文入口；摘要可能损失细节。</div><div><b>检查点：决定从哪里续跑</b>保存流程状态，支持接续与排查；长期知识存储和外部系统变更仍需单独管理。</div></div>
  <div class="runtime-ref"><span>图中是推荐的信息组织方式，具体存储与压缩策略取决于运行环境。</span><span>机制依据：<a href="https://www.anthropic.com/research/effective-context-engineering-for-ai-agents" target="_blank" rel="noopener">Context engineering</a> · <a href="https://docs.langchain.com/oss/python/langgraph/persistence" target="_blank" rel="noopener">Persistence</a></span></div>
 </section>
-  </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">07 / 32</span></div></div>
+  </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">06 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 8 页，共 32 页">
+<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 7 页，共 32 页">
   <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>01</b>/ &nbsp;Agent Runtime Stack</span></div><h2 class="page-title">L2 展开：等待、失败与恢复，都要有明确的状态</h2><p class="page-subtitle">用状态转换描述运行过程：什么事件使它继续，什么条件让它等待，什么结果才允许结束。下面是通用运行时的设计示意，不代表所有框架都有相同接口。</p></header></div><div class="pbody"><div class="fitw">
 <section class="runtime-closeup" id="runtime-recovery">
  <div class="runtime-rail">
@@ -965,6 +939,33 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
  <div class="runtime-checks"><div><b>暂停与取消分别表达</b>暂停在可恢复点等待；取消请求停止后续执行。已经完成的动作仍保留。</div><div><b>回滚与补偿分别表达</b>可恢复的状态按版本回退；外部副作用通过各系统支持的撤销或补偿处理。</div><div><b>把运行机制接到体验</b>状态说明回答“卡在哪”，可用动作回答“能做什么”，证据回答“能否信任”。</div></div>
  <div class="runtime-ref"><span>等待、重试和恢复必须由运行时实现；按钮文案与实际能力保持一致。</span><span>机制依据：<a href="https://docs.langchain.com/oss/python/langgraph/interrupts" target="_blank" rel="noopener">Interrupts</a> · <a href="https://docs.langchain.com/oss/python/langgraph/fault-tolerance" target="_blank" rel="noopener">Fault tolerance</a></span></div>
 </section>
+  </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">07 / 32</span></div></div>
+</div>
+<div class="slide" data-tag="01 / Agent Runtime Stack" aria-label="第 8 页，共 32 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>01</b>/ &nbsp;Agent Runtime Stack</span></div><h2 class="page-title">六类交互对象：从调用记录到语义建模</h2><p class="page-subtitle">执行、上下文与恢复都需要可追踪的对象。动作和结果来自调用记录；目标、任务、决策与产物由应用建模，连接下一章的进度、干预与验收。</p></header></div><div class="pbody"><div class="fitw">
+<section class="object-sources" id="runtime-2-0">
+ <div class="source-groups">
+  <div class="source-group native-source">
+   <div class="source-group-head"><span class="source-index">01</span><div><h3>原生调用记录</h3><p>先记录“调用了什么、返回了什么”</p></div><span class="pill sg">协议可提供</span></div>
+   <div class="source-route"><span>模型发起调用</span><i>→</i><span>工具执行</span><i>→</i><span>返回结果</span></div>
+   <div class="source-native-cards">
+    <article class="source-card"><div class="source-card-title"><h3>动作 <small>Action</small></h3><code>tool_use</code></div><p>请求调用的工具与参数。实际是否执行、是否成功，由运行时补充结果。</p><div class="source-fields">call_id · 工具名 · 参数 · 执行状态</div></article>
+    <article class="source-card"><div class="source-card-title"><h3>证据 <small>Evidence</small></h3><code>tool_result</code></div><p>工具返回的数据、观察或错误。保留来源与原文入口，供后续判断核验。</p><div class="source-fields">call_id · 返回值 · 错误 · 来源</div></article>
+   </div>
+  </div>
+  <div class="source-group semantic-source">
+   <div class="source-group-head"><span class="source-index">02</span><div><h3>应用语义对象</h3><p>再说明“为什么做、做到哪、交付什么”</p></div><span class="pill lv">需要建模</span></div>
+   <div class="source-route"><span>用户意图 + 执行记录</span><i>→</i><span>结构化记录 / 上报</span></div>
+   <div class="source-semantic-cards">
+    <article class="source-card"><div class="source-card-title"><h3>目标 <small>Goal</small></h3></div><p>用户原话与确认后的目标，区分明确要求和推断前提。</p><div class="source-fields">目标 · 约束 · 完成标准</div></article>
+    <article class="source-card"><div class="source-card-title"><h3>任务 <small>Task</small></h3></div><p>计划拆分与执行进度；完成状态必须能关联实际动作。</p><div class="source-fields">任务 ID · 状态 · 动作引用</div></article>
+    <article class="source-card"><div class="source-card-title"><h3>决策 <small>Decision</small></h3></div><p>选择了什么及依据；区分假设、推断与已验证结论。</p><div class="source-fields">结论 · 证据 ID · 验证状态</div></article>
+    <article class="source-card"><div class="source-card-title"><h3>产物 <small>Artifact</small></h3></div><p>文件、报告或发布结果；记录版本、来源与依赖。</p><div class="source-fields">产物 ID · 版本 · 证据引用</div></article>
+   </div>
+  </div>
+ </div>
+ <div class="source-linkage"><span class="caps">一条典型关联链</span><div><span>目标</span><i>→</i><span>任务</span><i>→</i><span class="native-link">动作</span><i>→</i><span class="native-link">证据</span><i>→</i><span>决策</span><i>→</i><span>产物</span></div><p>对象通过稳定 ID 关联；有调用记录不等于结论已验证，状态升级需要与执行和验证结果对账。</p></div>
+</section>
   </div></div></div><span class="pagetag">01 / Agent Runtime Stack</span><span class="pageno">08 / 32</span></div></div>
 </div>
 <div class="slide" data-center data-tag="Part II · Experience" aria-label="第 9 页，共 32 页">
@@ -972,8 +973,8 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
 <div class="part"><span class="pn">II</span><div><span class="caps">Part II · Experience</span><h2>体验架构：人怎样和 Agent 协作</h2></div><span class="hand">from feeling to design</span></div>
   </div></div></div><span class="pagetag">Part II · Experience</span><span class="pageno">09 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="03 / Experience Needs" aria-label="第 10 页，共 32 页">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>03</b>/ &nbsp;Experience Needs</span></div><h2 class="page-title">四层需求由内向外逐层成立，内层不成立，外层无从谈起</h2><p class="page-subtitle">这张图只回答一件事：设计投入的先后顺序。四层同心，越靠内越基础，内层没做到，外层的设计再精细也立不住。</p></header></div><div class="pbody"><div class="fitw">
+<div class="slide" data-tag="02 / Experience Needs" aria-label="第 10 页，共 32 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>02</b>/ &nbsp;Experience Needs</span></div><h2 class="page-title">从可感知到可信任，四类需求共同支撑协作</h2><p class="page-subtitle">上一章解释系统怎样运行，这一章看用户需要什么。嵌套图表达设计关注从状态可见扩展到可控、可验；四类需求相互支撑，优先级随任务风险调整。</p></header></div><div class="pbody"><div class="fitw">
 <section class="sec" id="needs-0-0">
   <div class="needs-layout"><div class="fig nest-fig"><svg id="nestSvg" viewBox="0 0 1428 400" role="img" aria-label="四层嵌套：可感知、可理解、可控制、可信任，与下方四列一一对应"></svg></div><div class="nest-cols">
     <div><span class="pill sa" style="justify-self:start">可感知 · Aliveness</span><q>它还在运行吗？</q><ul><li>区分思考中、输出中、等工具三种状态</li><li>长任务显示已用时和当前动作</li><li>离开后，完成或卡住时能收到通知</li></ul></div>
@@ -981,10 +982,10 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
     <div><span class="pill sk" style="justify-self:start">可控制 · Agency</span><q>我能叫停或纠正吗？</q><ul><li>明确告诉用户现在能不能插手</li><li>高风险操作前停下来等确认</li><li>打断、纠偏、回退的后果说清楚</li></ul></div>
     <div><span class="pill lv" style="justify-self:start">可信任 · Trust</span><q>结果我敢直接用吗？</q><ul><li>结论如实标注：假设、推断还是已验证</li><li>「已验证」必须附验证结果</li><li>产物写明依赖了哪些证据</li></ul></div></div></div>
 </section>
-  </div></div></div><span class="pagetag">03 / Experience Needs</span><span class="pageno">10 / 32</span></div></div>
+  </div></div></div><span class="pagetag">02 / Experience Needs</span><span class="pageno">10 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="04 / Four Moments" aria-label="第 11 页，共 32 页">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>04</b>/ &nbsp;Four Moments</span><span class="hand">delegate · monitor · steer · adopt</span></div><h2 class="page-title">人机协作的四个时刻</h2><p class="page-subtitle">和 Agent 协作时，用户只在四个时刻出现：交代任务、观察进展、必要时干预、最后验收。观察和干预并行发生，可以在运行中反复切换。</p></header></div><div class="pbody"><div class="fitw">
+<div class="slide" data-tag="03 / Four Moments" aria-label="第 11 页，共 32 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>03</b>/ &nbsp;Four Moments</span><span class="hand">delegate · monitor · steer · adopt</span></div><h2 class="page-title">人机协作的四类时刻</h2><p class="page-subtitle">把四类体验需求放进人的协作过程：委托、观察、干预、采纳。它们是行为类型，可以反复发生；接下来再沿任务生命周期安排具体触点。</p></header></div><div class="pbody"><div class="fitw">
 <section class="sec" id="moments-0-0">
   <div class="meta">
     <div class="fig meta-fig"><svg id="metaSvg" viewBox="0 0 720 860" role="img" aria-label="四个相连的圆：委托、观察、干预、采纳"></svg></div>
@@ -996,10 +997,10 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
     </div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">04 / Four Moments</span><span class="pageno">11 / 32</span></div></div>
+  </div></div></div><span class="pagetag">03 / Four Moments</span><span class="pageno">11 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="05 / Task Lifecycle" aria-label="第 12 页，共 32 页">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>05</b>/ &nbsp;Task Lifecycle</span><span class="hand">input → plan → execute → output → trace back</span></div><h2 class="page-title">从一句话需求，到可回溯的交付</h2><p class="page-subtitle">一次任务分五个阶段。每个阶段里，用户和 Agent 各做一件事，界面要回答一个问题，并留一个关键触点。最后的「回溯」不是终点：带着证据可以回到任意一步，重新开始或从中间续跑。</p></header></div><div class="pbody"><div class="fitw">
+<div class="slide" data-tag="04 / Task Lifecycle" aria-label="第 12 页，共 32 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>04</b>/ &nbsp;Task Lifecycle</span><span class="hand">input → plan → execute → output → trace back</span></div><h2 class="page-title">从一句话需求，到可回溯的交付</h2><p class="page-subtitle">通用任务可分为意图、规划、执行、输出、回溯五个阶段。以下用 RMSNorm 诊断串起体验触点，第三章再展开算子证据；运行轨迹中的复现、定位等步骤，是执行阶段的进一步拆分。</p></header></div><div class="pbody"><div class="fitw">
 <section class="sec" id="diamond-0-0">
   <div class="life">
     <div class="stage" style="background:var(--sky)">
@@ -1034,24 +1035,24 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
     </div>
   </div>
   <div class="fig life-arcs" aria-hidden="true">
-    <svg viewBox="0 0 1000 80">
-      <defs><marker id="la" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#1d1c1a"/></marker></defs>
-      <path d="M900,6 C900,65 100,65 100,10" fill="none" stroke="#1d1c1a" stroke-width="1.5" marker-end="url(#la)"/>
-      <path d="M900,6 C900,36 500,36 500,10" fill="none" stroke="#1d1c1a" stroke-width="1.5" stroke-dasharray="5 5" marker-end="url(#la)"/>
-      <circle cx="900" cy="6" r="4" fill="#1d1c1a"/>
-      <text x="700" y="23" text-anchor="middle" font-size="14">从存疑或失败的节点续跑</text>
-      <text x="500" y="77" text-anchor="middle" font-size="14">目标变了：带着已有证据，回到意图重新开始</text>
+    <svg viewBox="0 0 1428 112">
+      <defs><marker id="la" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z" fill="#1d1c1a"/></marker></defs>
+      <path d="M1291.6,4 V40 Q1291.6,72 1259.6,72 H168.4 Q136.4,72 136.4,40 V6" fill="none" stroke="#1d1c1a" stroke-width="1.25" marker-end="url(#la)"/>
+      <path d="M1291.6,4 V16 Q1291.6,38 1269.6,38 H736 Q714,38 714,16 V6" fill="none" stroke="#1d1c1a" stroke-width="1.25" stroke-dasharray="5 5" marker-end="url(#la)"/>
+      <circle cx="1291.6" cy="4" r="3" fill="#1d1c1a"/>
+      <text x="1002.8" y="28" text-anchor="middle" font-size="13.5" fill="#6e6a62">从存疑或失败的节点续跑</text>
+      <text x="714" y="98" text-anchor="middle" font-size="13.5" fill="#6e6a62">目标变了：带着已有证据，回到意图重新开始</text>
     </svg>
   </div>
 </section>
-  </div></div></div><span class="pagetag">05 / Task Lifecycle</span><span class="pageno">12 / 32</span></div></div>
+  </div></div></div><span class="pagetag">04 / Task Lifecycle</span><span class="pageno">12 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="06 / Run Trace" aria-label="第 13 页，共 32 页" data-layout="waterfall">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>06</b>/ &nbsp;Run Trace</span></div><h2 class="page-title">一次 RMSNorm 诊断的完整轨迹</h2><p class="page-subtitle">时间花在哪，信心在哪里起伏。模型调用、工具调用与人工关卡逐行对应；下方为同一时间轴的信心曲线。点选步骤查看技术信息与体验解读（示例数据）。</p></header><div class="wf-detail" id="wfDetail" aria-live="polite"></div></div><div class="pbody"><div class="fitw">
+<div class="slide" data-tag="05 / Run Trace" aria-label="第 13 页，共 32 页" data-layout="waterfall">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>05</b>/ &nbsp;Run Trace</span></div><h2 class="page-title">一次 RMSNorm 诊断的完整轨迹</h2><p class="page-subtitle">案例 A · 96 秒协作演示，全部为示例数据。FP32，shape 为 [4096,4096] / [4096,8192]。点选步骤查看执行结果与设计回应；下方信心曲线为体验假设。</p></header><div class="wf-detail" id="wfDetail" aria-live="polite"></div></div><div class="pbody"><div class="fitw">
 <section class="sec" id="trace-0-0">
   <div class="trace-layout"><div class="wf" id="wf">
     <div class="wf-top">
-      <div class="wf-title"><b>运行轨迹</b><span>定位 hidden=8192 时 RMSNorm 变慢的原因</span></div>
+      <div class="wf-title"><b>运行轨迹</b><span>案例 A · hidden=8192 · FP32</span></div>
       <span class="status" id="wfStatus"><i></i><span>等你决定</span></span>
     </div>
     <div class="wf-stats">
@@ -1074,7 +1075,7 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
       <div class="wf-phase"><span>阶段</span><div class="phases" id="phases"></div></div>
       <div class="rows" id="rows" role="tree" aria-label="运行步骤"></div>
       <div class="mood">
-        <div class="mood-l"><b>用户信心</b><small>示意曲线。虚线以上表示安心，以下表示疑虑。橙色编号是用户察觉不到、但风险实际在上升的时刻。</small></div>
+        <div class="mood-l"><b>用户信心</b><small>体验假设，未经用户测量。虚线以上表示安心，以下表示疑虑；橙色标记提醒核对证据缺口与未达标结果。</small></div>
         <div class="mood-c" id="moodC">
           <svg viewBox="0 0 1000 150" preserveAspectRatio="none" aria-hidden="true">
             <defs>
@@ -1092,10 +1093,10 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
     </div>
   </div></div>
 </section>
-  </div></div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">13 / 32</span></div></div>
+  </div></div></div><span class="pagetag">05 / Run Trace</span><span class="pageno">13 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="06 / Run Trace" aria-label="第 14 页，共 32 页">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>06</b>/ &nbsp;Run Trace</span></div><h2 class="page-title">等人的时间，是这次运行里最大的一块</h2><p class="page-subtitle">一次 RMSNorm 性能诊断（示例数据）：每个模型调用、工具调用、人工关卡都是时间线上的一条，下半部分是同一时间轴上的信心曲线。点任意一行看技术信息和体验解读。</p></header></div><div class="pbody"><div class="fitw">
+<div class="slide" data-tag="05 / Run Trace" aria-label="第 14 页，共 32 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>05</b>/ &nbsp;Run Trace</span></div><h2 class="page-title">等待、失败与验证，怎样改变用户判断</h2><p class="page-subtitle">案例 A 的人工等待约 12 秒，占全程约 13%；工具调用累计约 54.5 秒。下面提炼六个体验时刻与设计回应，点击卡片返回对应轨迹；用户反应为待验证假设。</p></header></div><div class="pbody"><div class="fitw">
 <section class="sec" id="trace-0-1">
   <div class="legend">
     <span><i style="background:var(--k-llm)"></i>模型调用</span>
@@ -1107,10 +1108,10 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
   </div>
   <div class="insights" id="insights"></div>
 </section>
-  </div></div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">14 / 32</span></div></div>
+  </div></div></div><span class="pagetag">05 / Run Trace</span><span class="pageno">14 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="06 / Run Trace" aria-label="第 15 页，共 32 页" data-layout="wide">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>06</b>/ &nbsp;Run Trace</span></div><h2 class="page-title">参与者变多以后，泳道从「任务」变成「谁在等谁」</h2><p class="page-subtitle">泳道是参与者，横轴是时间，重点画出依赖、等待和争用。切换上方三种协作规模，看泳道怎么划、什么最该突出。</p></header></div><div class="pbody"><div class="fitw">
+<div class="slide" data-tag="05 / Run Trace" aria-label="第 15 页，共 32 页" data-layout="wide">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>05</b>/ &nbsp;Run Trace</span></div><h2 class="page-title">参与者变多以后，泳道从「任务」变成「谁在等谁」</h2><p class="page-subtitle">案例 B · 独立的 60 分钟协作示例，不是案例 A 的放大。横轴是时间，泳道随协作规模切换为任务、Agent 或人员；展示依赖、等待和资源争用。</p></header></div><div class="pbody"><div class="fitw">
 <section class="sec" id="trace-1-0">
   <div class="gt" id="gt">
     <div class="gt-top">
@@ -1140,10 +1141,10 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
     <div class="gt-scroll"><svg id="gtSvg" preserveAspectRatio="xMidYMin meet" role="img" aria-label="甘特图"></svg></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">15 / 32</span></div></div>
+  </div></div></div><span class="pagetag">05 / Run Trace</span><span class="pageno">15 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="06 / Run Trace" aria-label="第 16 页，共 32 页">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>06</b>/ &nbsp;Run Trace</span></div><h2 class="page-title">泳道怎么划，取决于谁在等谁</h2><p class="page-subtitle">瀑布流回答「它这一步在干什么」，适合一个 Agent 的一次运行。参与者一多，用户关心的变成「谁在等谁、哪条线拖慢了整体、这件事现在归谁」，这时要换成甘特图。</p></header></div><div class="pbody"><div class="fitw">
+<div class="slide" data-tag="05 / Run Trace" aria-label="第 16 页，共 32 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>05</b>/ &nbsp;Run Trace</span></div><h2 class="page-title">泳道怎么划，取决于谁在等谁</h2><p class="page-subtitle">瀑布流侧重一次运行中的调用明细，甘特图侧重任务、参与者与依赖。两者可以联动：先看谁在等谁，再下钻具体调用。下表是设计建议，案例 B 演示其中的回放与路径高亮。</p></header></div><div class="pbody"><div class="fitw">
 <section class="sec" id="trace-1-1">
   <div class="gt-notes gt-notes-loose" id="gtNotes"></div>
   <div class="legend" style="margin-top:12px">
@@ -1161,16 +1162,16 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
   </div>
   <div class="gtm">
     <div class="gtr gth"><span>维度</span><span>单人 · 单 Agent</span><span>单人 · 多 Agent</span><span>多人 · 多 Agent</span></div>
-    <div class="gtr"><span>泳道单位</span><span>Agent 自报的任务，人单独一条</span><span>主 Agent + 缩进的子 Agent</span><span>人 → 他的 Agent，加上共享资源</span></div>
+    <div class="gtr"><span>泳道单位</span><span>有稳定 ID 的任务，人单独一条</span><span>主 Agent + 缩进的子 Agent</span><span>人 → 他的 Agent，加上共享资源</span></div>
     <div class="gtr"><span>默认视图</span><span>全部展开</span><span>子 Agent 折叠成汇总条，关键路径上的自动展开</span><span>只展开自己的组，别人的折叠成状态条</span></div>
     <div class="gtr"><span>最该突出</span><span>等你的时间；失败与重试</span><span>关键路径；审批队列</span><span>跨人等待；资源争用；归属转移</span></div>
     <div class="gtr"><span>典型交互</span><span>回放、点任意一段看证据</span><span>只看关键路径、批量审批、下钻子 Agent 轨迹</span><span>按人筛选、点交接看交接包、认领或转交</span></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">06 / Run Trace</span><span class="pageno">16 / 32</span></div></div>
+  </div></div></div><span class="pagetag">05 / Run Trace</span><span class="pageno">16 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="07 / Viewing Distance" aria-label="第 17 页，共 32 页">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>07</b>/ &nbsp;Viewing Distance</span><span class="hand">glance first, dig on demand</span></div><h2 class="page-title">同一件事，按注意力分层呈现</h2><p class="page-subtitle">用户不会一直盯着 Agent。同一次运行要同时提供四种距离的视图，默认停在「扫视」，每一级都能一步进到下一级。卡片越高，代表投入的注意力越多。</p></header></div><div class="pbody"><div class="fitw">
+<div class="slide" data-tag="06 / Viewing Distance" aria-label="第 17 页，共 32 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>06</b>/ &nbsp;Viewing Distance</span><span class="hand">glance first, dig on demand</span></div><h2 class="page-title">同一件事，按注意力分层呈现</h2><p class="page-subtitle">用户不会一直盯着 Agent。同一次运行要同时提供四种距离的视图，默认停在「扫视」，每一级都能一步进到下一级。卡片越高，代表投入的注意力越多。</p></header></div><div class="pbody"><div class="fitw">
 <section class="sec" id="distance-0-0">
   <div class="att">
     <div class="scard" style="background:var(--butter);min-height:300px">
@@ -1196,7 +1197,7 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
       <div class="top"><span class="num">03</span><span class="caps" style="color:var(--ink)">≈ 30 秒</span></div>
       <span class="grow"></span><h3>细看</h3>
       <div class="mock">
-        <div class="mrow"><span class="pill bt" style="padding:0 8px;font-size:11px">推断</span><b class="t">H1：两遍规约导致搬运翻倍</b></div>
+        <div class="mrow"><span class="pill bt" style="padding:0 8px;font-size:11px">推断</span><b class="t">H1：两遍规约可能增加搬运</b></div>
         <div class="mrow"><span class="pill" style="padding:0 8px;font-size:11px">慢 2.8×</span><span class="pill" style="padding:0 8px;font-size:11px">two_pass</span></div>
         <div class="mrow"><span class="pill" style="padding:0 8px;font-size:11px">MTE2 2.01×</span></div>
       </div>
@@ -1218,27 +1219,27 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
   </div>
   <div class="zoomline"><span>投入的注意力少</span><span class="ln"></span><span>投入的注意力多</span></div>
 </section>
-  </div></div></div><span class="pagetag">07 / Viewing Distance</span><span class="pageno">17 / 32</span></div></div>
+  </div></div></div><span class="pagetag">06 / Viewing Distance</span><span class="pageno">17 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="08 / Interruption Levels" aria-label="第 18 页，共 32 页">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>08</b>/ &nbsp;Interruption Levels</span><span class="hand">interrupt only when it matters</span></div><h2 class="page-title">风险越高，打断越强</h2><p class="page-subtitle">每次打断都在消耗注意力。阻断式审批用多了，用户会不看内容直接点「批准」，这比不审批更危险。用两个问题给每个动作分级：做了能不能撤回？影响只在本地，还是会波及外部和他人？</p></header></div><div class="pbody"><div class="fitw">
+<div class="slide" data-tag="07 / Interruption Levels" aria-label="第 18 页，共 32 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>07</b>/ &nbsp;Interruption Levels</span><span class="hand">interrupt only when it matters</span></div><h2 class="page-title">风险越高，打断越强</h2><p class="page-subtitle">先核对授权范围，再按可撤回性、影响范围和资源成本决定打断强度。下图是默认策略；超出授权、涉及敏感信息或高成本时升级确认。案例 A 最初只授权诊断，因此写补丁需先批准。</p></header></div><div class="pbody"><div class="fitw">
 <section class="sec" id="interrupt-0-0">
   <div class="quad">
     <div class="yax" style="grid-row:1"><div><h3>影响外部</h3><small>推送 /<br>集群 /<br>他人可见</small></div></div>
     <span class="yline"></span>
-    <div class="q" style="background:var(--sky)"><span class="tg">外部 × 可撤回</span><h3>事后通知</h3><p>能撤回，但别人看得到。完成后发通知，并给出撤回入口。</p><div class="ex"><span class="pill dot">发布报告草稿</span><span class="pill dot">评论到工单</span></div></div>
-    <div class="q" style="background:var(--salmon)"><span class="tg">外部 × 不可撤回</span><h3>阻断确认</h3><p>撤不回且影响外部。必须停下来，讲清楚改了什么、影响谁。</p><div class="ex"><span class="pill dot">推送 PR</span><span class="pill dot">提交集群任务</span><span class="pill dot">发消息</span></div></div>
+    <div class="q" style="background:var(--sky)"><span class="tg">外部 × 可撤回</span><h3>事后通知</h3><p>在已授权范围内，低影响变更可完成后通知，并提供撤回入口。</p><div class="ex"><span class="pill dot">更新已授权草稿</span><span class="pill dot">同步任务状态</span></div></div>
+    <div class="q" style="background:var(--salmon)"><span class="tg">外部 × 难以完整撤回</span><h3>阻断确认</h3><p>公开传播、资源消耗等影响难以完全撤销；执行前确认具体范围与成本。</p><div class="ex"><span class="pill dot">公开发布</span><span class="pill dot">高成本集群任务</span><span class="pill dot">外发敏感内容</span></div></div>
     <div class="yax" style="grid-row:2"><div><h3>只在本地</h3><small>文件 /<br>沙箱 /<br>只读</small></div></div>
-    <div class="q" style="background:var(--butter)"><span class="tg">本地 × 可撤回</span><h3>静默执行</h3><p>只读或可撤回的本地动作。只在状态里体现，不打扰。</p><div class="ex"><span class="pill dot">读文件</span><span class="pill dot">跑基准</span><span class="pill dot">采集 Profile</span></div></div>
-    <div class="q" style="background:var(--sage)"><span class="tg">本地 × 不可撤回</span><h3>轻确认</h3><p>只影响本地，但撤不回。一行确认，附「本次会话都允许」。</p><div class="ex"><span class="pill dot">覆盖实验数据</span><span class="pill dot">清理缓存</span></div></div>
+    <div class="q" style="background:var(--butter)"><span class="tg">本地 × 可撤回</span><h3>执行并显示状态</h3><p>已授权、低成本且影响受控的本地动作，显示进度即可；写入超出授权仍需确认。</p><div class="ex"><span class="pill dot">读文件</span><span class="pill dot">本地小样本基准</span><span class="pill dot">读取已有 Profile</span></div></div>
+    <div class="q" style="background:var(--sage)"><span class="tg">本地 × 不可撤回</span><h3>轻确认</h3><p>低影响时简短确认；删除重要数据需展示清单、备份情况，并升级确认。</p><div class="ex"><span class="pill dot">删除临时数据</span><span class="pill dot">覆盖未备份结果</span></div></div>
     <span style="grid-column:1/3"></span>
-    <div class="xax"><div class="xline"></div><div class="xlabels"><span>← 可撤回</span><h3>可撤回性</h3><span>不可撤回 →</span></div></div>
+    <div class="xax"><div class="xline"></div><div class="xlabels"><span>← 可撤回</span><h3>可撤回性</h3><span>难以完整撤回 →</span></div></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">08 / Interruption Levels</span><span class="pageno">18 / 32</span></div></div>
+  </div></div></div><span class="pagetag">07 / Interruption Levels</span><span class="pageno">18 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="09 / Trust Calibration" aria-label="第 19 页，共 32 页">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>09</b>/ &nbsp;Trust Calibration</span><span class="hand">trust ≈ evidence</span></div><h2 class="page-title">目标不是更多信任，而是恰当的信任</h2><p class="page-subtitle">过程藏起来，用户会把每个结论重查一遍；叙事太流畅、措辞太笃定，用户又会不经核对直接采纳。好的界面让用户的信任程度和证据强度保持一致。</p></header></div><div class="pbody"><div class="fitw">
+<div class="slide" data-tag="08 / Trust Calibration" aria-label="第 19 页，共 32 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>08</b>/ &nbsp;Trust Calibration</span><span class="hand">trust ≈ evidence</span></div><h2 class="page-title">目标不是更多信任，而是恰当的信任</h2><p class="page-subtitle">过程藏起来，用户会把每个结论重查一遍；叙事太流畅、措辞太笃定，用户又会不经核对直接采纳。好的界面让用户的信任程度和证据强度保持一致。</p></header></div><div class="pbody"><div class="fitw">
 <section class="sec" id="trust-0-0">
   <div class="cal">
     <div class="calbar"><div class="calzone">校准区：信任 ≈ 证据强度</div></div>
@@ -1250,27 +1251,27 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
     <div class="ladder" aria-label="结论状态升级路径">
       <span class="pill">假设：还没有证据</span><span class="arr">找到证据 →</span>
       <span class="pill bt">推断：有证据支持</span><span class="arr">对照实验通过 →</span>
-      <span class="pill sg">已验证：附验证结果</span>
+      <span class="pill sg">已验证：附结果与适用范围</span>
       <span class="arr" style="margin-left:14px">另有</span><span class="pill sk">观测：工具直接返回的事实</span>
     </div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">09 / Trust Calibration</span><span class="pageno">19 / 32</span></div></div>
+  </div></div></div><span class="pagetag">08 / Trust Calibration</span><span class="pageno">19 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="10 / Control Points" aria-label="第 20 页，共 32 页">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>10</b>/ &nbsp;Control Points</span><span class="hand">decision pack ⇄ handoff pack</span></div><h2 class="page-title">控制点上，人和 Agent 交换什么</h2><p class="page-subtitle">每个控制点都是一个需要人做决定的时刻。Agent 递上来的应该是做这个决定所需的最少信息，叫「决策包」；人做完决定交回去的，叫「交接包」。两个方向用同一套骨架：对象、证据、前提、动作。少一次「翻译成自然语言再解析回来」，就少一次信息损失。</p></header></div><div class="pbody"><div class="fitw">
+<div class="slide" data-tag="09 / Control Points" aria-label="第 20 页，共 32 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>09</b>/ &nbsp;Control Points</span><span class="hand">decision pack ⇄ handoff pack</span></div><h2 class="page-title">控制点上，人和 Agent 交换什么</h2><p class="page-subtitle">每个控制点都是一个需要人做决定的时刻。Agent 递上来的应该是做这个决定所需的最少信息，叫「决策包」；人做完决定交回去的，叫「交接包」。两个方向用同一套骨架：对象、证据、前提、动作。少一次「翻译成自然语言再解析回来」，就少一次信息损失。</p></header></div><div class="pbody"><div class="fitw">
 <section class="sec" id="control-0-0">
   <div class="packs">
     <div class="pack" style="background:var(--sky)">
       <div class="ph"><span class="caps" style="color:var(--ink)">Agent → 人</span><h3>决策包</h3></div>
       <dl>
-        <dt>位置</dt><dd>修复阶段 · 第 3 / 4 步</dd>
-        <dt>主张</dt><dd><b>改 tile 切分，恢复单遍规约</b></dd>
+        <dt>位置</dt><dd>案例 A · 52s · 修复前审批</dd>
+        <dt>主张</dt><dd><b>调整 tile，验证单遍规约方案</b></dd>
         <dt>依据</dt><dd><span class="pill solid sm">慢 2.8×</span><span class="pill solid sm">two_pass</span><span class="pill solid sm">MTE2 2.01×</span></dd>
-        <dt>前提</dt><dd>精度影响未验证；只在 8192 下测过</dd>
+        <dt>前提</dt><dd>改动效果未验证；当前授权仅含诊断</dd>
         <dt>影响</dt><dd>改本地 1 个文件 · +18 −6 · <b>可回退</b></dd>
         <dt>选项</dt><dd><span class="pill ink sm">批准</span><span class="pill sm">拒绝</span><span class="pill sm">改参数</span><span class="pill sm">本会话允许</span></dd>
-        <dt>回执</dt><dd>批准 → 跑对照验证；拒绝 → 改用方案 B</dd>
+        <dt>回执</dt><dd>批准 → 修改并对照验证；拒绝 → 继续只读分析</dd>
       </dl>
     </div>
     <div class="spine" aria-label="共享骨架">
@@ -1281,8 +1282,8 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
     <div class="pack" style="background:var(--sage)">
       <div class="ph"><span class="caps" style="color:var(--ink)">人 → Agent</span><h3>交接包</h3></div>
       <dl>
-        <dt>对象</dt><dd>H1 · 证据 e10（msprof 重试）</dd>
-        <dt>参数</dt><dd class="mono">FP32 [2048,16384] · commit 04c0c97</dd>
+        <dt>对象</dt><dd>A:H1 · A:e10（msprof 重试）</dd>
+        <dt>参数</dt><dd class="mono">FP32 [4096,8192] · 04c0c97</dd>
         <dt>问题</dt><dd><b>182 KB 是峰值还是常驻？</b></dd>
         <dt>证据</dt><dd><span class="pill solid sm">ub_peak 182/192 KB</span></dd>
         <dt>前提</dt><dd>我怀疑与 cache 行为有关，没有验证过</dd>
@@ -1291,20 +1292,20 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
     </div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">10 / Control Points</span><span class="pageno">20 / 32</span></div></div>
+  </div></div></div><span class="pagetag">09 / Control Points</span><span class="pageno">20 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="10 / Control Points" aria-label="第 21 页，共 32 页">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>10</b>/ &nbsp;Control Points</span></div><h2 class="page-title">决策包中的证据：先给主张，再组织依据</h2><p class="page-subtitle">决策包先交代主张，再呈现支持、反对与缺失证据。人据此判断是否批准、补充验证或退回；下列五条原则保证证据能服务于当前决定。</p></header></div><div class="pbody"><div class="fitw">
+<div class="slide" data-tag="09 / Control Points" aria-label="第 21 页，共 32 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>09</b>/ &nbsp;Control Points</span></div><h2 class="page-title">决策包中的证据：先给主张，再组织依据</h2><p class="page-subtitle">案例 A · 52s 修复前快照：先交代主张，再呈现支持、反对与缺失证据。此时尚未执行补丁；后续结果必须回填并更新状态，不能沿用过期判断。</p></header></div><div class="pbody"><div class="fitw">
 <section class="sec evidence-combined" id="control-1-0">
-  <div class="evidence-claim"><span class="pill bt">主张 · 推断</span><b>H1：UB 容量约束可能导致两遍规约与性能下降</b><span>待精度与跨 shape 验证</span></div>
+  <div class="evidence-claim"><span class="pill bt">主张 · 推断</span><b>A:H1：两遍规约可能增加搬运，拖慢执行</b><span>待改动对照与精度验证</span></div>
   <div class="evg">
     <div class="evc"><h3>支持</h3>
-      <div class="ev"><b>8192 慢 2.8 倍</b><span class="tags"><span class="pill sm sk">上板</span><span class="pill sm sg">实测</span><span class="pill sm">观测</span></span></div>
-      <div class="ev"><b>编译器改成两遍规约</b><span class="tags"><span class="pill sm sk">编译后</span><span class="pill sm sg">实测</span><span class="pill sm">观测</span></span></div>
-      <div class="ev"><b>整行 live 320 KiB &gt; UB 248 KiB</b><span class="tags"><span class="pill sm sk">编译前</span><span class="pill sm bt">推导</span><span class="pill sm">推断</span></span></div>
+      <div class="ev"><b>8192 慢 2.8 倍</b><span class="tags"><span class="pill sm sk">上板</span><span class="pill sm sg">Mock</span><span class="pill sm">观测</span></span></div>
+      <div class="ev"><b>编译器改成两遍规约</b><span class="tags"><span class="pill sm sk">编译后</span><span class="pill sm sg">Mock</span><span class="pill sm">观测</span></span></div>
+      <div class="ev"><b>A:e10 · MTE2 2.01× · UB 182/192 KB</b><span class="tags"><span class="pill sm sk">上板</span><span class="pill sm bt">Mock</span><span class="pill sm">观测</span></span></div>
     </div>
     <div class="evc"><h3>反证与边界</h3>
-      <div class="ev"><b>4096 下两种实现耗时接近</b><span class="tags"><span class="pill sm sk">上板</span><span class="pill sm sg">实测</span><span class="pill sm">观测</span></span><small>这是适用范围的边界，不是直接反证；与假设一致，但仍不能排除其他因素</small></div>
+      <div class="ev"><b>182 KB 峰值未超过 192 KB 容量</b><span class="tags"><span class="pill sm sk">上板</span><span class="pill sm sg">Mock</span><span class="pill sm">观测</span></span><small>该记录不能证明容量溢出；尚缺常驻量与搬运明细，不能把相关性写成根因。</small></div>
     </div>
     <div class="evc miss"><h3>缺失</h3>
       <div class="ev"><b>修复后的精度结果</b><span class="tags"><span class="pill sm">待验证</span></span></div>
@@ -1313,117 +1314,85 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
   </div>
   <div class="tagkey">
     <span><b>证据阶段</b>编译前 · 编译后 · 上板 · 数值校验</span>
-    <span><b>来源类型</b>实测 · 公开表 · 推导 · Mock</span>
+    <span><b>来源类型</b>工具记录 · 公开表 · 推导 · Mock</span>
     <span><b>结论状态</b>假设 · 推断 · 观测 · 已验证</span>
-    <span style="color:var(--muted)">示例沿用第 06 节诊断案例的示例数据</span>
+    <span style="color:var(--muted)">案例 A · Mock 数据；本页为修复前快照</span>
   </div>
   <div class="evidence-principles">
   <div class="cps" style="grid-template-columns:repeat(5,minmax(0,1fr))">
     <div><b>1</b><h3>结论先行</h3><p>默认只展示主张和依据摘要，原始记录放在下一层</p></div>
     <div><b>2</b><h3>按论证分组</h3><p>支持、反对、缺失三组，而不是按工具调用的时间排</p></div>
     <div><b>3</b><h3>证据带三个标签</h3><p>阶段、来源类型、结论状态，缺一不可</p></div>
-    <div><b>4</b><h3>断言与证据分开</h3><p>「我认为是 UB 约束」是主张，「ub_peak 182 KB」才是证据</p></div>
-    <div><b>5</b><h3>只给相关证据</h3><p>审批补丁要的是影响和能否回退，不是整个定位过程</p></div>
+    <div><b>4</b><h3>断言与证据分开</h3><p>「两遍规约拖慢执行」是主张，「ub_peak 182 KB」是观测记录</p></div>
+    <div><b>5</b><h3>只给相关证据</h3><p>审批补丁突出授权、影响与回退；验收则突出指标和阈值</p></div>
   </div>
 
   </div>
 </section>
-  </div></div></div><span class="pagetag">10 / Control Points</span><span class="pageno">21 / 32</span></div></div>
+  </div></div></div><span class="pagetag">09 / Control Points</span><span class="pageno">21 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="10 / Control Points" aria-label="第 22 页，共 32 页">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>10</b>/ &nbsp;Control Points</span></div><h2 class="page-title">七个控制点，九个人的动作</h2><p class="page-subtitle">人的每个动作都要落在某个对象上。「我觉得不对」Agent 无法利用；「对证据 e10 有疑问」它就能直接处理。拒绝时一定要收集理由，否则 Agent 只收到一个「否」，只能盲猜下一步。</p></header></div><div class="pbody"><div class="fitw">
+<div class="slide" data-tag="09 / Control Points" aria-label="第 22 页，共 32 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>09</b>/ &nbsp;Control Points</span></div><h2 class="page-title">七个控制点，九个人的动作</h2><p class="page-subtitle">人的每个动作都要落在某个对象上。「我觉得不对」Agent 无法利用；「对证据 A:e10 有疑问」它就能直接处理。拒绝时一定要收集理由，否则 Agent 只收到一个「否」，只能盲猜下一步。</p></header></div><div class="pbody"><div class="fitw">
 <section class="sec" id="control-2-0">
   <div class="verbs"><span class="pill ink">确认</span><span class="pill ink">修正</span><span class="pill ink">选择</span><span class="pill ink">限定</span><span class="pill ink">质疑</span><span class="pill ink">补充</span><span class="pill ink">授权</span><span class="pill ink">接管</span><span class="pill ink">回退</span></div>
   <div class="cpt">
     <div class="cpr cph"><span>控制点</span><span>决策包的重点</span><span>人的行为</span><span>交还给 Agent</span></div>
     <div class="cpr"><span><b>意图确认</b></span><span>目标、<mark>约束</mark>（分清用户说的和 Agent 推断的）、<mark>完成标准</mark></span><span class="vb"><i>确认</i><i>修正</i></span><span>确认后的<mark>约束集</mark></span></div>
     <div class="cpr"><span><b>计划审阅</b></span><span>步骤、每步需要的<mark>证据和工具</mark>、预计成本</span><span class="vb"><i>限定</i><i>修正</i></span><span><mark>修订后的计划</mark></span></div>
-    <div class="cpr"><span><b>执行审批</b></span><span>具体动作、diff、<mark>可逆性 × 影响范围</mark>、为什么需要</span><span class="vb"><i>授权</i><i>选择</i></span><span>决定 + <mark>拒绝理由</mark></span></div>
+    <div class="cpr"><span><b>执行审批</b></span><span>具体动作、diff、<mark>授权范围、风险与成本</mark>、为什么需要</span><span class="vb"><i>授权</i><i>选择</i></span><span>决定 + <mark>拒绝理由</mark></span></div>
     <div class="cpr"><span><b>假设审阅</b></span><span>主张 + <mark>证据链</mark> + 状态 + <mark>验证计划</mark></span><span class="vb"><i>质疑</i><i>补充</i></span><span>挂在<mark>证据编号</mark>上的批注</span></div>
     <div class="cpr"><span><b>异常阻塞</b></span><span><mark>失败点</mark>、已尝试过什么、候选路径</span><span class="vb"><i>选择</i><i>补充</i><i>接管</i></span><span><mark>选定的路径</mark></span></div>
     <div class="cpr"><span><b>验收</b></span><span>结论状态汇总、<mark>前后对比</mark>、<mark>未覆盖的部分</mark></span><span class="vb"><i>确认</i><i>质疑</i></span><span>验收决定 + <mark>打回原因</mark></span></div>
     <div class="cpr"><span><b>回溯</b></span><span><mark>时间线</mark>和各节点状态</span><span class="vb"><i>回退</i><i>补充</i></span><span><mark>交接包</mark></span></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">10 / Control Points</span><span class="pageno">22 / 32</span></div></div>
+  </div></div></div><span class="pagetag">09 / Control Points</span><span class="pageno">22 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="10 / Control Points" aria-label="第 23 页，共 32 页">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>10</b>/ &nbsp;Control Points</span></div><h2 class="page-title">对 Agent 友好的输入：能直接变成可检验的约束</h2><p class="page-subtitle">用户的输入会变成 Agent 上下文里的 token，后续每一步推理都从这里出发。友好的输入不需要 Agent 去猜。但不能指望用户每次都写全，所以要靠界面把输入「结构化」。</p></header></div><div class="pbody"><div class="fitw">
+<div class="slide" data-tag="09 / Control Points" aria-label="第 23 页，共 32 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>09</b>/ &nbsp;Control Points</span></div><h2 class="page-title">对 Agent 友好的输入：能直接变成可检验的约束</h2><p class="page-subtitle">用户的输入会变成 Agent 上下文里的 token，后续每一步推理都从这里出发。友好的输入不需要 Agent 去猜。但不能指望用户每次都写全，所以要靠界面把输入「结构化」。</p></header></div><div class="pbody"><div class="fitw">
 <section class="sec" id="control-3-0">
   <div class="io">
     <div class="ioc" style="background:var(--card)"><span class="caps">不友好</span><p class="quote">「那个 norm 算子好像变慢了，优化一下，别乱改。」</p><ul><li>对象没有锚点：哪个算子、哪个版本？</li><li>目标不可检验：快多少算完成？</li><li>「别乱改」无法执行：哪些能改？</li></ul></div>
-    <div class="ioc" style="background:var(--sage)"><span class="caps" style="color:var(--ink)">友好</span>
+    <div class="ioc" style="background:var(--sage)"><span class="caps" style="color:var(--ink)">友好 · 案例 A 的初始委托</span>
       <dl>
-        <dt>目标</dt><dd>8192 下耗时降到 4096 的 1.5 倍以内</dd>
-        <dt>对象</dt><dd class="mono">rms_norm_split · 04c0c97 · FP32 [2048,16384]</dd>
+        <dt>目标</dt><dd>8192 耗时 ≤ 31.95µs（4096 基线 21.3µs × 1.5）</dd>
+        <dt>对象</dt><dd class="mono">A · rmsnorm · 04c0c97 · FP32 [4096,8192]</dd>
         <dt>已知</dt><dd>8192 慢 2.8×　<b>怀疑：</b>和 UB 有关，未验证</dd>
         <dt>约束</dt><dd>必须 max_err &lt; 1e-3 · 禁止改标定常量 · 偏好只改 tiling</dd>
-        <dt>权限</dt><dd>可改本地文件 · 上板和推送 PR 先问我</dd>
-        <dt>产物</dt><dd>根因 + 证据链 + 最小上板验证方案，先不改代码</dd>
+        <dt>权限</dt><dd>允许诊断、编译与小规模上板验证；改代码和推送 PR 先问我</dd>
+        <dt>产物</dt><dd>诊断结论 + 证据链 + 修复建议；批准后再修改并按原标准验收</dd>
       </dl>
     </div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">10 / Control Points</span><span class="pageno">23 / 32</span></div></div>
+  </div></div></div><span class="pagetag">09 / Control Points</span><span class="pageno">23 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="10 / Control Points" aria-label="第 24 页，共 32 页">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>10</b>/ &nbsp;Control Points</span></div><h2 class="page-title">把「写清楚」的负担交给界面，而不是用户</h2><p class="page-subtitle">引用代替描述、约束做成标签、完成标准用模板、推断由 Agent 补全并等人确认。</p></header></div><div class="pbody"><div class="fitw">
+<div class="slide" data-tag="09 / Control Points" aria-label="第 24 页，共 32 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>09</b>/ &nbsp;Control Points</span></div><h2 class="page-title">把「写清楚」的负担交给界面，而不是用户</h2><p class="page-subtitle">案例 A 的一次中途插话：引用锚定对象，标签保留约束，模板定义完成标准。缺失信息先查询；无法确定的内容明确留待确认。</p></header></div><div class="pbody"><div class="fitw">
 <section class="sec" id="control-3-1">
   <div class="composer" aria-label="结构化输入框示意">
-    <div class="cbar2"><span class="caps" style="color:var(--ink)">输入框示意</span><span class="pill lv sm">作用于：H1 · 证据 e10</span></div>
-    <div class="ctext">对 <span class="at">@ub_peak 182/192 KB</span> 有疑问：这是峰值还是常驻？我怀疑和 cache 行为有关。先在 <span class="at">@rms_norm_split · 04c0c97</span> 上区分清楚，再决定要不要改 tiling。</div>
-    <div class="crow"><span class="pill sg sm">必须 · max_err &lt; 1e-3</span><span class="pill sa sm">禁止 · 改标定常量</span><span class="pill bt sm">偏好 · 只改 tiling</span><span class="pill sm">完成标准：耗时(8192) ≤ 1.5 × 耗时(4096)</span></div>
-    <div class="cfoot"><span>Agent 补全了 2 项推断：dtype = FP32、设备 = Ascend 950 · <u>待你确认</u></span><span class="pill ink sm">发送</span></div>
+    <div class="cbar2"><span class="caps" style="color:var(--ink)">输入框示意</span><span class="pill lv sm">作用于：A:H1 · A:e10</span></div>
+    <div class="ctext">对 <span class="at">@ub_peak 182/192 KB</span> 有疑问：这是峰值还是常驻？我怀疑和 cache 行为有关。先在 <span class="at">@rmsnorm · 04c0c97 · [4096,8192]</span> 上区分清楚，再决定要不要改 tiling。</div>
+    <div class="crow"><span class="pill sg sm">必须 · max_err &lt; 1e-3</span><span class="pill sa sm">禁止 · 改标定常量</span><span class="pill bt sm">偏好 · 只改 tiling</span><span class="pill sm">完成标准：耗时(8192) ≤ 31.95µs</span></div>
+    <div class="cfoot"><span>已引用 dtype = FP32；设备与工具链版本尚未提供 · <u>待查询或补充</u></span><span class="pill ink sm">发送</span></div>
   </div>
   <div class="cps" style="grid-template-columns:repeat(5,minmax(0,1fr))">
     <div><b>1</b><h3>引用，不描述</h3><p>@ 文件、算子、证据，或从调查视图选中后带入，自带编号、参数和版本</p></div>
     <div><b>2</b><h3>约束做成标签</h3><p>必须、禁止、偏好三类，从对话里自动提取，用户确认即可</p></div>
     <div><b>3</b><h3>完成标准用模板</h3><p>指标 + 阈值 + 对照组的填空，而不是自由书写</p></div>
-    <div><b>4</b><h3>推断由 Agent 补全</h3><p>缺的信息先补上并标出来，在意图确认时交给人确认</p></div>
+    <div><b>4</b><h3>缺失信息显式补齐</h3><p>先从可信记录查询；无法确定就留空，不把推断当成配置事实</p></div>
     <div><b>5</b><h3>插话指定对象</h3><p>先选中任务、证据或假设再输入，变成有作用范围的批注</p></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">10 / Control Points</span><span class="pageno">24 / 32</span></div></div>
+  </div></div></div><span class="pagetag">09 / Control Points</span><span class="pageno">24 / 32</span></div></div>
 </div>
 <div class="slide" data-center data-tag="Part III · AI Infra · Operators" aria-label="第 25 页，共 32 页">
   <div class="sheet"><div class="dstage"><div class="pad nohead"><div class="pbody"><div class="fitw">
 <div class="part"><span class="pn">III</span><div><span class="caps">Part III · AI Infra · Operators</span><h2>落到算子开发</h2></div><span class="hand">from estimate to evidence</span></div>
   </div></div></div><span class="pagetag">Part III · AI Infra · Operators</span><span class="pageno">25 / 32</span></div></div>
 </div>
-<div class="slide affinity-slide" data-tag="11 / Operator Development · Agent Affinity" aria-label="第 26 页，共 32 页">
- <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>11</b>/ Operator Agent Affinity</span></div><h2 class="page-title">算子开发中，怎样才算「对 Agent 亲和」</h2><p class="page-subtitle">把五个通用条件落实到算子开发：工具、上下文和证据对象都要能被 Agent 直接使用，也能被人核查。以下以性能诊断为例，逐层对照条件、反例和实践。</p></header></div><div class="pbody"><div class="fitw">
- <section class="affinity-layout" id="runtime-3-0">
-  <div class="affinity-intro">
-  <div class="affinity-principles"><h3>五个条件的主要落点</h3><div class="cps">
-    <div><b>1</b><h3>有类型</h3><p>有 schema，不是自由文本</p><span class="lyr"><span class="pill sm">L1</span><span class="pill sm">L3</span><span class="pill sm">L4</span><span class="pill sm">L5</span></span></div>
-    <div><b>2</b><h3>可寻址</h3><p>有稳定 ID，能被引用和批注</p><span class="lyr"><span class="pill sm">L1</span><span class="pill sm">L3</span><span class="pill sm">L4</span><span class="pill sm">L5</span></span></div>
-    <div><b>3</b><h3>有边界</h3><p>大小、作用范围、成本都有上限</p><span class="lyr"><span class="pill sm">L0</span><span class="pill sm">L1</span><span class="pill sm">L2</span><span class="pill sm">L3</span><span class="pill sm">L6</span></span></div>
-    <div><b>4</b><h3>自描述</h3><p>自带单位、来源、状态、副作用</p><span class="lyr"><span class="pill sm">L0</span><span class="pill sm">L1</span><span class="pill sm">L2</span><span class="pill sm">L4</span><span class="pill sm">L5</span></span></div>
-    <div><b>5</b><h3>可验证、可回退</h3><p>有客观的完成标准，也有检查点</p><span class="lyr"><span class="lyr-label">验证</span><span class="pill sm">L1</span><span class="pill sm">L4</span><span class="pill sm">L5</span><span class="pill sm">L6</span></span><span class="lyr"><span class="lyr-label">回退</span><span class="pill sm">L2</span><span class="pill sm">L3</span><span class="pill sm">L6</span></span></div></div><p class="mapping-note">标注主要落点，跨层共同支撑。回退范围受执行环境与副作用限制。</p></div></div>
-  <div class="aft"><div class="afr afh"><span>层</span><span>亲和条件</span><span>反例</span><span>正例 · 算子场景</span></div>
-    <div class="afr"><span class="ly"><i style="background:var(--ink);color:var(--paper)">L0</i><b>Token 流</b></span><ul><li>每个 token 都有信息量：给摘要和关键行，不灌整份日志</li><li>单位、shape、版本写全</li><li>不变内容放前面，命中 prompt cache</li><li>表格、JSON lines 优先于截图</li></ul><span class="no">「大概 180 µs，那个 shape 慢了」</span><span class="yes"><code>179.024 µs · FP32 [2048,16384] · 04c0c97</code></span></div>
-    <div class="afr"><span class="ly"><i style="background:var(--card)">L1</i><b>内容块</b></span><ul><li>工具入参用枚举和清晰描述约束</li><li>结果有大小上限，超长带 <code>truncated</code> 和取全文方式</li><li>报错说清哪一步、为什么、怎么改</li><li>每份产出返回稳定 ID</li></ul><span class="no"><code>exit 1</code></span><span class="yes">UB 溢出：live 320 KiB &gt; 248 KiB，可减小 tile · 记为 <code>e10</code></span></div>
-    <div class="afr"><span class="ly"><i style="background:var(--salmon)">L2</i><b>Harness 循环</b></span><ul><li>工具自声明可逆性、影响范围、成本，审批才能自动分级</li><li>幂等可重试；高风险先 dry-run</li><li>每步对齐一个检查点</li><li>长任务返回句柄，循环不阻塞</li><li>拒绝也带理由回填</li></ul><span class="no">每个动作都弹审批；上板跑十分钟期间无法插话</span><span class="yes">读文件、编译自动放行；上板异步执行、只问一次；拒绝附原因</span></div>
-    <div class="afr"><span class="ly"><i style="background:var(--butter)">L3</i><b>上下文工程</b></span><ul><li>上下文里放摘要和引用，原文随时可取</li><li>目标、约束、决定、待验证假设写进结构化状态</li><li>子 Agent 交回结论 + 证据 ID + 状态</li><li>同类结果去重，旧的标为已取代</li></ul><span class="no">三次 profiling 全量留在窗口里，压缩后约束丢了</span><span class="yes">保留最新一次摘要 + <code>见 e10</code>；约束在 <code>task.md</code> 里常驻</span></div>
-    <div class="afr"><span class="ly"><i style="background:var(--sage)">L4</i><b>自报告工具</b></span><ul><li>schema 小、必填少，Agent 才会常调</li><li>字段一对一对应界面元素</li><li>能校验一致性，拒绝自我拔高</li><li>只报会改变人决策的事</li></ul><span class="no">「我已经验证过了」</span><span class="yes"><code>state=validated</code> 必须挂数值校验证据，否则被拒绝写入</span></div>
-    <div class="afr"><span class="ly"><i style="background:var(--sky)">L5</i><b>领域 schema</b></span><ul><li>算子、kernel、shape、dtype、commit、设备、证据阶段都有 ID 和单位</li><li>supports / refutes / derived_from / supersedes 是一等公民</li><li>工具返回、界面渲染、人 @ 引用的是同一个对象</li><li>schema 有版本，旧 trace 仍可读</li></ul><span class="no">「那个 norm 算子」</span><span class="yes"><code>@rms_norm_split · 04c0c97</code>，工具、视图、输入框同一对象</span></div>
-    <div class="afr"><span class="ly"><i style="background:var(--lav)">L6</i><b>工作空间</b></span><ul><li>所有操作都能用命令行完成</li><li>工具链、CANN、commit、设备型号可锁定</li><li>反馈分层：编译前推导 → 编译后 IR → 上板</li><li>有可执行的完成标准：数值校验、性能基线</li><li>写目录、上板、推送的边界由环境限定</li></ul><span class="no">只能在 GUI 里打开 profiler，换台机器结果对不上</span><span class="yes"><code>msprof</code> 命令行 + 锁定环境 + 校验脚本作为完成标准</span></div>
-  </div>
- </section>
- </div></div></div><span class="pagetag">11 / Operator Development · Agent Affinity</span><span class="pageno">26 / 32</span></div></div>
-</div>
-<div class="slide" data-tag="11 / Operator Development · Experience Mapping" aria-label="第 27 页，共 32 页">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>11</b>/ &nbsp;Operator Experience Mapping</span><span class="hand">mechanism → feeling → design</span></div><h2 class="page-title">算子诊断中的体验问题，如何落到设计回应</h2><p class="page-subtitle">沿用前面的运行机制与体验需求，把算子诊断中的等待、工具调用、证据和对象关联，翻译成用户的问题与界面的回应。</p></header></div><div class="pbody"><div class="fitw">
-<section class="sec" id="mechanism-0-0">
-  <div class="tr">
-    <div class="trh"><span class="caps">运行机制</span><span></span><span class="caps">用户心里的问题</span><span></span><span class="caps">设计回应</span></div>
-    <div id="trRows"></div>
-  </div>
-</section>
-  </div></div></div><span class="pagetag">11 / Operator Development · Experience Mapping</span><span class="pageno">27 / 32</span></div></div>
-</div>
-<div class="slide" data-tag="11 / Operator Development · Evidence Stages" aria-label="第 28 页，共 32 页">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>11</b>/ &nbsp;Operator Development · Evidence Stages</span><span class="hand">estimate ≠ measurement</span></div><h2 class="page-title">算子开发里，证据分四个阶段</h2><p class="page-subtitle">算子从写完源码到真正上板，能拿到的证据逐级变强。每个调查视图都要先说清自己站在哪个阶段、能回答什么、还不能回答什么。用编译前的估算去回答上板的问题，是这个领域最常见的误导。</p></header></div><div class="pbody"><div class="fitw">
+<div class="slide" data-tag="10 / Operator Development · Evidence Stages" aria-label="第 26 页，共 32 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>10</b>/ &nbsp;Operator Development · Evidence Stages</span><span class="hand">estimate ≠ measurement</span></div><h2 class="page-title">四类取证环节，分别回答不同问题</h2><p class="page-subtitle">接着第二章的证据组织，展开算子领域的四类取证环节。编译前推导、编译产物、设备记录与数值对照各有边界；“已验证”是具体断言的状态，必须注明检查结果和适用范围。</p></header></div><div class="pbody"><div class="fitw">
 <section class="sec" id="stages-0-0">
   <div class="att">
     <div class="scard" style="background:var(--butter);min-height:380px">
@@ -1451,36 +1420,68 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
       <div class="ft"><b>执行</b><span class="caps" style="color:var(--ink)">On-device</span></div>
     </div>
     <div class="scard" style="background:var(--salmon);min-height:500px">
-      <div class="top"><span class="num">04</span><span class="pill solid">已验证</span></div>
-      <span class="grow"></span><h3>数值校验</h3>
+      <div class="top"><span class="num">04</span><span class="pill solid">对照</span></div>
+      <span class="grow"></span><h3>数值对照</h3>
       <p style="font-size:13px"><b>依据：</b>匹配输入的真实 NPU 输出 + 测试规范</p>
-      <p style="font-size:13px"><b>能回答：</b>精度是否达标，优化有没有带来回退</p>
-      <p style="font-size:13px;color:var(--muted)"><b style="color:var(--ink)">还需要：</b>跨设备、跨轮次的稳定性</p>
-      <div class="ft"><b>验收</b><span class="caps" style="color:var(--ink)">Verified</span></div>
+      <p style="font-size:13px"><b>能回答：</b>指定输入、dtype 与阈值下，精度是否达标</p>
+      <p style="font-size:13px;color:var(--muted)"><b style="color:var(--ink)">还需要：</b>性能对照、更多 shape 与设备覆盖</p>
+      <div class="ft"><b>校验</b><span class="caps" style="color:var(--ink)">Numerical check</span></div>
     </div>
   </div>
-  <div class="zoomline"><span>证据弱</span><span class="ln"></span><span>证据强</span></div>
+  <div class="zoomline"><span>先明确要验证的断言</span><span>再选择取证环节 · 结果注明覆盖范围</span></div>
 </section>
-  </div></div></div><span class="pagetag">11 / Operator Development · Evidence Stages</span><span class="pageno">28 / 32</span></div></div>
+  </div></div></div><span class="pagetag">10 / Operator Development · Evidence Stages</span><span class="pageno">26 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="11 / Operator Development · Evidence Stages" aria-label="第 29 页，共 32 页">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>11</b>/ &nbsp;Evidence Stages</span></div><h2 class="page-title">越往后越贵，所以越早排除越划算</h2><p class="page-subtitle">四个阶段的成本和可信度相反：编译前的估算最便宜也最弱，上板实测最贵也最强，调查顺序应当由此决定。</p></header></div><div class="pbody"><div class="fitw">
+<div class="slide" data-tag="10 / Operator Development · Evidence Stages" aria-label="第 27 页，共 32 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>10</b>/ &nbsp;Evidence Stages</span></div><h2 class="page-title">先用低成本证据缩小范围，再做针对性验证</h2><p class="page-subtitle">源码核查与估算通常适合先筛选候选原因，再按问题安排编译、上板或数值对照。成本受环境和任务影响；昂贵的测量也只能支持其覆盖范围内的结论。</p></header></div><div class="pbody"><div class="fitw">
 <section class="sec" id="stages-0-1">
   <div class="cal" style="gap:16px">
-    <h3>例：RMSNorm 在 Ascend 950 上为什么改成两遍分块（第 01 阶段）</h3>
+    <h3>案例 C · 独立编译前估算：RMSNorm 的两遍分块</h3>
     <div class="prov">
-      <span class="pill">FP32 [2048, 16384]</span><span class="arr" style="font-family:var(--f-hand);font-size:20px">→</span>
+      <span class="pill">C · FP32 [2048,16384] · Ascend 950 模型</span><span class="arr" style="font-family:var(--f-hand);font-size:20px">→</span>
       <span class="pill bt">整行 live 320 KiB</span><span style="font-size:13px">超过</span><span class="pill bt">UB 可用 248 KiB</span><span class="arr" style="font-family:var(--f-hand);font-size:20px">→</span>
       <span class="pill sk">两遍分块</span><span class="pill sk">额外重读 X 128 MiB</span><span class="arr" style="font-family:var(--f-hand);font-size:20px">→</span>
       <span class="pill sa">理论时延 179.024 µs · mte2_bound</span>
     </div>
-    <p class="side" style="max-width:80ch">字节数和容量条件可以直接从源码推导、独立核对；时延和瓶颈分类来自 CANNBot 性能模型和仓库里保存的硬件标定数据。界面上这两类数字要分开标注，并写明「当前没有本机 NPU 实测」。来源分三种：实测、公开表、推导默认值，Mock 数据单独标出。</p>
+    <p class="side" style="max-width:80ch">C:e01 为容量与搬运推导，时延来自 CANNBot 性能模型；本页没有本机 NPU 实测，不用于案例 A 的修复验收。每条记录需保留源码版本、模型和标定来源；推导、估算与实测分别标注，不能仅凭容量估算认定运行根因。</p>
   </div>
 </section>
-  </div></div></div><span class="pagetag">11 / Operator Development · Evidence Stages</span><span class="pageno">29 / 32</span></div></div>
+  </div></div></div><span class="pagetag">10 / Operator Development · Evidence Stages</span><span class="pageno">27 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="12 / Investigation Loop" aria-label="第 30 页，共 32 页">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>12</b>/ &nbsp;Investigation Loop</span><span class="hand">human ⇄ agent, one evidence</span></div><h2 class="page-title">人和 Agent 围绕同一份证据</h2><p class="page-subtitle">算子问题很难只靠文字说清，比如多维索引怎么落到线性地址、尾块和 padding 有没有越界。让 Agent 生成调查视图，用户在图上点选对象，再把「问题 + 证据」一起交回给 Agent 继续核查。交接包是这个闭环里最关键的界面对象。</p></header></div><div class="pbody"><div class="fitw">
+<div class="slide affinity-slide" data-tag="10 / Operator Development · Agent Affinity" aria-label="第 28 页，共 32 页">
+ <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>10</b>/ Operator Agent Affinity</span></div><h2 class="page-title">算子开发中，怎样才算「对 Agent 亲和」</h2><p class="page-subtitle">沿用第一章七层定义，把五个亲和条件落实到算子工具、上下文与证据。每行标出算子场景的实现方式；数值示例沿用独立案例 C，不与案例 A 混用。</p></header></div><div class="pbody"><div class="fitw">
+ <section class="affinity-layout" id="runtime-3-0">
+  <div class="affinity-intro">
+  <div class="affinity-principles"><h3>五个条件的主要落点</h3><div class="cps">
+    <div><b>1</b><h3>有类型</h3><p>有 schema，不是自由文本</p><span class="lyr"><span class="pill sm">L1</span><span class="pill sm">L3</span><span class="pill sm">L4</span><span class="pill sm">L5</span></span></div>
+    <div><b>2</b><h3>可寻址</h3><p>有稳定 ID，能被引用和批注</p><span class="lyr"><span class="pill sm">L1</span><span class="pill sm">L3</span><span class="pill sm">L4</span><span class="pill sm">L5</span></span></div>
+    <div><b>3</b><h3>有边界</h3><p>大小、作用范围、成本都有上限</p><span class="lyr"><span class="pill sm">L0</span><span class="pill sm">L1</span><span class="pill sm">L2</span><span class="pill sm">L3</span><span class="pill sm">L6</span></span></div>
+    <div><b>4</b><h3>自描述</h3><p>自带单位、来源、状态、副作用</p><span class="lyr"><span class="pill sm">L0</span><span class="pill sm">L1</span><span class="pill sm">L2</span><span class="pill sm">L4</span><span class="pill sm">L5</span></span></div>
+    <div><b>5</b><h3>可验证、可回退</h3><p>有客观的完成标准，也有检查点</p><span class="lyr"><span class="lyr-label">验证</span><span class="pill sm">L1</span><span class="pill sm">L4</span><span class="pill sm">L5</span><span class="pill sm">L6</span></span><span class="lyr"><span class="lyr-label">回退</span><span class="pill sm">L2</span><span class="pill sm">L3</span><span class="pill sm">L6</span></span></div></div><p class="mapping-note">标注主要落点，跨层共同支撑。回退范围受执行环境与副作用限制。</p></div></div>
+  <div class="aft"><div class="afr afh"><span>层</span><span>亲和条件</span><span>反例</span><span>正例 · 算子场景</span></div>
+    <div class="afr"><span class="ly"><i style="background:var(--ink);color:var(--paper)">L0</i><b>模型推理</b><small>Token 输入</small></span><ul><li>每个 token 都有信息量：给摘要和关键行，不灌整份日志</li><li>单位、shape、版本写全</li><li>稳定前缀放前面；服务支持时利用缓存</li><li>表格、JSON lines 优先于截图</li></ul><span class="no">「大概 180 µs，那个 shape 慢了」</span><span class="yes"><code>C · 估算 179.024 µs · FP32 [2048,16384]</code></span></div>
+    <div class="afr"><span class="ly"><i style="background:var(--card)">L1</i><b>消息与工具协议</b><small>结构化调用</small></span><ul><li>工具入参用枚举和清晰描述约束</li><li>结果有大小上限，超长带 <code>truncated</code> 和取全文方式</li><li>报错说清哪一步、为什么、怎么改</li><li>每份产出返回稳定 ID</li></ul><span class="no"><code>exit 1</code></span><span class="yes">容量估算：live 320 KiB &gt; 248 KiB，建议减小 tile · <code>C:e01</code></span></div>
+    <div class="afr"><span class="ly"><i style="background:var(--salmon)">L2</i><b>执行循环</b><small>Harness 调度</small></span><ul><li>核对授权，再按可逆性、影响与成本分级</li><li>幂等可重试；高风险先 dry-run</li><li>每步对齐一个检查点</li><li>长任务返回句柄，循环不阻塞</li><li>拒绝也带理由回填</li></ul><span class="no">每个动作都弹审批；上板跑十分钟期间无法插话</span><span class="yes">授权内读写、编译直接执行；上板按成本确认，返回任务句柄</span></div>
+    <div class="afr"><span class="ly"><i style="background:var(--butter)">L3</i><b>上下文与记忆</b><small>摘要与引用</small></span><ul><li>上下文里放摘要和引用，原文随时可取</li><li>目标、约束、决定、待验证假设写进结构化状态</li><li>子 Agent 交回结论 + 证据 ID + 状态</li><li>同类结果去重，旧的标为已取代</li></ul><span class="no">多份估算全文留在窗口里，压缩后约束丢了</span><span class="yes">保留最新一次摘要 + <code>见 C:e01</code>；约束在 <code>task.md</code> 里常驻</span></div>
+    <div class="afr"><span class="ly"><i style="background:var(--sage)">L4</i><b>语义事件</b><small>运行事件 / 自报</small></span><ul><li>区分运行时观测与模型自报，保留来源</li><li>轻量 schema 关联任务、调用与界面状态</li><li>能校验一致性，拒绝自我拔高</li><li>关键进展可见，完整记录按需下钻</li></ul><span class="no">「我已经验证过了」</span><span class="yes"><code>state=validated</code> 需关联该断言的检查结果、阈值与适用范围</span></div>
+    <div class="afr"><span class="ly"><i style="background:var(--sky)">L5</i><b>共享对象模型</b><small>领域 schema</small></span><ul><li>算子、kernel、shape、dtype、commit、设备、证据阶段都有 ID 和单位</li><li>supports / refutes / derived_from / supersedes 是一等公民</li><li>工具返回、界面渲染、人 @ 引用的是同一个对象</li><li>schema 有版本，旧 trace 仍可读</li></ul><span class="no">「那个 norm 算子」</span><span class="yes"><code>@rms_norm_split · 04c0c97</code>，工具、视图、输入框同一对象</span></div>
+    <div class="afr"><span class="ly"><i style="background:var(--lav)">L6</i><b>应用协作</b><small>工作空间</small></span><ul><li>关键操作提供 CLI 或结构化工具入口</li><li>工具链、CANN、commit、设备型号可锁定</li><li>反馈分层：编译前推导 → 编译后 IR → 上板</li><li>有可执行的完成标准：数值校验、性能基线</li><li>写目录、上板、推送的边界由环境限定</li></ul><span class="no">只能在 GUI 里打开 profiler，换台机器结果对不上</span><span class="yes"><code>msprof</code> + 固定环境 + 可执行的精度和性能验收标准</span></div>
+  </div>
+ </section>
+ </div></div></div><span class="pagetag">10 / Operator Development · Agent Affinity</span><span class="pageno">28 / 32</span></div></div>
+</div>
+<div class="slide" data-tag="10 / Operator Development · Experience Mapping" aria-label="第 29 页，共 32 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>10</b>/ &nbsp;Operator Experience Mapping</span><span class="hand">mechanism → feeling → design</span></div><h2 class="page-title">算子诊断中的体验问题，如何落到设计回应</h2><p class="page-subtitle">沿用前面的运行机制与体验需求，把算子诊断中的等待、工具调用、证据和对象关联，翻译成用户的问题与界面的回应。</p></header></div><div class="pbody"><div class="fitw">
+<section class="sec" id="mechanism-0-0">
+  <div class="tr">
+    <div class="trh"><span class="caps">运行机制</span><span></span><span class="caps">用户心里的问题</span><span></span><span class="caps">设计回应</span></div>
+    <div id="trRows"></div>
+  </div>
+</section>
+  </div></div></div><span class="pagetag">10 / Operator Development · Experience Mapping</span><span class="pageno">29 / 32</span></div></div>
+</div>
+<div class="slide" data-tag="11 / Investigation Loop" aria-label="第 30 页，共 32 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>11</b>/ &nbsp;Investigation Loop</span><span class="hand">human ⇄ agent, one evidence</span></div><h2 class="page-title">人和 Agent 围绕同一份证据</h2><p class="page-subtitle">算子问题很难只靠文字说清，比如多维索引怎么落到线性地址、尾块和 padding 有没有越界。让 Agent 生成调查视图，用户在图上点选对象，再把「问题 + 证据」一起交回给 Agent 继续核查。交接包是这个闭环里最关键的界面对象。</p></header></div><div class="pbody"><div class="fitw">
 <section class="sec" id="loop-0-0">
   <div class="loop">
     <div class="fig loop-fig">
@@ -1517,20 +1518,20 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
   </div>
   <div class="metrics">
     <div><b>定位耗时</b><p>从发现异常到确认根因用了多久。对照组是传统 Profiler 和日志。</p></div>
-    <div><b>遗漏率</b><p>尾块、padding、mask 这类边界有没有被漏查。图形化核查最该改善的就是这一项。</p></div>
-    <div><b>沟通往返次数</b><p>人和 Agent 之间来回解释了几轮。交接包带上了对象和前提，应该能明显减少往返。</p></div>
+    <div><b>遗漏率</b><p>尾块、padding、mask 这类边界有没有被漏查。比较使用视图前后的漏查比例，验证是否改善。</p></div>
+    <div><b>沟通往返次数</b><p>人和 Agent 之间来回解释了几轮。对比有无交接包的往返次数；减少沟通是待验证的设计假设。</p></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">12 / Investigation Loop</span><span class="pageno">30 / 32</span></div></div>
+  </div></div></div><span class="pagetag">11 / Investigation Loop</span><span class="pageno">30 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="13 / Operator Pattern Map" aria-label="第 31 页，共 32 页">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>13</b>/ &nbsp;Operator Pattern Map</span><span class="hand">where data goes, where time goes</span></div><h2 class="page-title">每个可视化 Pattern 回答一类问题</h2><p class="page-subtitle">把 Pattern 库里和算子相关的案例按两个维度摆开：关注的是正确性还是性能，依据是源码推导还是编译与运行证据。左下最密、右上最稀，说明下一步最该补的是运行证据的接入。</p></header></div><div class="pbody"><div class="fitw">
+<div class="slide" data-tag="12 / Operator Pattern Map" aria-label="第 31 页，共 32 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>12</b>/ &nbsp;Operator Pattern Map</span><span class="hand">where data goes, where time goes</span></div><h2 class="page-title">每个可视化 Pattern 回答一类问题</h2><p class="page-subtitle">按正确性 / 性能、源码推导 / 编译与运行证据定位 Pattern。这里展示问题覆盖，不用案例数量判断优先级；实际接入前逐项核对数据来源、采集入口，以及当前是实测、估算还是 Mock。</p></header></div><div class="pbody"><div class="fitw">
 <section class="sec" id="patterns-0-0">
   <div class="quad">
     <div class="yax" style="grid-row:1"><div><h3>编译与运行证据</h3><small>编译产物 /<br>执行 trace /<br>测量数据</small></div></div>
     <span class="yline"></span>
-    <div class="q" style="background:var(--sky)"><span class="tg">运行证据 × 正确性</span><h3>编译与内存诊断</h3><p>Pass 改了什么，内存绑定错在哪里。</p><div class="ex"><span class="pill dot">Pass Error Cases · 内存绑定</span><span class="pill dot">CSA Pass Field · 编译过程</span><span class="pill dot">Memory Inspector · 函数内存</span></div></div>
-    <div class="q" style="background:var(--salmon)"><span class="tg">运行证据 × 性能</span><h3>执行与收益比较</h3><p>多核怎样并行，优化到底有没有收益、会不会退化。</p><div class="ex"><span class="pill dot">Swimlane · 多核执行泳道</span><span class="pill dot">RSFA · 收益与退化比较</span></div></div>
+    <div class="q" style="background:var(--sky)"><span class="tg">编译 / 运行证据 × 正确性</span><h3>编译与内存诊断</h3><p>Pass 改了什么，内存绑定错在哪里。</p><div class="ex"><span class="pill dot">Pass Error Cases · 内存绑定</span><span class="pill dot">CSA Pass Field · 编译过程</span><span class="pill dot">Memory Inspector · 函数内存</span></div></div>
+    <div class="q" style="background:var(--salmon)"><span class="tg">编译 / 运行证据 × 性能</span><h3>执行与收益比较</h3><p>多核怎样并行，优化到底有没有收益、会不会退化。</p><div class="ex"><span class="pill dot">Swimlane · 多核执行泳道</span><span class="pill dot">RSFA · 收益与退化比较</span></div></div>
     <div class="yax" style="grid-row:2"><div><h3>源码推导</h3><small>编译前 /<br>固定 commit /<br>CPU 参考</small></div></div>
     <div class="q" style="background:var(--butter)"><span class="tg">源码推导 × 正确性</span><h3>映射与边界核查</h3><p>索引怎么落到地址，任务怎么分给核，尾块有没有越界。</p><div class="ex"><span class="pill dot">Unpack · 拆分与任务核查</span><span class="pill dot">Expand · 广播与边界</span><span class="pill dot">Scale · 参数共享</span><span class="pill dot">LogSumExp · 归约访存</span></div></div>
     <div class="q" style="background:var(--sage)"><span class="tg">源码推导 × 性能</span><h3>驻留与搬运估算</h3><p>数据能不能留在 UB 里，要重读多少，理论瓶颈在哪。</p><div class="ex"><span class="pill dot">RMSNorm · 驻留、重读与内存复用</span></div></div>
@@ -1538,10 +1539,10 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
     <div class="xax"><div class="xline"></div><div class="xlabels"><span>← 数据去了哪</span><h3>关注点</h3><span>时间去了哪 →</span></div></div>
   </div>
 </section>
-  </div></div></div><span class="pagetag">13 / Operator Pattern Map</span><span class="pageno">31 / 32</span></div></div>
+  </div></div></div><span class="pagetag">12 / Operator Pattern Map</span><span class="pageno">31 / 32</span></div></div>
 </div>
-<div class="slide" data-tag="13 / Operator Pattern Map" aria-label="第 32 页，共 32 页">
-  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>13</b>/ &nbsp;Operator Pattern Map</span></div><h2 class="page-title">四层能力是每个案例的共同组装方式</h2><p class="page-subtitle">调查工作流按任务依次调用这四层，用户不需要记住具体用哪个 Skill。</p></header></div><div class="pbody"><div class="fitw">
+<div class="slide" data-tag="12 / Operator Pattern Map" aria-label="第 32 页，共 32 页">
+  <div class="sheet"><div class="dstage"><div class="pad"><div class="phead"><header class="page-head"><div class="page-meta"><span class="eyebrow"><b>12</b>/ &nbsp;Operator Pattern Map</span></div><h2 class="page-title">四类可复用能力，把证据接回协作体验</h2><p class="page-subtitle">这是实现调查视图的能力组合，与第一章的七层运行架构分工不同。按任务组合领域映射、图元、证据工作台和空间交互，帮助人理解、干预和验收。</p></header></div><div class="pbody"><div class="fitw">
 <section class="sec" id="patterns-0-1">
   <div class="nest-cols">
     <div><span class="pill sk" style="justify-self:start">领域映射</span><q>算子的语义对不对？</q><ul><li>区分数学上的输入集合和源码实际请求的集合</li><li>推导地址、分块和搬运布局</li><li>保留分析前提，不把推导当运行结果</li></ul></div>
@@ -1549,9 +1550,9 @@ content: "文件正文…"</pre><p>调用 ID 对齐请求与结果；失败也�
     <div><span class="pill sg" style="justify-self:start">证据工作台</span><q>结论能不能被核对？</q><ul><li>对象选择、差异、源码依据放在一起</li><li>当前选择可以复制或导出给 Agent</li><li>标明实测、估算和 Mock</li></ul></div>
     <div><span class="pill sa" style="justify-self:start">空间界面</span><q>复杂关系能不能看全？</q><ul><li>无限画布、关联路径、浮动面板</li><li>切换对象时保持视角</li><li>平移缩放不改变当前选择</li></ul></div>
   </div>
-  <p class="side" style="max-width:80ch">这四层能力是 Pattern 库里每个案例的共同组装方式：调查工作流按任务依次调用它们，用户不需要记住具体用哪个 Skill。对设计系统来说，这意味着沉淀的单位不只是组件，还包括「领域语义 + 图元 + 证据组织 + 空间交互」这一整套组合。</p>
+  <p class="side" style="max-width:80ch">回到封面的三种角色：人可以亲自操作，也可以监督过程、委托并验收。运行机制提供状态与边界，体验设计把它们变成可理解、可干预、可核查的协作触点；算子 Pattern 则承载可追溯的领域证据。</p>
 </section>
-  </div></div></div><span class="pagetag">13 / Operator Pattern Map</span><span class="pageno">32 / 32</span></div></div>
+  </div></div></div><span class="pagetag">12 / Operator Pattern Map</span><span class="pageno">32 / 32</span></div></div>
 </div>
 </div>
 <div id="ctl" role="toolbar" aria-label="翻页">
@@ -1628,7 +1629,7 @@ function txt(s,x,y,t,o={}){return el('text',{x,y,'text-anchor':o.a||'middle','fo
   txt(s,m1-14,cy+5,'发现',{a:'end'});txt(s,m1+14,cy+5,'定义',{a:'start'});txt(s,m2-14,cy+5,'开发',{a:'end'});txt(s,m2+14,cy+5,'交付',{a:'start'});
   txt(s,24,cy-2,'问题',{a:'start',fw:700,fs:26,serif:true});txt(s,24,cy+22,'hidden=8192 变慢',{a:'start',fs:12,c:C.muted});
   txt(s,600,cy-2,'发现',{fw:700,fs:26,serif:true});txt(s,600,cy+22,'H1 · UB 容量约束',{fs:12,c:C.muted});
-  txt(s,1176,cy-2,'方案',{a:'end',fw:700,fs:26,serif:true});txt(s,1176,cy+22,'34.1µs · 精度通过',{a:'end',fs:12,c:C.muted});
+  txt(s,1176,cy-2,'方案',{a:'end',fw:700,fs:26,serif:true});txt(s,1176,cy+22,'案例 A · 34.1µs · 未达标',{a:'end',fs:12,c:C.muted});
   function stack(x,ys,items){const g=el('g',{},s);el('line',{x1:x,x2:x,y1:ys[0],y2:ys[ys.length-1],stroke:C.ink},g);
     items.forEach((it,i)=>pill(g,x,ys[i],it[0],it[1]?{fs:12.5,h:28,fill:it[1],fw:600,dot:true}:{fs:12.5,h:26,fill:C.card,stroke:C.ink}))}
   stack(255,[300,336,372],[['复现基准'],['采集 Profile'],['读取 IR']]);
@@ -1677,13 +1678,13 @@ function txt(s,x,y,t,o={}){return el('text',{x,y,'text-anchor':o.a||'middle','fo
 
 /* 11 translation */
 const TR=[
- ['L0','模型逐 token 生成，思考时没有输出','它还在运行吗？','活性信号','区分思考中、输出中、等工具，并显示已用时','sa'],
- ['L1','动作只以工具调用的形式存在','它到底在干嘛？','动作句','把 msprof 调用翻译成「正在采集搬运和 UB 数据」','bt'],
- ['L2','只能在循环的间隙插手','我现在能叫停吗？','可干预时机','明示此刻能做什么、做了会怎样','sk'],
- ['L2','有些副作用撤不回','会不会闯祸？','打断分级','按可撤回性 × 影响范围决定打断强度','sa'],
+ ['L0','推理可能有一段时间没有可见输出','它还在运行吗？','活性信号','区分思考中、输出中、等工具，并显示已用时','sa'],
+ ['L1','底层调用记录未必能直接解释用途','它到底在干嘛？','动作句','把 msprof 调用翻译成「正在采集搬运和 UB 数据」','bt'],
+ ['L2','生成、工具与循环的取消能力不同','我现在能叫停吗？','可干预时机','明示此刻能做什么、做了会怎样','sk'],
+ ['L2','有些副作用撤不回','会不会闯祸？','打断分级','先核对授权，再看影响、可撤回性与成本','sa'],
  ['L3','上下文会被压缩成摘要','它还记得我的约束吗？','约束常驻','约束固定显示；被压缩的证据留下标记','lv'],
- ['L4','阶段叙事由模型自己写','它会不会编？','回链证据','每句叙事都能点回原始记录','sg'],
- ['L5','工具输出没有统一结构','这个数对应哪个算子？','对象联动','选中一个算子，所有视图同时高亮','sk']
+ ['L4','语义事件来自运行时观测或模型自报','它会不会编？','回链证据','标明产生者；自报结论回链检查记录','sg'],
+ ['L5','跨工具记录需要统一的对象身份','这个数对应哪个算子？','对象联动','选中一个算子，所有视图同时高亮','sk']
 ];
 document.getElementById('trRows').innerHTML=TR.map(r=>`<div class="trr"><div class="c"><span class="src"><b>${r[0]}</b>${r[1]}</span></div><span class="cn"></span><div class="c"><span class="bub">「${r[2]}」</span></div><span class="cn"></span><div class="c"><span class="pill ${r[5]}" style="justify-self:start">${r[3]}</span><small>${r[4]}</small></div></div>`).join('');
 
@@ -1691,39 +1692,39 @@ document.getElementById('trRows').innerHTML=TR.map(r=>`<div class="trr"><div cla
 const KIND={agent:['智能体','--k-agent'],sub:['子任务','--k-sub'],llm:['模型调用','--k-llm'],tool:['工具调用','--k-tool'],report:['Agent 自报','--k-report'],gate:['人工关卡','--k-gate'],mem:['上下文','--k-mem']};
 const SP=[
  {id:'root',p:null,n:'诊断 RMSNorm 性能下降',k:'agent',s:0,e:96,d:'Orchestrator',q:'交出去以后，我还需要管它吗？',show:'整次运行在余光层只占一行：阶段进度、已用时、是否需要你。',dist:'余光',src:'Harness'},
- {id:'s1',p:'root',n:'理解目标并制定计划',k:'llm',s:0,e:4.2,d:'Opus 5.5',tok:2100,in:'hidden=8192 比 4096 慢很多，帮我查原因',out:'目标 + 约束（精度不回退）+ 4 步计划',q:'它听懂我的意思了吗？',show:'复述目标与约束。「精度不回退」是 Agent 推断的约束，要单独标出来请你确认。',dist:'扫视',src:'原生'},
+ {id:'s1',p:'root',n:'理解目标并制定计划',k:'llm',s:0,e:4.2,d:'Opus 5.5',tok:2100,in:'案例 A · FP32 · commit 04c0c97；先诊断，写补丁另行批准',out:'目标 ≤31.95µs；max_err <1e-3；复现 / 定位 / 修复 / 验证',q:'它听懂我的意思了吗？',show:'确认性能和精度阈值。初始授权涵盖诊断与小规模上板验证；写代码前需要单独批准。',dist:'扫视',src:'原生'},
  {id:'s2',p:'root',n:'发布计划',k:'report',s:4.2,e:4.6,d:'update_plan',out:'复现 / 定位 / 修复 / 验证',q:'要分几步、大概多久？',show:'任务栏出现 4 步清单，当前步骤高亮。这是用户第一次看到「它有章法」。',dist:'余光',src:'自报'},
  {id:'g1',p:'root',n:'复现',k:'sub',s:4.6,e:22,d:'子任务',q:'问题能稳定复现吗？',show:'子任务折叠后只显示一条，内部调用作为小刻度留在父条上。',dist:'扫视',src:'自报'},
- {id:'s3',p:'g1',n:'run_benchmark',k:'tool',s:4.8,e:18.6,d:'shape 4096 / 8192',in:'op=rmsnorm, shapes=[[4096,4096],[4096,8192]]',out:'21.3µs / 59.8µs',q:'14 秒没动静，是不是卡住了？',show:'长时间的工具调用要配动作句「正在对比两种 Shape 的耗时」和已用时，而不是只有一个转圈。',dist:'余光',src:'原生'},
- {id:'s4',p:'g1',n:'解读基准结果',k:'llm',s:18.6,e:21.8,d:'Sonnet 5.5',tok:1400,out:'慢 2.8 倍，可稳定复现',q:'所以问题确实存在？',show:'第一条证据用「结论句 + 数字」呈现。这是整次运行的第一个安心点，越早出现越好。',dist:'扫视',src:'原生'},
- {id:'g2',p:'root',n:'定位',k:'sub',s:22,e:52,d:'子任务',q:'原因找到了吗？',show:'阶段结束时用一句话收口：「疑似 UB 容量约束，已有 3 条证据」。',dist:'扫视',src:'自报'},
+ {id:'s3',p:'g1',n:'run_benchmark',k:'tool',s:4.8,e:18.6,d:'shape 4096 / 8192',in:'A · op=rmsnorm, dtype=FP32, shapes=[[4096,4096],[4096,8192]]',out:'21.3µs / 59.8µs',q:'14 秒没动静，是不是卡住了？',show:'长时间的工具调用要配动作句「正在对比两种 Shape 的耗时」和已用时，而不是只有一个转圈。',dist:'余光',src:'原生'},
+ {id:'s4',p:'g1',n:'解读基准结果',k:'llm',s:18.6,e:21.8,d:'Sonnet 5.5',tok:1400,out:'本次对照慢约 2.8 倍；稳定性仍需复测',q:'所以问题确实存在？',show:'第一条证据用「结论句 + 数字」呈现。这是整次运行的第一个安心点，越早出现越好。',dist:'扫视',src:'原生'},
+ {id:'g2',p:'root',n:'定位',k:'sub',s:22,e:52,d:'子任务',q:'原因找到了吗？',show:'阶段结束时收口：「两遍规约可能增加搬运，已有 3 条记录，仍待改动对照」。',dist:'扫视',src:'自报'},
  {id:'s5',p:'g2',n:'compile --dump-ir',k:'tool',s:22.3,e:29.2,d:'编译器',out:'tile_n=4096 · reduction=two_pass',q:'这些 IR 我看不懂。',show:'默认只显示一行关键变化「编译器改成了两遍规约」，IR 原文放进深挖层。',dist:'细看',src:'原生'},
- {id:'s6',p:'g2',n:'提出假设 H1',k:'llm',s:29.2,e:33.6,d:'Opus 5.5',tok:2600,out:'UB 容量约束 → 两遍规约 → 搬运翻倍',q:'凭什么这么判断？',show:'标为「假设」，同时列出打算用哪些数据去验证。不展示思考过程。',dist:'细看',src:'自报'},
+ {id:'s6',p:'g2',n:'提出假设 H1',k:'llm',s:29.2,e:33.6,d:'Opus 5.5',tok:2600,out:'假设：两遍规约增加搬运，导致性能下降',q:'凭什么这么判断？',show:'标为「假设」，同时列出打算用哪些数据去验证。不展示思考过程。',dist:'细看',src:'自报'},
  {id:'s7',p:'g2',n:'msprof（第 1 次）',k:'tool',s:33.6,e:38,d:'Profiler',fail:true,out:'失败：设备忙，采集超时',q:'出错了，它会放弃吗？',show:'失败要留在轨迹上，紧接着显示「已自动重试」。静默吞掉失败，会让后面的结论失去可信度。',dist:'扫视',src:'原生'},
- {id:'s8',p:'g2',n:'msprof（重试）',k:'tool',s:38.2,e:49.4,d:'Profiler',out:'MTE2 2.01× · UB 182/192 KB',q:'还要等多久？',show:'显示「第 2 次尝试」和预计耗时，让等待有边界。',dist:'余光',src:'原生'},
+ {id:'s8',p:'g2',n:'msprof（重试）',k:'tool',s:38.2,e:49.4,d:'Profiler',out:'A:e10 · MTE2 2.01× · ub_peak 182/192 KB',q:'还要等多久？',show:'显示「第 2 次尝试」和预计耗时，让等待有边界。',dist:'余光',src:'原生'},
  {id:'s9',p:'g2',n:'report_finding H1',k:'report',s:49.5,e:50,d:'发现',out:'状态：推断 · 证据 3 条',q:'现在能下结论了吗？',show:'发现卡片标「推断」，三条证据都能点开。还不能写成「根因」。',dist:'细看',src:'自报'},
- {id:'gate1',p:'root',n:'等待批准：写入内核补丁',k:'gate',s:52,e:63.5,d:'apply_patch',in:'rmsnorm_kernel.cpp +18 −6',q:'它要改什么？改坏了能撤回吗？',show:'阻断式审批：diff 摘要、影响范围、「本地可回退」标签。这 11.5 秒是你的时间，不该算进 Agent 的耗时。',dist:'扫视',src:'Harness'},
+ {id:'gate1',p:'root',n:'等待批准：写入内核补丁',k:'gate',s:52,e:63.5,d:'apply_patch',in:'rmsnorm_kernel.cpp +18 −6',q:'它要改什么？改坏了能撤回吗？',show:'当前只授权诊断，写补丁需扩大授权。展示 diff、影响范围和回退方式；11.5 秒计入全程等待，与执行耗时分列。',dist:'扫视',src:'Harness'},
  {id:'s10',p:'root',n:'apply_patch',k:'tool',s:63.6,e:65,d:'写入文件',out:'+18 −6 · 单遍规约',q:'改完了吗？',show:'在产物区出现 diff，可以对比查看。',dist:'细看',src:'原生'},
  {id:'s11',p:'root',n:'上下文压缩',k:'mem',s:65,e:67.4,d:'Harness',out:'IR 原文 → 摘要',q:'（用户通常察觉不到）',show:'在轨迹上留下标记。引用了被压缩证据的结论，显示「原文已压缩，可重新获取」。',dist:'深挖',src:'Harness'},
  {id:'g3',p:'root',n:'验证',k:'sub',s:67.6,e:88,d:'子任务',q:'修好了吗？',show:'阶段收口给出前后对比，而不是「验证完成」四个字。',dist:'扫视',src:'自报'},
- {id:'s12',p:'g3',n:'benchmark + precision_check',k:'tool',s:67.8,e:84.6,d:'对照 fp32',out:'34.1µs · max_err 1.2e-3 ✓',q:'修好了吗？精度有没有掉？',show:'前后对比：59.8 → 34.1µs；精度在阈值内用绿色标记，并写出阈值。',dist:'扫视',src:'原生'},
- {id:'s13',p:'g3',n:'update_finding H1 → 已验证',k:'report',s:84.7,e:85.1,d:'发现',out:'推断 → 已验证 · 依据 s12',q:'可以信了吗？',show:'状态升级时附上验证依据。没有验证工具的结果，就不能升级。',dist:'细看',src:'自报'},
- {id:'s14',p:'root',n:'publish_artifact',k:'report',s:88,e:89.6,d:'诊断报告 v1',out:'报告 · 依赖 4 条证据',q:'我能拿什么去汇报？',show:'产物卡片写明依赖的证据。证据被新结果推翻时，报告自动标为过期。',dist:'扫视',src:'自报'},
- {id:'s15',p:'root',n:'写交付总结',k:'llm',s:89.6,e:95.4,d:'Sonnet 5.5',tok:1800,out:'三句话：做了什么、证据、还剩什么',q:'一句话告诉我结果。',show:'总结也是模型写的，每句都要链回上面的事件。',dist:'扫视',src:'自报'},
- {id:'gate2',p:'root',n:'待你决定：是否提交 PR',k:'gate',s:95.4,e:96,d:'wrap_up',q:'下一步该我做什么？',show:'只问一个问题，给两个按钮。推送 PR 是不可撤回的外部操作，属于阻断级。',dist:'余光',src:'Harness'}
+ {id:'s12',p:'g3',n:'benchmark + precision_check',k:'tool',s:67.8,e:84.6,d:'对照 fp32',out:'34.1µs >31.95µs；max_err 1.2e-3 >1e-3；两项未达标',q:'修好了吗？精度有没有掉？',show:'耗时从 59.8 降至 34.1µs，但仍高于目标 31.95µs；误差也超过 1e-3。检查已执行，验收未通过，不能标绿。',dist:'扫视',src:'原生'},
+ {id:'s13',p:'g3',n:'update_finding H1 · 待验证',k:'report',s:84.7,e:85.1,d:'发现',out:'H1 保持推断；修复验收未通过 · 依据 s12',q:'可以信了吗？',show:'H1 仍待验证。变快不等于归因成立；验收未通过就保留缺口，附对应指标与检查记录。',dist:'细看',src:'自报'},
+ {id:'s14',p:'root',n:'publish_artifact',k:'report',s:88,e:89.6,d:'诊断报告 v1',out:'诊断报告 v1 · 含未达标结果与后续验证项',q:'我能拿什么去汇报？',show:'产物卡片写明依赖的证据。证据被新结果推翻时，报告自动标为过期。',dist:'扫视',src:'自报'},
+ {id:'s15',p:'root',n:'写交付总结',k:'llm',s:89.6,e:95.4,d:'Sonnet 5.5',tok:1800,out:'有改善但性能、精度未达标；H1 待验证；建议继续修复',q:'一句话告诉我结果。',show:'总结也是模型写的，每句都要链回上面的事件。',dist:'扫视',src:'自报'},
+ {id:'gate2',p:'root',n:'待你决定：继续修复或暂停',k:'gate',s:95.4,e:96,d:'wrap_up',q:'下一步该我做什么？',show:'验收未通过，给出「继续修复」「暂停并保留报告」。不得包装成完成；后续提交 PR 另行确认发布范围。',dist:'余光',src:'Harness'}
 ];
 const END=96,SPEED=6;
 const byId={},kids={};SP.forEach(s=>{byId[s.id]=s;(kids[s.p]=kids[s.p]||[]).push(s)});
 const order=[];(function walk(id,dep){(kids[id]||[]).forEach(s=>{s.dep=dep;order.push(s);walk(s.id,dep+1)})})(null,0);
 const PH=[['委托',0,4.6],['复现',4.6,22],['定位',22,52],['修复',52,67.6],['验证',67.6,88],['交付',88,96]];
-const MOOD=[[0,50],[4.6,62],[10,53],[18.6,42],[21.8,66],[29,63],[33.6,70],[36,46],[40,56],[50,72],[52,52],[63.5,66],[66,64],[75,68],[84.6,85],[89.6,87],[96,90]];
+const MOOD=[[0,50],[4.6,62],[10,53],[18.6,42],[21.8,66],[29,63],[33.6,70],[36,46],[40,56],[50,72],[52,52],[63.5,66],[66,64],[75,68],[84.6,58],[89.6,65],[96,68]];
 const MK=[
- {n:1,t:18.6,v:42,sp:'s3',h:'长时间没有反馈',r:'用户开始怀疑卡住了。回应：长调用配动作句和已用时。'},
- {n:2,t:21.8,v:66,sp:'s4',h:'看到第一条证据',r:'信心第一次明显回升。回应：第一条证据要早、要具体。'},
- {n:3,t:36,v:46,sp:'s7',h:'看到调用失败',r:'信心跌到最低。回应：失败可见，并立刻显示自动重试。'},
- {n:4,t:52,v:52,sp:'gate1',h:'它要改内核了',r:'紧张。回应：说明改动内容、影响范围、能否回退。'},
- {n:5,t:66,v:64,sp:'s11',h:'上下文被压缩',r:'用户无感，但证据原文已经不在窗口里。回应：留下标记。',risk:true},
- {n:6,t:84.6,v:85,sp:'s13',h:'验证通过',r:'信任建立。回应：状态升级必须附验证依据。'}
+ {n:1,t:18.6,v:42,sp:'s3',h:'长时间没有反馈',r:'用户可能怀疑卡住了。回应：长调用配动作句和已用时。'},
+ {n:2,t:21.8,v:66,sp:'s4',h:'看到第一条证据',r:'有了可核对的依据。回应：先给具体观察，避免过早定性。'},
+ {n:3,t:36,v:46,sp:'s7',h:'看到调用失败',r:'信心可能再次下降。回应：保留失败，并显示重试状态。'},
+ {n:4,t:52,v:52,sp:'gate1',h:'它要改内核了',r:'即将超出诊断授权。回应：说明改动、影响与回退，再请求批准。'},
+ {n:5,t:66,v:64,sp:'s11',h:'上下文被压缩',r:'原文已移出上下文。回应：标明压缩，并保留可重新获取的引用。',risk:true},
+ {n:6,t:84.6,v:58,sp:'s13',h:'检查结束，仍未达标',r:'回应：把改善与达标分开，展示阈值、未决问题及下一步。',risk:true}
 ];
 const wf=document.getElementById('wf'),rowsEl=document.getElementById('rows');
 const collapsed=new Set();let sel='gate1',now=END,playing=false,range=100,last=0;
@@ -1802,7 +1803,7 @@ renderTicks();update();renderDetail();syncBtn();
 
 (()=>{const svg=document.getElementById('gtSvg');if(!svg)return;
 const D={
-single:{q:'它卡在哪？是在等我吗？',u:'泳道 = Agent 自报的任务',crit:false,ph:[[0,5,'理解意图'],[5,21,'定位根因'],[21,40,'上板验证'],[40,52,'修复'],[52,60,'交付验收']],
+single:{q:'它卡在哪？是在等我吗？',u:'泳道 = 结构化任务',crit:false,ph:[[0,5,'理解意图'],[5,21,'定位根因'],[21,40,'上板验证'],[40,52,'修复'],[52,60,'交付验收']],
  rows:[
   {id:'h',n:'你',sub:'委托人',hu:1,s:[[0,2,'h','委托'],[26,28,'h','批准'],[52,56,'h','验收']]},
   {id:'t1',n:'T1 理解意图',sub:'自报任务',s:[[2,5,'llm','复述目标']]},
@@ -1812,8 +1813,8 @@ single:{q:'它卡在哪？是在等我吗？',u:'泳道 = Agent 自报的任务'
   {id:'t5',n:'T5 修复与验证',sub:'自报任务',s:[[40,44,'llm','改 tiling'],[44,51,'tool','数值校验'],[51,52,'rep','']]}],
  ar:[[21,'t4',26,'h','w'],[28,'h',28,'t4','d'],[52,'t5',52,'h','d']],
  ann:[[33.5,'t3','等你 7 min',24],[45,'t2','失败就地重试，不另起一行',33]],mk:[[36,'t4','压缩']],
- ev:[[0,'h','你委托：找出 hidden=8192 时 RMSNorm 变慢的原因'],[2,'t1','Agent 复述目标和完成标准，写进自报计划 T1–T5'],[5,'t2','编译前推导：估算整行在 UB 里要占多少'],[13,'t3','编译后读 IR：编译器改成了两遍规约'],[19,'t3','自报发现 H1：整行 live 320 KiB 超出 UB 248 KiB'],[21,'t4','要上板验证，这是外部副作用，停下来等你批准'],[26,'h','你看到通知，批准上板（已等 5 min）'],[28,'t4','上板 #1 开始'],[32,'t4','上板超时，就地自动重试'],[36,'t4','上下文接近上限，旧的 profiling 日志被压缩成摘要'],[40,'t5','根因确认，开始改 tiling'],[44,'t5','数值校验：max_err 在阈值内'],[52,'h','交付产物和证据链，等你验收']],
- notes:[['泳道来自自报计划','一条泳道是一个任务，不是一次工具调用。没有 L4 的计划工具，这张图就画不出来。'],['人单独一条','只放跟他有关的三个时刻：委托、批准、验收。其余时间他可以离开。'],['斜纹最显眼','只有一个 Agent 时，人往往就是唯一的瓶颈。「等你 7 min」比任何进度条都重要。'],['失败就地标注','失败和重试画在原任务里，压缩等事件用竖线标记，点开看证据。']]},
+ ev:[[0,'h','你委托：找出 hidden=8192 时 RMSNorm 变慢的原因'],[2,'t1','Agent 复述目标和完成标准，写进自报计划 T1–T5'],[5,'t2','编译前推导：估算整行在 UB 里要占多少'],[13,'t3','编译后读 IR：编译器改成了两遍规约'],[19,'t3','案例 B 的假设 H1：两遍规约可能增加搬运'],[21,'t4','申请共享设备上板：超出初始授权，等待批准'],[26,'h','你看到通知，批准上板（已等 5 min）'],[28,'t4','上板 #1 开始'],[32,'t4','上板超时，就地自动重试'],[36,'t4','上下文接近上限，旧的 profiling 日志被压缩成摘要'],[40,'t5','根因确认，开始改 tiling'],[44,'t5','开始数值校验，尚未得到结果'],[52,'h','案例 B 的检查结束，交付产物和证据链，等你验收']],
+ notes:[['泳道来自结构化任务','一条泳道对应稳定任务 ID。计划工具、工作流或调度器都可提供结构化进度，需保留与调用记录的关联。'],['人单独一条','只放跟他有关的三个时刻：委托、批准、验收。其余时间他可以离开。'],['斜纹最显眼','案例 B 单 Agent 场景中，上板等待批准共 7 分钟。将等待对象与时长显式标出，帮助用户判断何时介入。'],['失败就地标注','失败和重试画在原任务里，压缩等事件用竖线标记，点开看证据。']]},
 fleet:{q:'哪条线拖慢了整体？我先处理哪个请求？',u:'泳道 = 主 Agent + 子 Agent',crit:true,ph:[[0,4,'拆分'],[4,30,'并行调查'],[30,40,'汇总决策'],[40,55,'修复验证'],[55,60,'验收']],
  rows:[
   {id:'h',n:'你',sub:'审批队列',hu:1,s:[[0,2,'h','委托'],[18,20,'h','批 B',1],[21,23,'h','批 C'],[38,40,'h','选方案',1],[55,58,'h','验收',1]]},
