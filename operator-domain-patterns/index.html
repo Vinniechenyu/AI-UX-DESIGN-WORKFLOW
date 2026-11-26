@@ -1080,6 +1080,14 @@
   .mode-map-scroll { overflow-x:auto; background:var(--frame); }
   .mode-map-fig svg { display:block; width:100%; min-width:620px; height:auto; }
   .mode-map-fig figcaption { margin-top:10px; }
+
+  /* larger skeletons: stack each pair inside its group */
+  .sk-strip { gap:36px; }
+  .sk-cols { grid-template-columns:1fr; gap:26px; }
+  .sk-item { gap:14px; }
+  .sk-label { font-size:15px; }
+  .sk-card { filter:drop-shadow(0 6px 14px rgba(25,26,27,.04)); }
+  @media(max-width:1100px) { .sk-cols { grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; } }
 </style>
 </head>
 <body>
@@ -1441,8 +1449,7 @@ function buildAIModeOverview() {
     <section class="panel"><span class="guide-label">PART II · INTERACTION MODES</span><h2>围绕工作对象与人机分工，选择交互方式</h2><p>开发者可以在对象上完成局部动作、与 AI 探索问题、委托完整任务、按阶段推进、共同编辑产物，或根据证据评审结果。一条工作流会按任务变化组合多种模式。</p>${aiModeSource()}<div class="mode-reading"><div><strong>工作方式 · P01–P06</strong><p>决定当前围绕什么工作、由谁推进，以及用户如何介入。</p></div><div><strong>界面模式 · A 系列</strong><p>承接规格、阶段状态、调查证据、修改审阅和复测等具体交互。</p></div><div><strong>运行维度</strong><p>异步、主动、并行与授权可叠加到多种工作方式上。</p></div></div></section>
     <section class="panel"><h2>六种模式：从局部对象到完整目标</h2><p class="section-intro">以下为典型重心，按作用范围和推进方判断；模式之间允许重叠。</p>${modeMapFigure()}<div class="guide-table-wrap"><table class="principles mode-map"><thead><tr><th>模式</th><th>工作中心</th><th>开发者 / AI 分工</th><th>界面重心</th></tr></thead><tbody>${aiModes.map(m=>`<tr><th><a href="#${m.id}">${m.code} ${m.title}</a></th><td>${m.center}</td><td>${m.human}<br><span>${m.agent}</span></td><td>${m.layout.split('。')[0]}</td></tr>`).join('')}</tbody></table></div></section>
     <section class="panel"><h2>先看界面重心，再进入具体模式</h2><p class="section-intro">按推进方式分三组：谁在推进，界面重心就落在哪里。</p>${modeSkeletonStrip()}</section>
-    <section class="panel"><h2>三栏布局、主动性与自主程度分别设计</h2><div class="guide-dimensions"><div><h3>沉浸式任务工作台</h3><p>可用三栏承载任务列表、意图与决策、产物与证据。其核心是围绕目标持续推进，归入 P03 任务委托式。</p></div><div><h3>主动式 AI</h3><p>描述由事件触发或 AI 先提出建议。主动提示可以进入协作会话，也可以提出任务，需说明触发依据并提供打扰控制。</p></div><div><h3>自主执行范围</h3><p>描述 AI 可读取、提出候选、运行验证与应用修改到哪一步。每种模式均需明确范围及预算。</p></div><div><h3>流程与其他模式</h3><p>P04 提供阶段与依赖；阶段内部可以使用 P02 分析、P03 执行、P05 共创或 P06 验收。</p></div></div></section>
-    <section class="panel"><h2>模式转场：继承已完成的判断与工作现场</h2><ol class="mode-transitions"><li><strong>升级：P01 → P02</strong><p>局部问题扩展为调查。带入对象锚点、版本、原问题和已有结果。</p></li><li><strong>固化：P02 → P03</strong><p>探索形成可执行目标。整理约束、缺项、验收条件和行动范围。</p></li><li><strong>收敛：P03 / P05 → P06</strong><p>候选进入评审。带入差异、正确性覆盖、运行证据与可比条件。</p></li><li><strong>回写：P06 → 原对象</strong><p>决定落回代码、图或配置。核对目标版本，记录应用范围、状态与验证依据。</p></li></ol><p class="guide-return">P05 可在协作与评审之间反复迭代；补测回到任务执行。切换不要求用户重新描述已确认的上下文。</p></section>
+        <section class="panel"><h2>模式转场：继承已完成的判断与工作现场</h2><ol class="mode-transitions"><li><strong>升级：P01 → P02</strong><p>局部问题扩展为调查。带入对象锚点、版本、原问题和已有结果。</p></li><li><strong>固化：P02 → P03</strong><p>探索形成可执行目标。整理约束、缺项、验收条件和行动范围。</p></li><li><strong>收敛：P03 / P05 → P06</strong><p>候选进入评审。带入差异、正确性覆盖、运行证据与可比条件。</p></li><li><strong>回写：P06 → 原对象</strong><p>决定落回代码、图或配置。核对目标版本，记录应用范围、状态与验证依据。</p></li></ol><p class="guide-return">P05 可在协作与评审之间反复迭代；补测回到任务执行。切换不要求用户重新描述已确认的上下文。</p></section>
     <section class="panel"><h2>同一个 Agent 循环，向用户展开不同部分</h2><p class="section-intro">运行循环可以包含上下文组装、规划、调用工具、观察和汇报。界面根据当前模式，决定哪些内容默认可见。</p><div class="guide-table-wrap"><table class="principles mode-map"><thead><tr><th>模式</th><th>默认强调</th><th>按需展开</th></tr></thead><tbody><tr><th>P01 / P02</th><td>发起对象、共享上下文、结果与原对象的联系</td><td>详细计划、执行记录与完整证据</td></tr><tr><th>P03</th><td>计划、阶段进展、阻塞点、人工检查点与验证证据</td><td>原始工具调用与日志</td></tr><tr><th>P04</th><td>阶段输入、依赖、完成条件与变更影响</td><td>阶段内执行细节</td></tr><tr><th>P05</th><td>编辑意图、约束、版本差异与应用范围</td><td>候选生成过程与详细证据</td></tr><tr><th>P06</th><td>比较条件、候选差异、验证证据与决策动作</td><td>完整执行过程</td></tr></tbody></table></div><p class="guide-return">主动发起时，将触发原因和依据放在建议之前；所有模式都保留必要的验证状态。</p></section>
     <section class="panel guide-extension"><h2>按问题选模式，再组合现有界面卡片</h2><p>边界明确的小动作从 P01 开始；需要共同分析用 P02；有完整目标与验收条件用 P03；阶段依赖需要解释时用 P04；需要直接修改方案用 P05；需要根据证据作决定用 P06。</p><div class="guide-links"><a href="#AI-PRINCIPLES">AI 设计原则</a><a href="#A01">规格确认</a><a href="#A02">阶段与产物</a><a href="#A06">修改审阅</a><a href="#A08">复测结果</a></div></section>`;
   return guide;
