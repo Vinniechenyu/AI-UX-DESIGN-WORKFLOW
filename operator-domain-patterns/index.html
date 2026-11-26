@@ -917,8 +917,6 @@
   .mode-preview h3 { font:600 19px/1.45 var(--f-sans); }
   .mode-mini { border-radius:0; border-color:var(--line); background:var(--frame); }
   .mode-mini i { border-radius:0; }
-  .mode-sketch { border-radius:0; border-color:var(--line); }
-  .mode-sketch :is(.sk-note,.sk-message,.sk-selection,.sk-pop,.sk-diff,.sk-tags span,.sk-action,.sk-status,.sk-node,.sk-task,.sk-stagebar > *) { border-radius:0 !important; }
   .mode-flow { border-top:1px solid var(--ink); gap:0; }
   .mode-flow li { padding:18px 0; border-bottom:1px solid var(--line); }
   .mode-flow li > span { border-radius:0; background:none; border:1px solid var(--line-strong); color:var(--ai); font-family:var(--f-mono); }
@@ -1088,6 +1086,99 @@
   .sk-label { font-size:15px; }
   .sk-card { filter:drop-shadow(0 6px 14px rgba(25,26,27,.04)); }
   @media(max-width:1100px) { .sk-cols { grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; } }
+
+  /* ---------- trust chain as ascending steps ---------- */
+  .trust-steps { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); align-items:end; gap:0 12px; padding-top:8px; border-bottom:0; }
+  .ts-col { display:flex; flex-direction:column; min-width:0; }
+  .ts-block { display:flex; flex-direction:column; justify-content:space-between; height:var(--h); padding:16px 16px 18px; border-top:3px solid var(--pc); background:var(--pt); }
+  .ts-top { display:flex; align-items:center; justify-content:space-between; }
+  .ts-icon { display:grid; place-items:center; width:36px; height:36px; background:#FFFFFF; color:var(--pc); }
+  .ts-top em { color:var(--pc); font:500 12px/1 var(--f-mono); font-style:normal; }
+  .ts-name strong { display:block; color:var(--pc); font:600 22px/1.3 var(--f-sans); }
+  .ts-name q { display:block; margin-top:6px; color:var(--ink); font-size:14px; quotes:'“' '”'; }
+  .ts-purpose { margin:14px 0 0 !important; padding-top:12px; border-top:1px solid var(--ink); color:var(--ink-2) !important; font-size:13.5px; }
+  .trust-steps .trust-map { margin-top:10px; }
+  @media(max-width:860px) { .trust-steps { grid-template-columns:repeat(2,minmax(0,1fr)); gap:28px 12px; } .ts-block { height:auto; min-height:150px; } }
+  @media(max-width:620px) { .trust-steps { grid-template-columns:1fr; } }
+
+  /* cover: lift the title above the stats row, move the tagline under the year */
+  @media(min-width:861px) {
+    .cover-title { bottom:calc(52% + 10px); z-index:1; }
+    .cover-tag { top:84px; }
+  }
+
+  /* ---------- trust rings + columns ---------- */
+  .tr-fig { margin:8px 0 36px; }
+  .tr-scroll { overflow-x:auto; }
+  .tr-fig svg { display:block; width:100%; min-width:640px; height:auto; }
+  .tr-cols { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:28px; }
+  .tr-col { padding-top:18px; border-top:1px solid var(--ink); }
+  .tr-tag { display:inline-block; padding:4px 10px; background:var(--pt); color:var(--pc); font:500 12.5px/1.4 var(--f-sans); }
+  .tr-col h3 { margin:14px 0 10px; color:var(--ink); font:600 17px/1.45 var(--f-sans); }
+  .tr-col ul { margin:0; padding:0; list-style:none; }
+  .tr-col li { position:relative; padding:5px 0 5px 14px; color:var(--ink-2); font-size:13.5px; line-height:1.6; }
+  .tr-col li::before { content:''; position:absolute; left:0; top:13px; width:5px; height:5px; background:var(--pc); }
+  .tr-col li b { margin-right:6px; color:var(--ink); font-weight:600; }
+  .tr-col .trust-map { margin-top:12px; }
+  @media(max-width:1000px) { .tr-cols { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media(max-width:620px) { .tr-cols { grid-template-columns:1fr; } }
+
+  /* AI overview · four dimensions, nested-ring language */
+  .hub-tile.principle { box-shadow:none; gap:0; }
+  .hub-tile.principle .hub-rings { display:block; margin-bottom:16px; line-height:0; }
+  .hub-tile.principle .tr-tag { align-self:flex-start; margin-bottom:12px; font-size:12px; }
+  .hub-tile.principle strong { color:var(--ink); font:600 18px/1.4 var(--f-sans); }
+  .hub-tile.principle q { margin-top:6px; color:var(--ink-2); font-size:13.5px; line-height:1.6; quotes:'“' '”'; }
+  .hub-tile.principle .hub-icon { width:40px; height:40px; margin-bottom:16px; }
+  .hub-tile.principle .hub-ask { margin-top:6px; color:var(--ink-2); font-size:13.5px; line-height:1.6; }
+
+  /* ---------- P01–P06 interface sketches, skeleton language ---------- */
+  .mode-figure { padding:28px; border:1px solid var(--line); background:var(--frame); }
+  .mode-figure figcaption { margin-top:16px !important; }
+  .mode-sketch { gap:0; overflow:hidden; border:1px solid #E3E3E5; border-radius:12px; background:#FFFFFF; color:var(--ink-2); font-size:12.5px; line-height:1.6; box-shadow:0 1px 2px rgba(25,26,27,.04), 0 16px 32px -22px rgba(25,26,27,.22); }
+  .mode-sketch .sk-bar { display:flex; align-items:center; gap:12px; padding:11px 16px; background:#F7F7F8; border-bottom:1px solid #ECECEE; color:var(--ink); font-size:12.5px; font-weight:600; }
+  .mode-sketch .sk-bar::before { content:''; flex:none; width:7px; height:7px; border-radius:50%; background:#D9D9DB; box-shadow:12px 0 #D9D9DB, 24px 0 #D9D9DB; margin-right:24px; }
+  .mode-sketch .sk-pane { gap:12px; padding:18px; border-right:1px solid #EFEFF1; }
+  .mode-sketch .sk-pane:last-child { border-right:0; }
+  .mode-sketch .sk-label { color:var(--muted); font-size:11.5px; font-weight:500; letter-spacing:.02em; }
+  .mode-sketch strong { color:var(--ink); font-weight:600; }
+  .mode-sketch .sk-note { padding:11px 13px; border:0; border-radius:8px; background:#F6F6F7; }
+  .mode-sketch .sk-message { padding:11px 13px; border-radius:12px 12px 12px 4px; background:#F1EEFC; color:var(--ink); }
+  .mode-sketch .sk-tags span { padding:3px 9px; border:0; border-radius:6px; background:#F1F1F2; color:var(--ink-2); font-size:11.5px; }
+  .mode-sketch .sk-tags span:first-child { background:#EEEAFB; color:var(--ai); }
+  .mode-sketch .sk-action { padding:5px 11px; border:1px solid #E2E2E4; border-radius:7px; background:#FFFFFF; color:var(--ink); font-size:11.5px; }
+  .mode-sketch .sk-actions .sk-action:last-child { border-color:#6B5BD2; background:#6B5BD2; color:#FFFFFF; }
+  .mode-sketch .sk-status { padding:3px 10px; border-radius:999px; background:#EEEAFB; color:var(--ai); font-size:11.5px; font-weight:500; }
+  .mode-sketch .sk-selection { border:1px dashed #B4A8EC; border-radius:8px; background:#F5F3FD; }
+  .mode-sketch .sk-selection > span { color:var(--muted); }
+  .mode-sketch .sk-pop { border:1px solid #E6E6E8; border-radius:10px; background:#FFFFFF; box-shadow:0 12px 28px -14px rgba(25,26,27,.25); }
+  .mode-sketch .sk-diff { border:0; border-radius:8px; gap:2px; }
+  .mode-sketch .sk-diff span { border-radius:6px 6px 0 0; background:#FCEDEA; color:#A4493A; }
+  .mode-sketch .sk-diff strong { border-radius:0 0 6px 6px; background:#EEEAFB; color:var(--ai); font-weight:500; }
+  .mode-sketch .sk-code { color:var(--muted); font-family:var(--f-mono); font-size:12px; }
+  .mode-sketch .sk-canvas { background:radial-gradient(circle at 1px 1px,#DADADC .9px,transparent 1.2px) 0 0/14px 14px,#FAFAFA; border-right:1px solid #EFEFF1; }
+  .mode-sketch .sk-node { border:1px solid #E2E2E4; border-radius:8px; background:#FFFFFF; color:var(--ink); }
+  .mode-sketch .sk-node > span { color:var(--muted); }
+  .mode-sketch .sk-node.sk-proposal { border:1px dashed #B4A8EC; background:#F5F3FD; }
+  .mode-sketch .sk-arrow { color:#B4A8EC; }
+  .mode-sketch .sk-stagebar { gap:6px; padding:12px 16px; border-bottom:1px solid #EFEFF1; background:#FFFFFF; }
+  .mode-sketch .sk-stagebar > * { padding:3px 10px; border:1px solid #E4E4E6; border-radius:999px; color:var(--ink-2); font-size:11.5px; }
+  .mode-sketch .sk-stagebar strong { border-color:#6B5BD2; background:#6B5BD2; color:#FFFFFF; font-weight:500; }
+  .mode-sketch .sk-tasks { background:#F7F7F8; }
+  .mode-sketch .sk-task { border:1px solid transparent; border-radius:8px; }
+  .mode-sketch .sk-task.is-current { border-color:#E2E2E4; background:#FFFFFF; box-shadow:inset 2px 0 0 #6B5BD2, 0 4px 12px -8px rgba(25,26,27,.2); }
+  .mode-sketch .sk-task > span { color:var(--muted); }
+  .mode-sketch .sk-progress li { color:var(--ink-2); }
+  .mode-sketch .sk-progress .is-current { color:var(--ai); font-weight:600; }
+  .mode-sketch .sk-annotation { border-radius:6px; background:#FBF4D9; color:#7A6212; }
+  .mode-sketch .sk-compare { font-size:12px; }
+  .mode-sketch .sk-compare thead { background:#F6F6F7; }
+  .mode-sketch .sk-compare :is(th,td) { border-bottom:1px solid #EFEFF1; }
+  .mode-sketch .sk-compare th { color:var(--ink); }
+  .mode-sketch .sk-compare .sk-warn { background:#FBF4D9; color:#7A6212; }
+  @media(max-width:620px) { .mode-figure { padding:14px; } }
+  .mode-sketch:is(.review-sketch,.workspace-sketch) .sk-actions .sk-action:last-child { border-color:#E2E2E4; background:#FFFFFF; color:var(--ink); }
+  .mode-sketch:is(.review-sketch,.workspace-sketch) .sk-actions .sk-action:first-child { border-color:#6B5BD2; background:#6B5BD2; color:#FFFFFF; }
 </style>
 </head>
 <body>
@@ -1901,7 +1992,7 @@ function heroArt(card) {
 }
 
 /* ---------- domain overview ---------- */
-const PRINCIPLE_COLORS = {'01':['#2F6FE0','#EAF1FD'], '02':['#0F8A84','#E2F3F1'], '03':['#B0731A','#FBF0DF'], '04':['#6B5BD2','#EFEDFA'], '05':['#2E8A57','#E4F2E9']};
+const PRINCIPLE_COLORS = {'01':['#B04E31','#FCE9E1','#FADFD2'], '02':['#86690A','#FAF3D2','#F8F0D2'], '03':['#2C6CAE','#E3EEFA','#DDEAF8'], '04':['#4C7A22','#E9F1DC','#E5F0D8'], '05':['#6B5BD2','#EEEAFB','#E4DEF9']};
 const pcStyle = n => `--pc:${PRINCIPLE_COLORS[n][0]};--pt:${PRINCIPLE_COLORS[n][1]}`;
 const toolIds = ['T01', 'T02', 'T04', 'T05', 'T06', 'T08', 'T10'];
 const uiIds = ['A01', 'A02', 'A03', 'A04', 'A05', 'A06', 'A08'];
@@ -2011,16 +2102,16 @@ function buildDomainIntro() {
 
 /* ---------- AI guides: overview hub & principles ---------- */
 const aiPrinciples = [
-  {n:'01', icon:'eye', name:'可感知', purpose:'让开发者知道 AI 正在做什么。', domain:['01', '03'],
+  {n:'01', icon:'eye', name:'可感知', en:'Perceivable', ask:'AI 现在在做什么？', purpose:'让开发者知道 AI 正在做什么。', domain:['01', '03'],
     points:[['对象明确', '当前算子、选区、版本与输入来源可见。'], ['状态真实', '区分等待、执行、失败和未执行，及时反馈变化。'], ['重点突出', '优先呈现阶段结果、阻塞项和需要用户处理的事项。']],
     example:'编译失败时展示失败阶段与日志入口，后续运行和精度校验保持“未执行”。', links:[['A01', '输入规格'], ['A02', '阶段与产物']], viz:'stages', vizLabel:'示意 · 编译失败'},
-  {n:'02', icon:'bulb', name:'可理解', purpose:'让开发者理解判断依据与下一步。', domain:['02', '05'],
+  {n:'02', icon:'bulb', name:'可理解', en:'Understandable', ask:'它为什么这样判断？', purpose:'让开发者理解判断依据与下一步。', domain:['02', '05'],
     points:[['结论分层', '区分观察事实、原因假设与行动建议。'], ['解释相关', '围绕当前问题说明为什么这样判断、修改会影响什么。'], ['缺口清楚', '说明尚缺什么信息，以及下一步要验证什么。']],
     example:'首次观察到精度偏差的位置标为调查起点，并列出未校验区间与待验证原因。', links:[['A04', '偏差范围'], ['A05', '运行与结构对照']], viz:'claims', vizLabel:'示意 · 结论分层'},
-  {n:'03', icon:'sliders', name:'可控制', purpose:'让开发者能介入、调整并恢复工作。', domain:['03', '04'],
+  {n:'03', icon:'sliders', name:'可控制', en:'Controllable', ask:'我能在哪里介入？', purpose:'让开发者能介入、调整并恢复工作。', domain:['03', '04'],
     points:[['边界明确', '约定读取、修改、运行与应用的范围及预算。'], ['介入适时', '支持补充约束、调整方向和审阅差异，关键分歧再请求决定。'], ['恢复可预期', '暂停、取消、重试与撤销的作用和保留结果清楚可见。']],
     example:'审阅 AI 修改的影响范围后决定是否采用；复测失败时保留候选，重跑明确的失败环节。', links:[['A06', '修改审阅与验证'], ['AP03', '任务委托']], viz:'authority', vizLabel:'示意 · 授权范围与控制'},
-  {n:'04', icon:'shield', name:'可信任', purpose:'让结论有证据，信任有边界。', domain:['05'],
+  {n:'04', icon:'shield', name:'可信任', en:'Trustworthy', ask:'这个结论能用吗？', purpose:'让结论有证据，信任有边界。', domain:['05'],
     points:[['证据可追溯', '结论关联代码版本、输入条件、测试与运行记录。'], ['验证分层', '分别表达生成、编译、正确性和性能结果，标明未测范围。'], ['比较有口径', '核对环境与测量条件；条件变化后标记过期结果并补测。']],
     example:'候选耗时降低后，仍要核对正确性覆盖、输入与环境是否可比，再决定采用。', links:[['A03', '复现对照'], ['A08', '复测结果']], viz:'ladder', vizLabel:'示意 · 验证阶梯'}
 ];
@@ -2056,7 +2147,7 @@ function buildAIGuide(card) {
         <div class="hub">
           <div class="hub-tier">
             <div class="hub-label"><span class="hub-layer">L1 · 原则</span><h3>四个体验维度</h3><p>约束所有 AI 交互</p><a class="hub-all" href="#AI-PRINCIPLES">查看设计原则 →</a></div>
-            <div class="hub-grid cols-4">${aiPrinciples.map(item => `<a class="hub-tile principle" href="#AI-PRINCIPLES" style="${pcStyle(item.domain[0])}"><span class="hub-icon pc">${icon(item.icon)}</span><strong>${item.name}</strong><span>${item.purpose}</span></a>`).join('')}</div>
+            <div class="hub-grid cols-4">${aiPrinciples.map((item, i) => `<a class="hub-tile principle" href="#AI-PRINCIPLES" style="${pcStyle(item.domain[0])}"><span class="hub-icon pc">${icon(item.icon)}</span><span class="tr-tag">${item.n} · ${item.en}</span><strong>${item.name}</strong><span class="hub-ask">「${item.ask}」</span></a>`).join('')}</div>
           </div>
           <div class="hub-tier">
             <div class="hub-label"><span class="hub-layer">L2 · 工作方式</span><h3>六种交互模式</h3><p>决定人机分工与界面重心</p><a class="hub-all" href="#AI-MODES">查看模式总览 →</a></div>
@@ -2078,7 +2169,13 @@ function buildAIGuide(card) {
   guide.innerHTML = `
     <section class="panel">
       <h2>四个维度构成一条信任链</h2>
-      <div class="trust-band">${aiPrinciples.map(item => `<div class="trust-seg" style="${pcStyle(item.domain[0])}"><span class="trust-icon pc">${icon(item.icon)}</span><strong>${item.name}</strong><p>${item.purpose}</p><span class="trust-map">对应领域原则 ${item.domain.map(n => `<i style="${pcStyle(n)}">${n}</i>`).join('')}</span></div>`).join('')}</div>
+      <p class="section-intro">由内到外逐层建立：先看见状态，再理解依据，进而能够控制，最终形成有边界的信任。</p>
+      ${trustRings()}
+      <div class="tr-cols">${aiPrinciples.map(item => `<div class="tr-col" style="${pcStyle(item.domain[0])}">
+        <span class="tr-tag">${item.name} · ${item.en}</span>
+        <h3>「${item.ask}」</h3>
+        <ul>${item.points.map(([key, text]) => `<li><b>${key}</b>${text}</li>`).join('')}</ul>
+        <span class="trust-map">对应领域原则 ${item.domain.map(n => `<i style="${pcStyle(n)}">${n}</i>`).join('')}</span></div>`).join('')}</div>
     </section>
     <section class="panel">
       <h2>每个维度的设计要点与示意</h2>
@@ -2268,6 +2365,36 @@ function modeMapFigure() {
     ${Object.entries(nodes).map(([code, n]) => node(code, n)).join('')}
     ${tag(262, 406, '升级')}${tag(588, 214, '固化')}${tag(906, 300, '收敛')}${tag(600, 506, '回写')}
   </svg></div><figcaption>紫色实线为典型路径上的模式转场，灰色虚线为经由产物共创的迭代路径；浅紫区域为由 Agent 推进、面向完整目标的工作。</figcaption></figure>`;
+}
+
+/* ---------- trust rings ---------- */
+function trustRings() {
+  const INK = '#191A1B', SANS = '-apple-system,BlinkMacSystemFont,PingFang SC,sans-serif', MONO = 'JetBrains Mono,SFMono-Regular,Menlo,monospace';
+  const L = 90, cy = 220, rxs = [102, 205, 307, 410], rys = [80, 126, 166, 205];
+  const rings = aiPrinciples.map((item, i) => ({item, rx: rxs[i], ry: rys[i], c: PRINCIPLE_COLORS[item.domain[0]]}));
+  const edges = rings.map(r => L + 2 * r.rx);
+  const ellipses = [...rings].reverse().map(r => `<ellipse cx="${L + r.rx}" cy="${cy}" rx="${r.rx}" ry="${r.ry}" fill="${r.c[2]}" stroke="#191A1B" stroke-opacity=".28" stroke-width="1"/>`).join('');
+  const labels = rings.map((r, i) => {
+    const x = ((i ? edges[i - 1] : L) + edges[i]) / 2;
+    return `<rect x="${x - 44}" y="${cy - 16}" width="88" height="32" fill="${INK}"/>` +
+      `<text x="${x}" y="${cy + 5.5}" text-anchor="middle" font-family="${SANS}" font-size="16" font-weight="600" fill="#FFFFFF">${r.item.name}</text>` +
+      `<text x="${x}" y="${cy + 42}" text-anchor="middle" font-family="${MONO}" font-size="11" letter-spacing="1.2" fill="${r.c[0]}">${r.item.en.toUpperCase()}</text>`;
+  }).join('');
+  return `<figure class="tr-fig"><div class="tr-scroll"><svg viewBox="0 0 1000 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="可感知、可理解、可控制、可信任由内到外嵌套">
+    ${ellipses}
+    <path d="M${L} ${cy}H${edges[3]}" stroke="${INK}" stroke-opacity=".55" stroke-width="1"/>
+    ${labels}
+    <text x="${L - 14}" y="${cy + 4}" text-anchor="end" font-family="${MONO}" font-size="11" letter-spacing="1.5" fill="${INK}" fill-opacity=".5">INNER</text>
+    <text x="${edges[3] + 14}" y="${cy + 4}" font-family="${MONO}" font-size="11" letter-spacing="1.5" fill="${INK}" fill-opacity=".5">OUTER</text>
+  </svg></div></figure>`;
+}
+
+/* ---------- mini trust rings (one layer highlighted) ---------- */
+function miniRings(active) {
+  const L = 2, cy = 21, rxs = [11, 20, 29, 38], rys = [8, 12, 16, 19];
+  const fill = PRINCIPLE_COLORS[aiPrinciples[active].domain[0]][2];
+  const shapes = [3, 2, 1, 0].map(j => `<ellipse cx="${L + rxs[j]}" cy="${cy}" rx="${rxs[j]}" ry="${rys[j]}" fill="${j === active ? fill : j < active ? '#FAFAFA' : 'none'}" stroke="#191A1B" stroke-opacity="${j === active ? .45 : .2}" stroke-width="1"/>`).join('');
+  return `<svg viewBox="0 0 80 42" width="80" height="42" aria-hidden="true">${shapes}<path d="M${L} ${cy}H${L + 2 * rxs[3]}" stroke="#191A1B" stroke-opacity=".25"/></svg>`;
 }
 
 function element(tag, className, value) {
