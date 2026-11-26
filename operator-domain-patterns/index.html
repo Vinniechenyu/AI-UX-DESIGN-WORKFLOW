@@ -2235,9 +2235,9 @@ function modeMapFigure() {
   const nodes = {P01:[190, 462, '原位执行', 'below'], P02:[345, 400, '上下文协作', 'below'], P05:[505, 335, '产物共创', 'below'], P04:[690, 292, '流程引导', 'below'], P03:[835, 142, '任务委托', 'left'], P06:[835, 462, '评审决策', 'below']};
   const tag = (x, y, t) => `<g><rect x="${x - 26}" y="${y - 12}" width="52" height="24" fill="#FAFAFA" stroke="${V}" stroke-width="1"/><text x="${x}" y="${y + 4.5}" text-anchor="middle" font-family="${SANS}" font-size="13" fill="${V}">${t}</text></g>`;
   const node = (code, [x, y, label, pos]) => `<circle cx="${x}" cy="${y}" r="34" fill="#FFFFFF" stroke="${INK}" stroke-opacity=".45" stroke-width="1"/>` +
-    `<text x="${x}" y="${y + 5}" text-anchor="middle" font-family="${MONO}" font-size="15" fill="${V}">${code}</text>` +
-    (pos === 'left' ? `<text x="${x - 52}" y="${y - 22}" text-anchor="end" font-family="${SANS}" font-size="15" fill="${INK}" fill-opacity=".85">${label}</text>`
-      : `<text x="${x}" y="${y + 60}" text-anchor="middle" font-family="${SANS}" font-size="15" fill="${INK}" fill-opacity=".85">${label}</text>`);
+    `<text x="${x}" y="${y + 5}" text-anchor="middle" font-family="${MONO}" font-size="15" font-weight="500" fill="${V}">${code}</text>` +
+    (pos === 'left' ? `<text x="${x - 52}" y="${y - 22}" text-anchor="end" font-family="${SANS}" font-size="15" font-weight="600" fill="${INK}">${label}</text>`
+      : `<text x="${x}" y="${y + 60}" text-anchor="middle" font-family="${SANS}" font-size="15" font-weight="600" fill="${INK}">${label}</text>`);
   const path = (d, kind) => kind === 'dash'
     ? `<path d="${d}" fill="none" stroke="${INK}" stroke-opacity=".45" stroke-width="1" stroke-dasharray="3 4" marker-end="url(#mm-tip-ink)"/>`
     : `<path d="${d}" fill="none" stroke="${V}" stroke-width="1.4" marker-end="url(#mm-tip)"/>`;
