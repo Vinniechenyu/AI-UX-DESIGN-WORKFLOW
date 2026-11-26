@@ -1074,6 +1074,12 @@
   .hub-tile.mode .sk-card { margin-bottom:14px; }
   @media(max-width:1100px) { .sk-strip { grid-template-columns:1fr; gap:36px; } }
   @media(max-width:620px) { .sk-cols { gap:10px; } .sk-label { font-size:13px; } }
+
+  /* ---------- mode map ---------- */
+  .mode-map-fig { margin:0 0 28px; padding:10px; border:1px solid var(--line); }
+  .mode-map-scroll { overflow-x:auto; background:var(--frame); }
+  .mode-map-fig svg { display:block; width:100%; min-width:620px; height:auto; }
+  .mode-map-fig figcaption { margin-top:10px; }
 </style>
 </head>
 <body>
@@ -1433,7 +1439,7 @@ function buildAIModeOverview() {
   const guide = element('div', 'ai-guide mode-guide');
   guide.innerHTML = `
     <section class="panel"><span class="guide-label">PART II · INTERACTION MODES</span><h2>围绕工作对象与人机分工，选择交互方式</h2><p>开发者可以在对象上完成局部动作、与 AI 探索问题、委托完整任务、按阶段推进、共同编辑产物，或根据证据评审结果。一条工作流会按任务变化组合多种模式。</p>${aiModeSource()}<div class="mode-reading"><div><strong>工作方式 · P01–P06</strong><p>决定当前围绕什么工作、由谁推进，以及用户如何介入。</p></div><div><strong>界面模式 · A 系列</strong><p>承接规格、阶段状态、调查证据、修改审阅和复测等具体交互。</p></div><div><strong>运行维度</strong><p>异步、主动、并行与授权可叠加到多种工作方式上。</p></div></div></section>
-    <section class="panel"><h2>六种模式：从局部对象到完整目标</h2><p class="section-intro">以下为典型重心，按作用范围和推进方判断；模式之间允许重叠。</p><div class="guide-table-wrap"><table class="principles mode-map"><thead><tr><th>模式</th><th>工作中心</th><th>开发者 / AI 分工</th><th>界面重心</th></tr></thead><tbody>${aiModes.map(m=>`<tr><th><a href="#${m.id}">${m.code} ${m.title}</a></th><td>${m.center}</td><td>${m.human}<br><span>${m.agent}</span></td><td>${m.layout.split('。')[0]}</td></tr>`).join('')}</tbody></table></div></section>
+    <section class="panel"><h2>六种模式：从局部对象到完整目标</h2><p class="section-intro">以下为典型重心，按作用范围和推进方判断；模式之间允许重叠。</p>${modeMapFigure()}<div class="guide-table-wrap"><table class="principles mode-map"><thead><tr><th>模式</th><th>工作中心</th><th>开发者 / AI 分工</th><th>界面重心</th></tr></thead><tbody>${aiModes.map(m=>`<tr><th><a href="#${m.id}">${m.code} ${m.title}</a></th><td>${m.center}</td><td>${m.human}<br><span>${m.agent}</span></td><td>${m.layout.split('。')[0]}</td></tr>`).join('')}</tbody></table></div></section>
     <section class="panel"><h2>先看界面重心，再进入具体模式</h2><p class="section-intro">按推进方式分三组：谁在推进，界面重心就落在哪里。</p>${modeSkeletonStrip()}</section>
     <section class="panel"><h2>三栏布局、主动性与自主程度分别设计</h2><div class="guide-dimensions"><div><h3>沉浸式任务工作台</h3><p>可用三栏承载任务列表、意图与决策、产物与证据。其核心是围绕目标持续推进，归入 P03 任务委托式。</p></div><div><h3>主动式 AI</h3><p>描述由事件触发或 AI 先提出建议。主动提示可以进入协作会话，也可以提出任务，需说明触发依据并提供打扰控制。</p></div><div><h3>自主执行范围</h3><p>描述 AI 可读取、提出候选、运行验证与应用修改到哪一步。每种模式均需明确范围及预算。</p></div><div><h3>流程与其他模式</h3><p>P04 提供阶段与依赖；阶段内部可以使用 P02 分析、P03 执行、P05 共创或 P06 验收。</p></div></div></section>
     <section class="panel"><h2>模式转场：继承已完成的判断与工作现场</h2><ol class="mode-transitions"><li><strong>升级：P01 → P02</strong><p>局部问题扩展为调查。带入对象锚点、版本、原问题和已有结果。</p></li><li><strong>固化：P02 → P03</strong><p>探索形成可执行目标。整理约束、缺项、验收条件和行动范围。</p></li><li><strong>收敛：P03 / P05 → P06</strong><p>候选进入评审。带入差异、正确性覆盖、运行证据与可比条件。</p></li><li><strong>回写：P06 → 原对象</strong><p>决定落回代码、图或配置。核对目标版本，记录应用范围、状态与验证依据。</p></li></ol><p class="guide-return">P05 可在协作与评审之间反复迭代；补测回到任务执行。切换不要求用户重新描述已确认的上下文。</p></section>
@@ -2122,13 +2128,13 @@ function modeSkeleton(code) {
   const defs = `<defs>
     <linearGradient id="${k}g" x1="0" x2="1"><stop offset="0" stop-color="#D2D2D4"/><stop offset="1" stop-color="#ECECEE"/></linearGradient>
     <linearGradient id="${k}l" x1="0" x2="1"><stop offset="0" stop-color="#E6E6E8"/><stop offset="1" stop-color="#F6F6F7"/></linearGradient>
-    <linearGradient id="${k}b" x1="0" x2="1"><stop offset="0" stop-color="#9ED5F3"/><stop offset="1" stop-color="#DDF1FB"/></linearGradient>
+    <linearGradient id="${k}b" x1="0" x2="1"><stop offset="0" stop-color="#B4A8EC"/><stop offset="1" stop-color="#EEEBFB"/></linearGradient>
     <linearGradient id="${k}p" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EDEDEF"/><stop offset="1" stop-color="#FAFAFA"/></linearGradient>
   </defs>`;
   const body = {
     P01: [
       ...[[22, 90], [36, 128], [50, 70], [78, 112], [92, 84], [106, 136], [120, 64], [134, 100]].map(([y, w]) => r(16, y, w, 6, GL)),
-      r(12, 60, 158, 14, '#EAF6FD', 4), r(18, 64, 104, 6, B),
+      r(12, 60, 158, 14, '#F2EFFC', 4), r(18, 64, 104, 6, B),
       r(152, 82, 134, 72, '#000000', 9, ' opacity=".035"'),
       frame(148, 78, 134, 70), r(158, 89, 64, 6, G), r(158, 101, 104, 5, GL),
       r(158, 112, 112, 12, '#F4F4F5', 3), r(164, 116, 70, 4, GL),
@@ -2137,11 +2143,11 @@ function modeSkeleton(code) {
     P02: [
       `<path d="M58 48V76M58 94V122M88 85H110" stroke="#E2E2E2" stroke-width="1.2"/>`,
       r(28, 30, 60, 18, G, 4), r(28, 76, 60, 18, B, 4), r(28, 122, 60, 18, G, 4), r(110, 76, 52, 18, GL, 4),
-      `<rect x="22" y="70" width="72" height="30" rx="6" fill="none" stroke="#9ED5F3" stroke-dasharray="3 3"/>`,
+      `<rect x="22" y="70" width="72" height="30" rx="6" fill="none" stroke="#B4A8EC" stroke-dasharray="3 3"/>`,
       frame(184, 12, 104, 146),
       r(192, 22, 28, 8, B, 4), r(224, 22, 30, 8, GL, 4), r(258, 22, 22, 8, GL, 4),
       r(234, 40, 46, 12, '#F0F0F1', 6),
-      r(192, 60, 88, 46, P, 6), r(200, 70, 58, 5, G), r(200, 81, 70, 5, GL), `<circle cx="203" cy="95" r="3.5" fill="#9ED5F3"/>`, r(210, 92, 40, 5, GL),
+      r(192, 60, 88, 46, P, 6), r(200, 70, 58, 5, G), r(200, 81, 70, 5, GL), `<circle cx="203" cy="95" r="3.5" fill="#B4A8EC"/>`, r(210, 92, 40, 5, GL),
       r(192, 130, 88, 18, '#FFFFFF', 9, ' stroke="#E2E2E2"'), `<circle cx="270" cy="139" r="4.2" fill="#6B6B6E"/>`
     ],
     P03: [
@@ -2149,9 +2155,9 @@ function modeSkeleton(code) {
       r(18, 22, 52, 18, B, 4), r(18, 46, 52, 18, P, 4), r(18, 70, 52, 18, P, 4),
       r(90, 20, 108, 7, G), r(90, 34, 108, 24, '#F4F4F5', 5), r(98, 43, 64, 5, GL),
       ...[[72, 'done'], [88, 'done'], [104, 'now'], [120, 'todo']].map(([y, s]) =>
-        (s === 'now' ? `<circle cx="96" cy="${y}" r="4" fill="#9ED5F3"/>` : s === 'done' ? `<circle cx="96" cy="${y}" r="4" fill="#D2D2D4"/>` : `<circle cx="96" cy="${y}" r="3.6" fill="#FFFFFF" stroke="#D6D6D8"/>`) +
+        (s === 'now' ? `<circle cx="96" cy="${y}" r="4" fill="#B4A8EC"/>` : s === 'done' ? `<circle cx="96" cy="${y}" r="4" fill="#D2D2D4"/>` : `<circle cx="96" cy="${y}" r="3.6" fill="#FFFFFF" stroke="#D6D6D8"/>`) +
         r(106, y - 3, s === 'now' ? 76 : 64, 6, s === 'now' ? B : GL)),
-      r(90, 134, 108, 16, '#EAF6FD', 5),
+      r(90, 134, 108, 16, '#F2EFFC', 5),
       frame(208, 12, 82, 146),
       r(216, 22, 66, 32, P, 5), r(216, 62, 66, 32, P, 5), r(222, 30, 40, 5, G), r(222, 70, 46, 5, G),
       r(216, 136, 52, 10, B, 5)
@@ -2159,12 +2165,12 @@ function modeSkeleton(code) {
     P04: [
       `<path d="M30 26H258" stroke="#E6E6E6" stroke-width="1.4"/>`,
       ...[30, 75.6, 121.2, 166.8, 212.4, 258].map((x, i) =>
-        (i < 2 ? `<circle cx="${x}" cy="26" r="6.5" fill="#D2D2D4"/>` : i === 2 ? `<circle cx="${x}" cy="26" r="10" fill="#EAF6FD"/><circle cx="${x}" cy="26" r="6.5" fill="${B}"/>` : `<circle cx="${x}" cy="26" r="6" fill="#FFFFFF" stroke="#DADADC"/>`) +
+        (i < 2 ? `<circle cx="${x}" cy="26" r="6.5" fill="#D2D2D4"/>` : i === 2 ? `<circle cx="${x}" cy="26" r="10" fill="#F2EFFC"/><circle cx="${x}" cy="26" r="6.5" fill="${B}"/>` : `<circle cx="${x}" cy="26" r="6" fill="#FFFFFF" stroke="#DADADC"/>`) +
         r(x - 13, 42, 26, 4, i === 2 ? B : GL, 2)),
       frame(14, 58, 172, 98), r(24, 70, 70, 7, G),
       `<circle cx="28" cy="91" r="3.5" fill="#D2D2D4"/>`, r(36, 88, 110, 6, GL),
       `<circle cx="28" cy="107" r="3.5" fill="#D2D2D4"/>`, r(36, 104, 92, 6, GL),
-      `<rect x="24" y="118" width="148" height="26" rx="5" fill="#EAF6FD" stroke="#9ED5F3" stroke-dasharray="3 3"/>`, r(32, 128, 84, 6, B),
+      `<rect x="24" y="118" width="148" height="26" rx="5" fill="#F2EFFC" stroke="#B4A8EC" stroke-dasharray="3 3"/>`, r(32, 128, 84, 6, B),
       r(196, 58, 92, 98, P, 6), r(204, 70, 50, 6, G),
       `<rect x="204" y="84" width="76" height="22" rx="4" fill="#FFFFFF" stroke="#DADADC" stroke-dasharray="3 2"/>`, r(210, 92, 46, 5, GL),
       `<rect x="204" y="114" width="76" height="22" rx="4" fill="#FFFFFF" stroke="#DADADC" stroke-dasharray="3 2"/>`, r(210, 122, 36, 5, GL)
@@ -2177,21 +2183,21 @@ function modeSkeleton(code) {
       r(40, 62, 58, 16, G, 4), r(40, 116, 58, 16, G, 4),
       `<path d="M98 70C114 70 112 97 126 97M98 124C114 124 112 97 126 97" fill="none" stroke="#D6D6D8" stroke-width="1.2"/>`,
       `<circle cx="128" cy="97" r="3" fill="#BDBDC0"/>`, `<path d="M131 97H164" stroke="#D6D6D8" stroke-width="1.2"/>`,
-      `<rect x="152" y="48" width="124" height="98" rx="6" fill="#EEF8FD" stroke="#9ED5F3" stroke-dasharray="4 3"/>`,
+      `<rect x="152" y="48" width="124" height="98" rx="6" fill="#F4F2FC" stroke="#B4A8EC" stroke-dasharray="4 3"/>`,
       r(164, 88, 52, 18, B, 4),
-      `<path d="M216 97C228 97 226 76 236 76M216 97C228 97 226 118 236 118" fill="none" stroke="#9ED5F3" stroke-width="1.2" stroke-dasharray="3 3"/>`,
-      `<rect x="236" y="68" width="32" height="16" rx="4" fill="#FFFFFF" stroke="#9ED5F3" stroke-dasharray="3 2"/>`,
-      `<rect x="236" y="110" width="32" height="16" rx="4" fill="#FFFFFF" stroke="#9ED5F3" stroke-dasharray="3 2"/>`
+      `<path d="M216 97C228 97 226 76 236 76M216 97C228 97 226 118 236 118" fill="none" stroke="#B4A8EC" stroke-width="1.2" stroke-dasharray="3 3"/>`,
+      `<rect x="236" y="68" width="32" height="16" rx="4" fill="#FFFFFF" stroke="#B4A8EC" stroke-dasharray="3 2"/>`,
+      `<rect x="236" y="110" width="32" height="16" rx="4" fill="#FFFFFF" stroke="#B4A8EC" stroke-dasharray="3 2"/>`
     ],
     P06: [
-      frame(12, 12, 184, 146), r(104, 12, 44, 146, '#EEF8FD', 0),
+      frame(12, 12, 184, 146), r(104, 12, 44, 146, '#F4F2FC', 0),
       `<path d="M12.5 32H195.5" stroke="#EDEDED"/>`, r(13, 13, 182, 19, '#F4F4F5', 5),
       r(66, 19, 26, 6, G), r(112, 19, 28, 6, B), r(158, 19, 26, 6, G),
       ...[46, 74, 102, 130].flatMap((y, i) => [
         i ? `<path d="M12.5 ${y - 7}H195.5" stroke="#F0F0F0"/>` : '',
         r(22, y + 4, [34, 40, 30, 36][i], 6, GL),
         `<circle cx="79" cy="${y + 7}" r="4" fill="#D2D2D4"/>`,
-        i === 2 ? r(120, y + 5, 12, 4, B, 2) : `<circle cx="126" cy="${y + 7}" r="4" fill="#7FC6EE"/>`,
+        i === 2 ? r(120, y + 5, 12, 4, B, 2) : `<circle cx="126" cy="${y + 7}" r="4" fill="#9686E0"/>`,
         i === 1 ? `<circle cx="171" cy="${y + 7}" r="4" fill="#D2D2D4"/>` : `<rect x="166" y="${y + 2}" width="10" height="10" rx="2" fill="none" stroke="#D2D2D4" stroke-dasharray="2 2"/>`
       ]),
       r(206, 12, 82, 146, P, 6), r(214, 22, 46, 6, G),
@@ -2214,6 +2220,39 @@ function modeSkeletonStrip() {
       return `<a class="sk-item" href="#${mode.id}"><span class="sk-label"><b>${mode.code}</b>${mode.title}</span><span class="sk-card">${modeSkeleton(code)}</span></a>`; }).join('')}</div>
     <div class="sk-bar" aria-hidden="true"></div>
     <h3>${group.title}</h3><p>${group.sub}</p></div>`).join('')}</div>`;
+}
+
+/* ---------- mode map ---------- */
+function modeMapFigure() {
+  const INK = '#191A1B', V = '#6B5BD2', SANS = '-apple-system,BlinkMacSystemFont,PingFang SC,sans-serif', MONO = 'JetBrains Mono,SFMono-Regular,Menlo,monospace';
+  const nodes = {P01:[190, 462, '原位执行', 'below'], P02:[345, 400, '上下文协作', 'below'], P05:[505, 335, '产物共创', 'below'], P04:[690, 292, '流程引导', 'below'], P03:[835, 142, '任务委托', 'left'], P06:[835, 462, '评审决策', 'below']};
+  const pill = (x, y, t) => `<g><rect x="${x - 30}" y="${y - 13}" width="60" height="26" rx="13" fill="${INK}"/><text x="${x}" y="${y + 4.5}" text-anchor="middle" font-family="${SANS}" font-size="13" font-weight="600" fill="#FFFFFF">${t}</text></g>`;
+  const node = (code, [x, y, label, pos]) => `<circle cx="${x}" cy="${y}" r="40" fill="#FAFAFA" stroke="${INK}" stroke-width="1.6"/>` +
+    `<text x="${x}" y="${y + 6}" text-anchor="middle" font-family="${MONO}" font-size="17" font-weight="600" fill="${V}">${code}</text>` +
+    (pos === 'left' ? `<text x="${x - 62}" y="${y - 30}" text-anchor="end" font-family="${SANS}" font-size="17" font-weight="600" fill="${INK}">${label}</text>`
+      : `<text x="${x}" y="${y + 68}" text-anchor="middle" font-family="${SANS}" font-size="17" font-weight="600" fill="${INK}">${label}</text>`);
+  const line = (d, dashed) => `<path d="${d}" fill="none" stroke="${INK}" stroke-width="1.6"${dashed ? ' stroke-dasharray="6 5"' : ''} marker-end="url(#mm-arrow)"/>`;
+  return `<figure class="mode-map-fig"><div class="mode-map-scroll"><svg viewBox="0 0 1000 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="六种交互模式按作用范围与推进方分布，以及模式之间的转场">
+    <defs><marker id="mm-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="${INK}"/></marker>
+      <marker id="mm-axis" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="${INK}"/></marker></defs>
+    <rect x="470" y="62" width="490" height="268" fill="#EFEDFA"/>
+    <path d="M470 62V540M92 330H960" stroke="${INK}" stroke-opacity=".22" stroke-dasharray="4 5"/>
+    <path d="M92 540V48" stroke="${INK}" stroke-width="1.8" marker-end="url(#mm-axis)"/>
+    <path d="M92 540H974" stroke="${INK}" stroke-width="1.8" marker-end="url(#mm-axis)"/>
+    <text transform="translate(62 150) rotate(-90)" text-anchor="middle" font-family="${SANS}" font-size="15" fill="${INK}" fill-opacity=".6">Agent 推进</text>
+    <text transform="translate(62 470) rotate(-90)" text-anchor="middle" font-family="${SANS}" font-size="15" fill="${INK}" fill-opacity=".6">开发者推进</text>
+    <text x="104" y="572" font-family="${SANS}" font-size="15" fill="${INK}" fill-opacity=".6">局部对象</text>
+    <text x="960" y="572" text-anchor="end" font-family="${SANS}" font-size="15" fill="${INK}" fill-opacity=".6">完整目标</text>
+    <text x="526" y="606" text-anchor="middle" font-family="${SANS}" font-size="15" letter-spacing="3" fill="${INK}" fill-opacity=".6">作用范围</text>
+    ${line('M227 446L301 418')}
+    ${line('M366 365C450 230 600 165 792 146')}
+    ${line('M850 180C905 270 900 360 852 420')}
+    ${line('M796 474C650 520 470 490 380 422')}
+    ${line('M384 390L462 352', true)}
+    ${line('M543 352L794 446', true)}
+    ${Object.entries(nodes).map(([code, n]) => node(code, n)).join('')}
+    ${pill(262, 410, '升级')}${pill(588, 214, '固化')}${pill(904, 300, '收敛')}${pill(600, 506, '回写')}
+  </svg></div><figcaption>实线箭头为典型路径上的模式转场，虚线为经由产物共创的迭代路径；紫色区域为由 Agent 推进、面向完整目标的工作。</figcaption></figure>`;
 }
 
 function element(tag, className, value) {
