@@ -14,14 +14,23 @@ AI 时代设计工作流与 Agent 体验设计的方法库，整理方法框架�
 
 ## 内容导航
 
-当前收录四份仓内专题材料，以及两个独立维护的 Skill 入口。首页支持分类筛选、关键词搜索和深浅色切换。
+当前收录五份仓内专题材料，以及两个独立维护的 Skill 入口。首页支持分类筛选、关键词搜索和深浅色切换。
 
 | 材料 | 主要内容 | 入口 |
 | --- | --- | --- |
+| **算子开发领域设计模式** | PyPTO Toolkit 的工具交互案例，加上 AI 辅助的体验维度、交互模式与界面卡片，以五条领域原则贯穿 | [在线阅读](https://vinniechenyu.github.io/AI-UX-DESIGN-WORKFLOW/operator-domain-patterns/) · [源码](operator-domain-patterns/index.html) |
 | **算子开发 Agent 交互设计模式** | 从领域原语到六种交互模式，再到运行维度、模式转场与界面设计 | [在线阅读](https://vinniechenyu.github.io/AI-UX-DESIGN-WORKFLOW/operator-agent-patterns/) · [源码](operator-agent-patterns/index.html) |
 | **Agent 体验架构剖面** | 从 Agent 运行机制推导协作需求、控制点与证据表达，结合算子开发和真实任务案例 | [在线阅读](https://vinniechenyu.github.io/AI-UX-DESIGN-WORKFLOW/agent-ux-anatomy/) · [源码](agent-ux-anatomy/index.html) |
 | **通用 AI Design Workflow 框架** | 意图收敛、知识资产、生成流程与交付验收，组织业务无关的设计工作流 | [在线阅读](https://vinniechenyu.github.io/AI-UX-DESIGN-WORKFLOW/ai-design-workflow-report/) · [源码](ai-design-workflow-report/index.html) |
 | **AI 时代的设计工作流 · 2026-06 阶段** | 从业务理解到交互原型的实践复盘，以及工具接力与设计资产沉淀 | [在线阅读](https://vinniechenyu.github.io/AI-UX-DESIGN-WORKFLOW/ai-design-workflow-2026-06/) · [源码](ai-design-workflow-2026-06/index.html) |
+
+### 算子开发领域设计模式
+
+把算子开发中反复出现的问题整理为对象清晰、操作可控、证据可查的交互方式：
+
+- **工具交互 · 7 张案例**：计算图定位与上下游排查、复合搜索、差异定位、控制流下钻、代码／计算图／泳道联动、泳道测量与统计、GM 内存分配，均来自 PyPTO Toolkit。
+- **AI 辅助 · 设计提案**：可感知、可理解、可控制、可信任四个体验维度；六种交互模式；规格确认、阶段进度、复现对照、偏差范围、运行与结构对照、修改审阅、复测对比七张界面卡片。
+- **五条领域原则**：用覆盖矩阵对应到每一页，AI 体验维度与领域原则按颜色对应。
 
 ### 算子开发 Agent 交互设计模式
 
